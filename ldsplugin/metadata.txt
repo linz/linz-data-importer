@@ -1,0 +1,33 @@
+# Mandatory items:
+
+[general]
+name=QGIS-LDS-Plugin
+qgisMinimumVersion=2.18
+description=Import LDS OGC Datasets into QGIS
+version=0.1
+author=Land Information New Zealand
+email=splanzer@linz.govt.nz
+
+about=Import LDS OGC Datasets into QGIS
+
+tracker=https://github.com/SPlanzer/QGIS-LDS-Plugin/issues
+repository=https://github.com/SPlanzer/QGIS-LDS-Plugin
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+# changelog= TODO
+
+# Tags are comma separated with spaces allowed
+tags=wms, wfs, webservice, web, LINZ, LDS
+
+homepage=https://github.com/SPlanzer/QGIS-LDS-Plugin/issues
+category=Web
+icon=icon.png
+# experimental flag
+experimental=True
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+

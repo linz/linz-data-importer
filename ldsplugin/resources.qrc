@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/plugins/QgisLdsPlugin" >
+        <file>icons/icon.png</file>
+        <file>icons/wfs.png</file>
+        <file>icons/wmts.png</file>
+        <file>icons/wms.png</file>
+        <file>icons/settings.png</file>
+        <file>icons/about.png</file>
+        <file>icons/all.png</file>
+    </qresource>
+</RCC>

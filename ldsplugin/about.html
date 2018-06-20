@@ -1,0 +1,42 @@
+<h2><img src="{0}/linz_logo.png" alt="LINZ logo" /></h2>
+    <h1><strong><span>!!! DRAFT !!!</span></strong></h1>
+    
+    <h1><strong><span>QGIS LDS Plugin</span></strong></h1>
+        <p>The QGIS LDS Plugin couples QGIS an
+        d&nbsp;the <a href="https://data.linz.govt.nz/data/">LINZ Data Services (LDS)</a>&nbsp;
+        to provide simple importing of LINZ data.&nbsp;</p>
+    <h2><span><strong>Selecting a Service&nbsp;</strong></span></h2>
+        <p>The QGIS LDS Plugin supports LDS data served over WFS, WMS, WMTS protocols.&nbsp;</p>
+        <p>Please see the&nbsp;<a href="http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/which-web-service-should-i-use">online resource</a>&nbsp;
+        available on the LINZ website for more on these protocols&nbsp;</p>
+    <h2><span><strong>API Key&nbsp;</strong></span></h2>
+        <p>Prior to using the plugin your LDS API Key must be stored via the "Setting menu"</p>
+        <p>For more on LDS API keys please see the 
+        LDS&nbsp;<a href="http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key">resources</a>.</p>
+    <h2><strong>Coordinate Reference System</strong></h2>
+        <p>When selecting and importing LDS datasets via the&nbsp;QGIS LDS Plugin the projects 
+        current Coordinate Reference System (CRS) will be used. QGIS will enable 
+        on-the-fly (OTF) Reprojection and the dataset being imported will be reprojected
+        on the fly to the QGIS projects CRS.&nbsp;</p>
+        <p>This however is not the case with WMTS. As it is not idea to reproject WMTS 
+        and all LDS WMTS services are served in WGS 84 Web Mercator (EPSG:3857), the 
+        QGIS LDS Plugin will force the QGIS projects CRS to&nbsp;WGS 84 Web Mercator (EPSG:3857). 
+        The user is notified by QGIS's message bar when the CRS change is made.&nbsp;</p>
+        <p>As many datasets are being reprojected to be combined into the one map canvas 
+        the user of this plugin should be aware of issues arising from projecting spatial datasets.&nbsp;</p>
+    <h2><span><strong>Requests, Responses and&nbsp;Patience</strong></span></h2>
+        <p>When opening the plugin for the first time, the QGIS interface will be temporarily 
+        inactive while awaiting the LDS server's response. However after the initial request LDS dataset 
+        information is stored locally and all subsequent requests for the current QGIS session will see the 
+        dataset information populated immediately.&nbsp;</p>
+        <p>At times the LDS server is experiencing high load the plugin may fail to 
+        populate the table with the available dataset information. In this case the user will 
+        need to close the plugin interface and re-open it.&nbsp;</p>
+    <h2><span><strong>Filtering</strong></span></h2>
+        <p>The left hand panel allows users to filter by service types 
+        (either, All, WFS, WMS, WMTS). All column headers can be toggled to allow ascending
+        or descending ordering of their data.</p>
+        <p>Text can be entered in The "Filter Data Sets" search bar to filter the datasets 
+        on key words.&nbsp;</p>
+    <h2><span><strong>Source Code, Further Documentation and Feedback</strong></span></h2>
+        <p>Please see github... (TODO// migrate to LINZ repo) for more.</p>
