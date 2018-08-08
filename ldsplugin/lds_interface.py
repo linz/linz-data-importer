@@ -78,8 +78,9 @@ class LdsInterface():
                                                                                                                    service.lower(),
                                                                                                                    self.versions[service.lower()]))
             elif service in ('WMS', 'WFS'):
-                f = urlopen('https://data.linz.govt.nz/services;key={0}/{1}?service={1}&version={2}&request=GetCapabilities'.format(self.key, 
+                f = urlopen('https://data.linz.govt.nz/services;key={0}/{1}?service={2}&version={3}&request=GetCapabilities'.format(self.key, 
                                                                                                                                 service.lower(),
+                                                                                                                                service,
                                                                                                                                 self.versions[service.lower()]))
             self.resp['xml'] = f.read()
 

@@ -28,7 +28,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry,
 from qgis.gui import QgsMessageBar
 from lds_tablemodel import LDSTableModel, LDSTableView
 from lds_interface import LdsInterface
-from ApiKey import ApiKey
+from apiKey import ApiKey
 import re
 
 # Initialize Qt resources from file resources.py
@@ -373,13 +373,14 @@ class QgisLdsPlugin:
         return resp
 
     def loadAllServices(self):
+
         # Dont reload, least API key changed
         if self.services_loaded:
             return
         all_data = []
-        #all_services = ['loadWMTS', 'loadWMS', 'loadWFS'] 
-        all_services = ['loadWFS']
-        for service in all_services:                
+        all_services = ['loadWMTS', 'loadWMS', 'loadWFS'] 
+        #all_services = ['loadWFS'] # TESTING
+        for service in all_services:
             service_data = getattr(self, service)()
             if service_data['err']:
                 return service_data['err']
