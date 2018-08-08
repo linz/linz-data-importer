@@ -414,12 +414,12 @@ class QgisLdsPlugin:
         return crs
 
     def enableOTF(self):
-        if not self.iface.mapCanvas().mapRenderer().hasCrsTransformEnabled():
+        if not self.iface.mapCanvas().hasCrsTransformEnabled():
             self.canvas.setCrsTransformEnabled(True)
 
     def setSRID(self):
         crs = QgsCoordinateReferenceSystem(3857,QgsCoordinateReferenceSystem.EpsgCrsId)
-        self.canvas.mapRenderer().setDestinationCrs(crs)
+        self.canvas.setDestinationCrs(crs)
 
     def infoCRS(self):
         self.iface.messageBar().pushMessage("Info", 
