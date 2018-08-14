@@ -24,11 +24,11 @@ from PyQt4.QtCore import (QSettings, QTranslator, qVersion, QCoreApplication,
 from PyQt4.QtGui import (QAction, QIcon, QListWidgetItem, QSortFilterProxyModel,
                          QHeaderView, QMenu, QToolButton)
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry, 
-                       QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject) #QgsProject and QgsCoordinateTransform is temp
+                       QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMessageBar
 from lds_tablemodel import LDSTableModel, LDSTableView
-from lds_interface import LdsInterface
-from apiKey import ApiKey
+from lds_Interface import LdsInterface
+from api_key import ApiKey
 import re
 
 # Initialize Qt resources from file resources.py
@@ -70,7 +70,7 @@ class QgisLdsPlugin:
         :type iface: QgsInterface
         """
         # Save reference to the QGIS interface
-        self.iface = iface        
+        self.iface = iface
         self.canvas = self.iface.mapCanvas()
         self.services_loaded = False
 
@@ -90,7 +90,6 @@ class QgisLdsPlugin:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        # Declare instance attributes
         self.actions = []
         self.toolbar = self.iface.addToolBar(u'QgisLdsPlugin')
         self.toolbar.setObjectName(u'QgisLdsPlugin')
@@ -98,6 +97,8 @@ class QgisLdsPlugin:
         self.menu = self.tr(u'&QGIS-LDS-Plugin')
 
         # Track data reading
+        self.all_services = ['loadWMTS', 'loadWMS', 'loadWFS'] 
+        #self.all_services = ['loadWFS'] # TESTING
         self.wms_data = None
         self.wmts_data = None
         self.wfs_data = None
@@ -274,9 +275,13 @@ class QgisLdsPlugin:
         del self.toolbar
 
     def run(self):
+        self.loadUi()
+        self.service_dlg.show() 
+
+    def loadUi(self):
         # load data to tables if API key has been set
-        if not self.api_key.get_api_key():
-            self.warning.setText('ERROR: LDS API key must be provided - see settings')
+        if not self.api_key.getApiKey():
+            self.warning.setText('Error: LDS API key must be provided - see settings')
             self.warning.show() 
         else:
             load_data_err = self.loadAllServices()
@@ -285,21 +290,21 @@ class QgisLdsPlugin:
                 self.warning.show()
             else:
                 self.warning.hide()
-        self.service_dlg.show() 
 
     def setApiKey(self):
-        key = self.service_dlg.uTextAPIKey_2.text() #TODO remove "_2"
-        self.api_key.set_api_key(key)
+        key = self.service_dlg.uTextAPIKey.text()
+        self.api_key.setApiKey(key)
         self.lds_interface.keyChanged()
         self.warning.hide()
         self.services_loaded = False # key change, load data again
-        self.loadAllServices()
+        self.stacked_widget.setCurrentIndex(0)
+        self.loadUi()
 
     def showApiKey(self):
-        curr_key = self.api_key.get_api_key()
+        curr_key = self.api_key.getApiKey()
         if curr_key == '':
             curr_key = 'No API Key stored. Please save a valid API Key'
-        self.service_dlg.uTextAPIKey_2.setPlaceholderText(curr_key)
+        self.service_dlg.uTextAPIKey.setPlaceholderText(curr_key)
 
     def showSelectedOption(self, item):
         if item:
@@ -318,7 +323,7 @@ class QgisLdsPlugin:
             elif item.text() == 'Settings':
                 self.stacked_widget.setCurrentIndex(1)
             elif item.text() == 'About':
-                self.stacked_widget.setCurrentIndex(2)            
+                self.stacked_widget.setCurrentIndex(2)
 
     def userSelection(self, selected):
         sourceIndex = self.proxy_model.mapToSource(selected)
@@ -372,15 +377,13 @@ class QgisLdsPlugin:
         resp = self.lds_interface.getServiceData(service)
         return resp
 
-    def loadAllServices(self):
+    def loadAllServices(self, ):
 
         # Dont reload, least API key changed
         if self.services_loaded:
             return
         all_data = []
-        all_services = ['loadWMTS', 'loadWMS', 'loadWFS'] 
-        #all_services = ['loadWFS'] # TESTING
-        for service in all_services:
+        for service in self.all_services:
             service_data = getattr(self, service)()
             if service_data['err']:
                 return service_data['err']
@@ -448,7 +451,7 @@ class QgisLdsPlugin:
                    "SERVICE={1}&"
                    "VERSION={2}&"
                    "REQUEST=GetFeature&"
-                   "TYPENAME=data.linz.govt.nz:{3}-{4}").format(self.api_key.get_api_key(), 
+                   "TYPENAME=data.linz.govt.nz:{3}-{4}").format(self.api_key.getApiKey(), 
                                                                 self.service.lower(), 
                                                                 self.version[self.service.lower()], 
                                                                 self.service_type, 
@@ -468,7 +471,7 @@ class QgisLdsPlugin:
                    "version={5}").format(self.wmts_epsg, 
                                         self.service_type, 
                                         self.id, 
-                                        self.api_key.get_api_key(), 
+                                        self.api_key.getApiKey(), 
                                         self.service.lower(), 
                                         self.version[self.service.lower()])
             layer = QgsRasterLayer(uri,
@@ -485,7 +488,7 @@ class QgisLdsPlugin:
                    "WMTSCapabilities.xml").format(self.wmts_epsg,
                                                 self.service_type, 
                                                 self.id, 
-                                                self.api_key.get_api_key(), 
+                                                self.api_key.getApiKey(), 
                                                 self.service.lower(), 
                                                 self.version[self.service.lower()])
             layer = QgsRasterLayer(uri,

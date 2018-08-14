@@ -31,11 +31,11 @@ from urllib2 import urlopen, URLError
 class LdsInterface():
     def __init__(self, api_key_instance, service_versions):
         self.api_key_instance = api_key_instance
-        self.key = self.api_key_instance.get_api_key()
+        self.key = self.api_key_instance.getApiKey()
         self.versions = service_versions
 
     def keyChanged(self):
-        self.key = self.api_key_instance.get_api_key()
+        self.key = self.api_key_instance.getApiKey()
 
     def hasKey(self):
         if not self.key:
