@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.utils import plugins
 from qgis.core import QgsMapLayerRegistry
 
+WAIT=1000
 TEST_CONF={'wms':'Chart NZ 252 Lake Wakatipu',
            'wmts':'Chart NZ 632 Banks Peninsula',
            'wfs':'NZ Railway Centrelines (Topo, 1:250k)'
@@ -40,10 +41,9 @@ class UiTest(unittest.TestCase):
 
     def tearDown(self):
         """Runs after each test"""
-        QTest.qWait(1000) # Just because I want to watch it open a close
+        QTest.qWait(WAIT) # Just because I want to watch it open a close
         self.lds_plugin.service_dlg.uTextFilter.setText('')
         self.lds_plugin.service_dlg.close()
-        QTest.qWait(1000) # Give time for the layer to load
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
     def test_wfs_import(self):
@@ -73,7 +73,7 @@ class UiTest(unittest.TestCase):
         self.assertEqual(service.upper(), list(data_types)[0])
         #Filter
         self.lds_plugin.service_dlg.uTextFilter.setText(TEST_CONF[service].replace('(', '\(').replace(')','\)'))
-        QTest.qWait(1000)
+        QTest.qWait(WAIT)
         #Import the first row
         # TODO this should be via 'click' signal
         self.lds_plugin.service_dlg.uDatasetsTableView.selectRow(0)
@@ -81,6 +81,20 @@ class UiTest(unittest.TestCase):
         # Test the LayerRegistry to ensure the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
         self.assertEqual(TEST_CONF[service], names[0]) # The one layer loaded in this test is of the expected names
+
+    def test_all_services(self):
+        ''' Test all services shown in table '''
+        # Set up 
+        item = self.lds_plugin.service_dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        self.lds_plugin.service_dlg.uListOptions.itemClicked.emit(item)
+        # Tests
+        # Test there is data
+        self.assertNotEqual(self.lds_plugin.table_model.rowCount(None), 0)
+        # ensure all services are are present in the table
+        data_types=set([self.lds_plugin.proxy_model.index(row, 2).data() 
+                       for row in xrange(self.lds_plugin.proxy_model.rowCount())])
+        self.assertEqual(len(data_types),3)
+        self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
 
 def suite():
     suite = unittest.TestSuite()

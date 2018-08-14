@@ -26,7 +26,7 @@ class ApiKey():
         if not key:
             return ''
         return key
-    
+
     def setApiKey(self, key):
         QSettings().setValue('ldsplugin/apikey', key)
         self.api_key = self.getApiKey()
