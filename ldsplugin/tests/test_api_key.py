@@ -49,6 +49,9 @@ class ApiKeyTest(unittest.TestCase):
         QTest.qWait(WAIT)
         self.lds_plugin.service_dlg.close()
 
+    def test_temp(self): # TEMP
+        self.assertEqual(1,1)
+
     def test_no_key(self):
         #Setup 
         item = self.lds_plugin.service_dlg.uListOptions.findItems('Settings', Qt.MatchFixedString)[0]
