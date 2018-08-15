@@ -103,3 +103,4 @@ def suite():
 
 def run_tests():
     unittest.TextTestRunner(verbosity=3).run(suite())
+
