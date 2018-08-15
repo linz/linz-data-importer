@@ -16,10 +16,21 @@
 """
 
 import unittest
+from qgis.utils import plugins, active_plugins
 
 
 class TestTest(unittest.TestCase):
 
+
+    @classmethod
+    def setUpClass(cls):
+        """Runs at TestCase init."""
+        cls.lds_plugin = plugins.get('ldsplugin')
+
+    def setUp(self):
+        """Runs before each test."""
+        self.lds_plugin = plugins.get('ldsplugin')
+        self.lds_plugin.actions[0].trigger()
 
     def test_temp1(self):
         self.assertEqual(1,1)
@@ -29,6 +40,9 @@ class TestTest(unittest.TestCase):
 
     def test_temp3(self):
         self.assertTrue(True)
+
+    def test_plugin_is_active(self):
+        self.assertIn('ldsplugin', active_plugins) 
 
 def suite():
     suite = unittest.TestSuite()
