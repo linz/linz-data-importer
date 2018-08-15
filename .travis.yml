@@ -26,4 +26,4 @@ install:
     - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
     - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory /root/.qgis2/python/plugins/${PLUGIN_NAME}"
 script:
-    - docker-compose exec qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests"
+    - docker-compose exec qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.test_runner.run_test_modules"
