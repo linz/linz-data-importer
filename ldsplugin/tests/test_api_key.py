@@ -26,6 +26,14 @@ WAIT=1000
 
 class ApiKeyTest(unittest.TestCase):
 
+# Use of cls seems to failing with travis 
+#     @classmethod
+#     def setUpClass(cls):
+#         """Runs at TestCase init."""
+#         cls.lds_plugin = plugins.get('ldsplugin')
+#         #cls.lds_plugin.all_services = ['loadWFS'] # Hack to make tests faster
+
+
     def setUp(self):
         """Runs before each test."""
         self.lds_plugin = plugins.get('ldsplugin')

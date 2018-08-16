@@ -29,11 +29,6 @@ TEST_CONF={'wms':'Chart NZ 252 Lake Wakatipu',
 
 class UiTest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        """Runs at TestCase init."""
-        cls.lds_plugin = plugins.get('ldsplugin')
-
     def setUp(self):
         """Runs before each test."""
         self.lds_plugin = plugins.get('ldsplugin')
