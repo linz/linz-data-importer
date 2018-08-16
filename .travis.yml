@@ -23,7 +23,8 @@ install:
     - sleep 10
     - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
     - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory /root/.qgis2/python/plugins/${PLUGIN_NAME}"
+    - docker exec -it qgis-testing-environment sh -c "pip install pyproj"
+    - docker exec -it qgis-testing-environment sh -c "export LDS_API=$LDS_API"
 
 script:
-    - docker exec -it qgis-testing-environment sh -c "pip install pyproj"
     - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests.run_test_modules"
