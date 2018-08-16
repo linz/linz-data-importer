@@ -22,10 +22,6 @@ from qgis.utils import plugins, active_plugins
 class TestTest(unittest.TestCase):
 
 
-    @classmethod
-    def setUpClass(cls):
-        """Runs at TestCase init."""
-        cls.lds_plugin = plugins.get('ldsplugin')
 
     def setUp(self):
         """Runs before each test."""
