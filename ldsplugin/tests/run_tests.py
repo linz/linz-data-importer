@@ -9,5 +9,5 @@ def run_test_modules():
     Loops through all TestCase instances in a test folder to find
     unique test modules
     """
-    test_suite = unittest.TestLoader().discover(__location__, pattern="test_te*.py")
+    test_suite = unittest.TestLoader().discover(__location__, pattern="test_ap*.py")
     unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(test_suite)
