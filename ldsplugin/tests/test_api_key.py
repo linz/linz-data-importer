@@ -26,13 +26,17 @@ WAIT=1000
 
 class ApiKeyTest(unittest.TestCase):
 
-# Use of cls seems to failing with travis 
 #     @classmethod
 #     def setUpClass(cls):
 #         """Runs at TestCase init."""
 #         cls.lds_plugin = plugins.get('ldsplugin')
 #         #cls.lds_plugin.all_services = ['loadWFS'] # Hack to make tests faster
 
+    @classmethod
+    def tearDownClass(cls):
+        # Runs at TestCase teardown.
+        #cls.lds_plugin.all_services = ['loadWMTS', 'loadWMS', 'loadWFS'] # Revert hack
+        QSettings().setValue('ldsplugin/apikey', API_KEY)
 
     def setUp(self):
         """Runs before each test."""

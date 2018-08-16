@@ -29,7 +29,7 @@ class UiTest(unittest.TestCase):
         """Runs before each test."""
         self.lds_plugin = plugins.get('ldsplugin')
         self.lds_plugin.actions[0].trigger()
-  
+
     def tearDown(self):
         """Runs after each test"""
         QTest.qWait(WAIT) # Just because I want to watch it open a close
