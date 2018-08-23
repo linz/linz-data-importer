@@ -97,8 +97,6 @@ class QgisLdsPlugin:
         self.menu = self.tr(u'&QGIS-LDS-Plugin')
 
         # Track data reading
-        self.all_services = ['loadWMTS', 'loadWMS', 'loadWFS'] 
-        #self.all_services = ['loadWFS'] # TESTING
         self.wms_data = None
         self.wmts_data = None
         self.wfs_data = None
@@ -212,10 +210,15 @@ class QgisLdsPlugin:
             parent=self.iface.mainWindow())
 
         self.service_dlg = ServiceDialog()
+        self.all_services = self.getServiceSettings()
         self.stacked_widget = self.service_dlg.qStackedWidget
         self.list_options = self.service_dlg.uListOptions
         self.list_options.itemClicked.connect(self.showSelectedOption)
         self.list_options.itemClicked.emit(self.list_options.item(0))
+
+        self.service_dlg.uEnableWMTS.clicked.connect(self.setServiceSettings)
+        self.service_dlg.uEnableWMS.clicked.connect(self.setServiceSettings)
+        self.service_dlg.uEnableWFS.clicked.connect(self.setServiceSettings)
 
         self.warning = self.service_dlg.uLabelWarning
         self.warning.setStyleSheet('color:red')
@@ -290,6 +293,34 @@ class QgisLdsPlugin:
                 self.warning.show()
             else:
                 self.warning.hide()
+
+    def setServiceSettings(self):
+        services=[]
+        if self.service_dlg.uEnableWMS.isChecked():
+            services.append('loadWMS')
+        if self.service_dlg.uEnableWMTS.isChecked():
+            services.append('loadWMTS')
+        if self.service_dlg.uEnableWFS.isChecked():
+            services.append('loadWFS')
+        QSettings().setValue('ldsplugin/services', services)
+
+    def getServiceSettings(self):
+        services = QSettings().value('ldsplugin/services') 
+        if not services:
+            services=['loadWMTS', 'loadWMS', 'loadWFS']
+
+        self.service_dlg.uEnableWMTS.setChecked(False)
+        self.service_dlg.uEnableWMS.setChecked(False)
+        self.service_dlg.uEnableWFS.setChecked(False)
+
+        for service in services:
+            if service == 'loadWMTS':
+                self.service_dlg.uEnableWMTS.setChecked(True)
+            elif service == 'loadWMS':
+                self.service_dlg.uEnableWMS.setChecked(True)
+            elif service == 'loadWFS':
+                self.service_dlg.uEnableWFS.setChecked(True)
+        return services
 
     def setApiKey(self):
         key = self.service_dlg.uTextAPIKey.text()
@@ -427,9 +458,9 @@ class QgisLdsPlugin:
     def infoCRS(self):
         self.iface.messageBar().pushMessage("Info", 
             '''LDS Plugin has changed the projects CRS to {0} to 
-            provide a common CRS when importing LDS datasets)'''.format(self.wmts_epsg),
+            provide a common CRS when importing LDS datasets'''.format(self.wmts_epsg),
                                              level=QgsMessageBar.INFO,
-                                             duration=0)
+                                             duration=10)
 
     def zoomTo(self):
         ''' zoom to newly imported'''
