@@ -2,7 +2,7 @@
 
 [general]
 name=QGIS-LDS-Plugin
-qgisMinimumVersion=2.18
+qgisMinimumVersion=2.8
 description=Import LDS OGC Datasets into QGIS
 version=0.1
 author=Land Information New Zealand
