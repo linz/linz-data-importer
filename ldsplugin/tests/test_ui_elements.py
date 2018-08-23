@@ -25,13 +25,9 @@ WAIT=1000
 
 class UiTest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        """Runs at TestCase init."""
-        cls.lds_plugin = plugins.get('ldsplugin')
-
     def setUp(self):
         """Runs before each test."""
+        self.lds_plugin = plugins.get('ldsplugin')
         self.lds_plugin.actions[0].trigger()
 
     def tearDown(self):

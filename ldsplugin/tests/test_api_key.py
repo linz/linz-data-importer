@@ -26,11 +26,11 @@ WAIT=1000
 
 class ApiKeyTest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        """Runs at TestCase init."""
-        cls.lds_plugin = plugins.get('ldsplugin')
-        #cls.lds_plugin.all_services = ['loadWFS'] # Hack to make tests faster
+#     @classmethod
+#     def setUpClass(cls):
+#         """Runs at TestCase init."""
+#         cls.lds_plugin = plugins.get('ldsplugin')
+#         #cls.lds_plugin.all_services = ['loadWFS'] # Hack to make tests faster
 
     @classmethod
     def tearDownClass(cls):
