@@ -69,7 +69,7 @@
          <enum>QFrame::Raised</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="swTableView">
          <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -232,7 +232,7 @@
                <item>
                 <widget class="QLabel" name="label_5">
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;SERVICES:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;With slow internet connetions WMS severly slows the loading of the plugin.&lt;br/&gt;Here this service as well as others can be diabled speed loading in slow &lt;br/&gt;internet connection environments. &lt;/p&gt;&lt;p&gt;See the &amp;quot;About&amp;quot; tab for more&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;SERVICES:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;With slow internet connetions, WMS severly slows the loading of the plugin.&lt;br/&gt;Here this service as well as others can be disabled to speed up the loading of&lt;br/&gt;the plugin in slow internet connection environments. &lt;/p&gt;&lt;p&gt;See the &amp;quot;About&amp;quot; tab for more&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="openExternalLinks">
                   <bool>true</bool>

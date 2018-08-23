@@ -4,7 +4,7 @@
 name=QGIS-LDS-Plugin
 qgisMinimumVersion=2.8
 description=Import LDS OGC Datasets into QGIS
-version=0.1
+version=0.0.1
 author=Land Information New Zealand
 email=splanzer@linz.govt.nz
 
