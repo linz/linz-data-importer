@@ -32,13 +32,15 @@ class ServiceDialog(QtGui.QDialog, FORM_CLASS):
                 };
             """
         )
-        
-#         # add grey back ground to html view
-#         self.hAboutHtml.setStyleSheet(
-#             """ QTextEdit {
-#                     background-color:palette(Window);
-#                     outline: 0;
-#                 }
-#             """ 
-#            )
-#             
+        # Decided to go with white
+        #self.uTextDescription.setStyleSheet("background-color:palette(Window);")
+
+        # add grey back ground to html view
+        self.hAboutHtml.setStyleSheet(
+            """ QTextEdit {
+                    background-color:rgb(245,245,245);
+                    outline: 0;
+                }
+            """ 
+           )
+             

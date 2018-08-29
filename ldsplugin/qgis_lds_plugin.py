@@ -15,14 +15,13 @@
  ***************************************************************************/
 """
 
-
 # This program is released under the terms of the 3 clause BSD license. See the
 # LICENSE file for more information.
 
 from PyQt4.QtCore import (QSettings, QTranslator, qVersion, QCoreApplication, 
-                          Qt, QRegExp) 
+                          Qt, QRegExp, QSize) 
 from PyQt4.QtGui import (QAction, QIcon, QListWidgetItem, QSortFilterProxyModel,
-                         QHeaderView, QMenu, QToolButton)
+                         QHeaderView, QMenu, QToolButton, QPixmap, QImage)
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry, 
                        QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMessageBar
@@ -30,6 +29,10 @@ from lds_tablemodel import LDSTableModel, LDSTableView
 from lds_Interface import LdsInterface
 from api_key import ApiKey
 import re
+import urllib.request
+#from urllib.request import urlopen, URLError
+
+
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -223,6 +226,9 @@ class QgisLdsPlugin:
         self.warning = self.service_dlg.uLabelWarning
         self.warning.setStyleSheet('color:red')
 
+
+        self.img_preview = self.service_dlg.uImagePreview
+
         item = QListWidgetItem("ALL")
         image_path = os.path.join(os.path.dirname(__file__), "icons", "all.png")
         item.setIcon(QIcon(image_path))
@@ -355,16 +361,49 @@ class QgisLdsPlugin:
                 self.stacked_widget.setCurrentIndex(1)
             elif item.text() == 'About':
                 self.stacked_widget.setCurrentIndex(2)
+    
+    def getPreview(self, res, res_timeout):
+        image = QImage()
+        url = 'http://koordinates-tiles-d.global.ssl.fastly.net/services/tiles/v4/thumbnail/layer={0},style=auto/{1}.png'.format(self.id, res)
+        try:
+            data = urllib.request.urlopen(url, timeout=res_timeout).read()
+        except: #urllib.error.HTTPError:
+            return False
+        image.loadFromData(data)
+        if res == '300x200':
+            self.img_preview.setPixmap(QPixmap(image))
+        else:
+            self.img_preview.setPixmap(QPixmap(image).scaledToHeight(200))
+        return True
 
-    def userSelection(self, selected):
-        sourceIndex = self.proxy_model.mapToSource(selected)
-        self.row = self.table_model.selectedRow(sourceIndex.row())
+    def updDescription(self):
         abstract = self.row[4]
         self.service_type = self.row[0]
         self.id = self.row[1]
         self.service = self.row[2]
         self.layer_title = self.row[3]
         self.service_dlg.uTextDescription.setText(abstract)
+
+    def updPreview(self):
+        if self.service_type != 'layer':
+            self.img_preview.clear()
+            self.img_preview.setText('No preview available')
+            return 
+
+        if self.getPreview('300x200',0.4):
+            return
+        elif self.getPreview('150x100',5):
+            return 
+        else:
+            self.img_preview.clear()
+            self.img_preview.setText('No preview available')
+
+    def userSelection(self, selected):
+        sourceIndex = self.proxy_model.mapToSource(selected)
+        self.row = self.table_model.selectedRow(sourceIndex.row())
+
+        self.updDescription()
+        self.updPreview()
 
     def filterTable(self):
         filter_text = self.service_dlg.uTextFilter.text()
@@ -399,9 +438,6 @@ class QgisLdsPlugin:
 
         # Save API Key Cicked
         self.service_dlg.uBtnSaveApiKey.clicked.connect(self.setApiKey)
-
-#     def errorDialog(self, error):
-#         self.iface.messageBar().pushMessage("Error", error, level=QgsMessageBar.CRITICAL)
 
     # Also alittle redundant, did handle errors
     def requestServiceInfo(self, service):
