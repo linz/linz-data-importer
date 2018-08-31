@@ -30,9 +30,8 @@ from lds_Interface import LdsInterface
 from api_key import ApiKey
 import re
 import urllib.request
-#from urllib.request import urlopen, URLError
-
-
+import threading
+import time
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -76,6 +75,8 @@ class QgisLdsPlugin:
         self.iface = iface
         self.canvas = self.iface.mapCanvas()
         self.services_loaded = False
+        self.cache_updated = False
+        self.update_cache = True # Skip cache updates. Useful for testing.
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
@@ -226,7 +227,6 @@ class QgisLdsPlugin:
         self.warning = self.service_dlg.uLabelWarning
         self.warning.setStyleSheet('color:red')
 
-
         self.img_preview = self.service_dlg.uImagePreview
 
         item = QListWidgetItem("ALL")
@@ -284,14 +284,32 @@ class QgisLdsPlugin:
         del self.toolbar
 
     def run(self):
-        self.loadUi()
-        self.service_dlg.show() 
+        if not self.services_loaded:
+            self.loadUi()
+        self.service_dlg.show()
+        if not self.cache_updated:
+            self.updateServiceDataCache()
+
+    def updateServiceDataCache(self):
+        ''' updates the cached service data in the
+        background'''
+        # Wait until initial data import
+        # finished then delete the cached 
+        # files and reload
+        while not self.services_loaded:
+            time.sleep(10)
+            continue
+        self.services_loaded=False
+        self.lds_interface.delAllLocalServiceXML()
+        t = threading.Thread(target=self.loadAllServices)
+        t.start()
+        self.cache_updated=True
 
     def loadUi(self):
         # load data to tables if API key has been set
         if not self.api_key.getApiKey():
             self.warning.setText('Error: LDS API key must be provided - see settings')
-            self.warning.show() 
+
         else:
             load_data_err = self.loadAllServices()
             if load_data_err:
@@ -361,7 +379,7 @@ class QgisLdsPlugin:
                 self.stacked_widget.setCurrentIndex(1)
             elif item.text() == 'About':
                 self.stacked_widget.setCurrentIndex(2)
-    
+
     def getPreview(self, res, res_timeout):
         image = QImage()
         url = 'http://koordinates-tiles-d.global.ssl.fastly.net/services/tiles/v4/thumbnail/layer={0},style=auto/{1}.png'.format(self.id, res)
@@ -390,7 +408,7 @@ class QgisLdsPlugin:
             self.img_preview.setText('No preview available')
             return 
 
-        if self.getPreview('300x200',0.4):
+        if self.getPreview('300x200',0.5):
             return
         elif self.getPreview('150x100',5):
             return 
@@ -441,14 +459,12 @@ class QgisLdsPlugin:
 
     # Also alittle redundant, did handle errors
     def requestServiceInfo(self, service):
-        resp = self.lds_interface.getServiceData(service)
+        resp = self.lds_interface.processServiceData(service)
         return resp
 
-    def loadAllServices(self, ):
-
+    def loadAllServices(self):
         # Dont reload, least API key changed
-        if self.services_loaded:
-            return
+
         all_data = []
         for service in self.all_services:
             service_data = getattr(self, service)()
@@ -477,7 +493,6 @@ class QgisLdsPlugin:
 
     def dataToTable(self, table_data):
         self.table_model.setData(table_data)
-        self.table_view.resizeColumnsToContents()
 
     def mapCrs(self):
         crs = str(self.canvas.mapSettings().destinationCrs().authid())
