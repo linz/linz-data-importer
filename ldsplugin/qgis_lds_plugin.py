@@ -26,7 +26,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry,
                        QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMessageBar
 from lds_tablemodel import LDSTableModel, LDSTableView
-from lds_Interface import LdsInterface
+from service_data import ServiceData
 from api_key import ApiKey
 import re
 import urllib.request
@@ -76,9 +76,9 @@ class QgisLdsPlugin:
         self.canvas = self.iface.mapCanvas()
         self.services_loaded = False
         self.cache_updated = False
-        self.update_cache = True # Skip cache updates. Useful for testing.
+        self.update_cache = False # Skip cache updates. Useful for testing.
 
-        # initialize plugin directory
+        # initialise plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
@@ -101,6 +101,7 @@ class QgisLdsPlugin:
         self.menu = self.tr(u'&QGIS-LDS-Plugin')
 
         # Track data reading
+        self.all_services = ['loadWMTS']
         self.wms_data = None
         self.wmts_data = None
         self.wfs_data = None
@@ -109,14 +110,13 @@ class QgisLdsPlugin:
         self.id = None
         self.layer_title = None
         self.wmts_epsg = 'EPSG:3857'
-        self.wmts_epsg_int = int(self.wmts_epsg.split(':')[1])
-        self.version = {'wfs': '2.0.0', 
+        self.service_versions = {'wfs': '2.0.0', 
                         'wms': '1.1.1' , 
                         'wmts': '1.0.0'}
 
         # LDS request instances 
         self.api_key = ApiKey()
-        self.lds_interface = LdsInterface(self.api_key, self.version)
+        #self.service_data = ServiceData(self.api_key, self.service_versions)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -213,16 +213,12 @@ class QgisLdsPlugin:
             callback=self.run,
             parent=self.iface.mainWindow())
 
+        # Plugin Dialog 
         self.service_dlg = ServiceDialog()
-        self.all_services = self.getServiceSettings()
         self.stacked_widget = self.service_dlg.qStackedWidget
         self.list_options = self.service_dlg.uListOptions
         self.list_options.itemClicked.connect(self.showSelectedOption)
         self.list_options.itemClicked.emit(self.list_options.item(0))
-
-        self.service_dlg.uEnableWMTS.clicked.connect(self.setServiceSettings)
-        self.service_dlg.uEnableWMS.clicked.connect(self.setServiceSettings)
-        self.service_dlg.uEnableWFS.clicked.connect(self.setServiceSettings)
 
         self.warning = self.service_dlg.uLabelWarning
         self.warning.setStyleSheet('color:red')
@@ -287,7 +283,7 @@ class QgisLdsPlugin:
         if not self.services_loaded:
             self.loadUi()
         self.service_dlg.show()
-        if not self.cache_updated:
+        if not self.cache_updated and self.update_cache:
             self.updateServiceDataCache()
 
     def updateServiceDataCache(self):
@@ -300,7 +296,7 @@ class QgisLdsPlugin:
             time.sleep(10)
             continue
         self.services_loaded=False
-        self.lds_interface.delAllLocalServiceXML()
+        self.service_data.delAllLocalServiceXML()
         t = threading.Thread(target=self.loadAllServices)
         t.start()
         self.cache_updated=True
@@ -318,38 +314,10 @@ class QgisLdsPlugin:
             else:
                 self.warning.hide()
 
-    def setServiceSettings(self):
-        services=[]
-        if self.service_dlg.uEnableWMS.isChecked():
-            services.append('loadWMS')
-        if self.service_dlg.uEnableWMTS.isChecked():
-            services.append('loadWMTS')
-        if self.service_dlg.uEnableWFS.isChecked():
-            services.append('loadWFS')
-        QSettings().setValue('ldsplugin/services', services)
-
-    def getServiceSettings(self):
-        services = QSettings().value('ldsplugin/services') 
-        if not services:
-            services=['loadWMTS', 'loadWMS', 'loadWFS']
-
-        self.service_dlg.uEnableWMTS.setChecked(False)
-        self.service_dlg.uEnableWMS.setChecked(False)
-        self.service_dlg.uEnableWFS.setChecked(False)
-
-        for service in services:
-            if service == 'loadWMTS':
-                self.service_dlg.uEnableWMTS.setChecked(True)
-            elif service == 'loadWMS':
-                self.service_dlg.uEnableWMS.setChecked(True)
-            elif service == 'loadWFS':
-                self.service_dlg.uEnableWFS.setChecked(True)
-        return services
-
     def setApiKey(self):
         key = self.service_dlg.uTextAPIKey.text()
         self.api_key.setApiKey(key)
-        self.lds_interface.keyChanged()
+        self.service_data.keyChanged()
         self.warning.hide()
         self.services_loaded = False # key change, load data again
         self.stacked_widget.setCurrentIndex(0)
@@ -457,39 +425,43 @@ class QgisLdsPlugin:
         # Save API Key Cicked
         self.service_dlg.uBtnSaveApiKey.clicked.connect(self.setApiKey)
 
-    # Also alittle redundant, did handle errors
-    def requestServiceInfo(self, service):
-        resp = self.lds_interface.processServiceData(service)
-        return resp
-
     def loadAllServices(self):
         # Dont reload, least API key changed
-
+        #services=['wmtsData', 'wmsData', 'wfsData']
+        services=['wmts', 'wms', 'wfs']
         all_data = []
-        for service in self.all_services:
-            service_data = getattr(self, service)()
-            if service_data['err']:
-                return service_data['err']
-                break
+        for service in services:
+            # set service_data obj e.g self.wms_data = service obj
+            setattr(self, 
+                    '{0}_data'.format(service), 
+                    ServiceData(service, self.api_key.getApiKey(), self.service_versions)) 
+            service_data = getattr(self, '{0}_data'.format(service)).processServiceData()
+            #getattr(self, service)()
+#             if service_data['err']:
+#                 return service_data['err']
+#                 break
             all_data.extend(service_data['info'])
         self.dataToTable(all_data)
         self.services_loaded = True
         return None
 
-    # A little redundant but gives 
-    # option in future to just select one service
-    # rather than going through the loadAll method
-    def loadWMTS(self):                  
-        self.wmts_data = self.requestServiceInfo('WMTS')
-        return self.wmts_data
-
-    def loadWMS(self):
-        self.wms_data = self.requestServiceInfo('WMS')
-        return self.wms_data
-
-    def loadWFS(self):
-        self.wfs_data = self.requestServiceInfo('WFS')
-        return self.wfs_data
+#     # A little redundant but gives 
+#     # option in future to just select one service
+#     # rather than going through the loadAll method
+#     def wmtsData(self):
+#         self.service_data = ServiceData('wmts', self.api_key, self.service_versions)
+#         self.wmts_data = self.processServiceData('WMTS')
+#         return self.wmts_data
+# 
+#     def wmsData(self):
+#         self.service_data = ServiceData(self.api_key, self.service_versions)
+#         self.wms_data = self.requestServiceInfo('WMS')
+#         return self.wms_data
+# 
+#     def wfsData(self):
+#         self.service_data = ServiceData(self.api_key, self.service_versions)
+#         self.wfs_data = self.requestServiceInfo('WFS')
+#         return self.wfs_data
 
     def dataToTable(self, table_data):
         self.table_model.setData(table_data)
@@ -537,7 +509,7 @@ class QgisLdsPlugin:
                    "REQUEST=GetFeature&"
                    "TYPENAME=data.linz.govt.nz:{3}-{4}").format(self.api_key.getApiKey(), 
                                                                 self.service.lower(), 
-                                                                self.version[self.service.lower()], 
+                                                                self.service_versions[self.service.lower()], 
                                                                 self.service_type, 
                                                                 self.id)
             layer = QgsVectorLayer(url,
@@ -557,7 +529,7 @@ class QgisLdsPlugin:
                                         self.id, 
                                         self.api_key.getApiKey(), 
                                         self.service.lower(), 
-                                        self.version[self.service.lower()])
+                                        self.service_versions[self.service.lower()])
             layer = QgsRasterLayer(uri,
                                    self.layer_title,
                                    'wms') 
@@ -574,7 +546,7 @@ class QgisLdsPlugin:
                                                 self.id, 
                                                 self.api_key.getApiKey(), 
                                                 self.service.lower(), 
-                                                self.version[self.service.lower()])
+                                                self.service_versions[self.service.lower()])
             layer = QgsRasterLayer(uri,
                                    self.layer_title,
                                   'wms')
