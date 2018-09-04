@@ -15,8 +15,6 @@
  ***************************************************************************/
 """
 
-
-#import ast
 import re
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
@@ -29,20 +27,48 @@ import os.path
 from lxml.etree import XMLSyntaxError
 from urllib2 import urlopen, URLError
 
+from PyQt4.QtCore import QSettings
+
+class ApiKey():
+    # no longer storing properties
+    # this allows the controllers instance
+    # to change it and not have
+    # to update all other instances
+#     def __init__(self):
+#        pass
+
+    def getApiKey(self):
+        key = QSettings().value('ldsplugin/apikey') 
+        if not key:
+            return ''
+        return key
+
+    def setApiKey(self, key):
+        QSettings().setValue('ldsplugin/apikey', key)
+        self.api_key = self.getApiKey()
+
 class Localstore():
+    """ data service objects managing of the local store
+    or can be initiated out side of the service_data and manage
+    the local store """
+    
     def __init__(self, service=None, file=None):
-        self.service=service.lower()
+        self.service=service
         self.xml=None
         self.pl_settings_dir = os.path.join(QgsApplication.qgisSettingsDirPath(), "ldsplugin")
         self.ensureSettingsDir()
-        self.file=os.path.join(self.pl_settings_dir , 
+        self.file=file
+        if self.service:
+            self.file = os.path.join(self.pl_settings_dir , 
                                'getcapabilities_{0}.xml'.format(service.lower()))
-        
+
     def ensureSettingsDir(self):
         if not os.path.exists(self.pl_settings_dir):
             os.makedirs(self.pl_settings_dir)
 
-    def delLocalSeviceXML(self):
+    def delLocalSeviceXML(self, file):
+        if not file:
+            file = self.file
         try:
             os.remove(file)
         except OSError:
@@ -54,18 +80,26 @@ class Localstore():
                                'getcapabilities_{0}.xml'.format(service.lower()))
             self.delLocalSeviceXML(file)
 
-    def serviceXmlIsLocal(self):
-        return os.path.isfile(self.file)
+    def serviceXmlIsLocal(self, file=None):
+        if not file:
+            file = self.file
+        return os.path.isfile(file)
 
-    def readLocalServiceXml(self):
-        with open(self.file, 'r') as f:
+    def readLocalServiceXml(self, file=None):
+        if not file:
+            file = self.file
+        with open(file, 'r') as f:
             self.xml = f.read()
 
-class ServiceData(Localstore):
-    def __init__(self, service, api_key, service_versions):
-        self.api_key = api_key
-        self.versions = service_versions
+class ServiceData(Localstore, ApiKey):
+    def __init__(self, service, service_version):
+        self.version = service_version
         Localstore.__init__(self, service)
+        # Data 
+        self.obj =None #owslib data obj
+        self.info = None # owslib data obj formatted for table
+        self.err = None # any errors 
+
 
     def getServiceData(self):
         # Get service xml
@@ -76,86 +110,83 @@ class ServiceData(Localstore):
 
     def getServiceDataTryAgain(self):
         pass
-#         ''' If the creating of the service obj fails
-#         due to xml syntax; delete and recreate local xml
-#         and try build the service obj again'''
-#         #Clear error, Delete local file and get it a fresh
-#         self.resp['err']=None
-#         self.delLocalSeviceXML(self.file)
-#         self.getServiceData(self.service)
-#         if self.resp['err']:
-#             return
-#         self.getServiceObj(self.service)
-#         if self.resp['err']:
-#             return
+        ''' If the creating of the service obj fails
+        due to xml syntax; delete and recreate local xml
+        and try build the service obj again'''
+        #Clear error, Delete local file and get it a fresh
+        self.err=None
+        self.delLocalSeviceXML()
+        self.getServiceData()
+        if self.err:
+            return
+        self.getServiceObj()
+        if self.err:
+            return
 
     def processServiceData(self):
 
-        self.resp = {'err' : None,
-                     'xml' : None,
-                     'obj' : None,
-                     'info': None}
-
         self.getServiceData()
-        if self.resp['err']:
-            return self.resp
+        if self.err:
+            return
 
         # service info obj
         self.getServiceObj()
-        if self.resp['err']=='XMLSyntaxError':
+        if self.err=='XMLSyntaxError':
             self.getServiceDataTryAgain()
-        if self.resp['err']:
-            return self.resp
+        if self.err:
+            return
  
         # Format the response data
         self.serviceInfo()
 
-        return self.resp
-
     def getServiceObj(self):
         try:
             if self.service == 'wms':
-                self.resp['obj'] = WebMapService(url=None, xml=self.xml, version='1.1.1')
+                self.obj = WebMapService(url=None, xml=self.xml, version=self.version)
             elif self.service == 'wmts':
-                self.resp['obj'] = WebMapTileService(url=None, xml=self.xml, version = '1.0',)
+                self.obj = WebMapTileService(url=None, xml=self.xml, version=self.version,)
             elif self.service == 'wfs':
-                self.resp['obj'] = WebFeatureService(url=None, xml=self.xml, version = '2.0',)
+                self.obj = WebFeatureService(url=None, xml=self.xml, version=self.version,)
         except XMLSyntaxError, e:
             #most likely the locally stored xml is corrupt
-            self.resp['err'] = 'XMLSyntaxError'
+            self.err = 'XMLSyntaxError'
 
     def getServiceXml(self):
 
         try:
             if self.service == 'wmts':
-                xml =  urlopen('https://data.linz.govt.nz/services;key={0}/{1}/{2}/WMTSCapabilities.xml'.format(self.api_key, 
-                                                                                                              self.service.lower(),
-                                                                                                              self.versions[self.service.lower()]))
+                xml =  urlopen('https://data.linz.govt.nz/services;'
+                               'key={0}/{1}/{2}/WMTSCapabilities.xml'.format(self.getApiKey(), 
+                                                                             self.service.lower(),
+                                                                             self.version))
             elif self.service in ('wms', 'wfs'):
-                xml = urlopen('https://data.linz.govt.nz/services;key={0}/{1}?service={2}&version={3}&request=GetCapabilities'.format(self.api_key, 
-                                                                                                                                      self.service.lower(),
-                                                                                                                                      self.service.upper(),
-                                                                                                                                      self.versions[self.service.lower()]))
+                xml = urlopen('https://data.linz.govt.nz/services;'
+                              'key={0}/{1}?service={2}&version={3}'
+                              '&request=GetCapabilities'.format(self.getApiKey(), 
+                                                                self.service.lower(),
+                                                                self.service.upper(),
+                                                                self.version))
 
             self.xml = xml.read()
+            # write to cache
             with open(self.file, 'w') as f:
                 f.write(self.xml)
 
         except URLError, e:
             if hasattr(e, 'reason'):
-                self.resp['err'] = 'Error: {0}'.format(e.reason)
+                self.err = 'Error: {0}'.format(e.reason)
 
             elif hasattr(e, 'code'):
-                 self.resp['err'] = 'Error: {0}'.format(e.code)
+                 self.err = 'Error: {0}'.format(e.code)
 
     def serviceInfo(self):
         service_data = []
-        cont = self.resp['obj'].contents
+        cont = self.obj.contents
 
         for dataset_id, dataset_obj in cont.iteritems():
             full_id = re.search(r'([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)', dataset_obj.id)
             type = full_id.group('type')
             id  =  full_id.group('id')
-            service_data.append([type, id, self.service, dataset_obj.title, dataset_obj.abstract])
+            service_data.append([type, id, self.service.upper(), dataset_obj.title, dataset_obj.abstract])
 
-        self.resp['info'] = service_data
+        self.info = service_data

@@ -26,8 +26,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry,
                        QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMessageBar
 from lds_tablemodel import LDSTableModel, LDSTableView
-from service_data import ServiceData
-from api_key import ApiKey
+from service_data import ServiceData, Localstore, ApiKey
 import re
 import urllib.request
 import threading
@@ -76,7 +75,7 @@ class QgisLdsPlugin:
         self.canvas = self.iface.mapCanvas()
         self.services_loaded = False
         self.cache_updated = False
-        self.update_cache = False # Skip cache updates. Useful for testing.
+        self.update_cache = True # Skip cache updates. Useful for testing.
 
         # initialise plugin directory
         self.plugin_dir = os.path.dirname(__file__)
@@ -101,10 +100,6 @@ class QgisLdsPlugin:
         self.menu = self.tr(u'&QGIS-LDS-Plugin')
 
         # Track data reading
-        self.all_services = ['loadWMTS']
-        self.wms_data = None
-        self.wmts_data = None
-        self.wfs_data = None
         self.row = None
         self.service = None
         self.id = None
@@ -114,9 +109,15 @@ class QgisLdsPlugin:
                         'wms': '1.1.1' , 
                         'wmts': '1.0.0'}
 
-        # LDS request instances 
+        # Instances 
         self.api_key = ApiKey()
-        #self.service_data = ServiceData(self.api_key, self.service_versions)
+        self.local_store = Localstore()
+        self.wmts_data = ServiceData('wmts',
+                                     self.service_versions['wmts'])
+        self.wfs_data = ServiceData('wfs', 
+                                    self.service_versions['wfs'])
+        self.wms_data = ServiceData('wms', 
+                                    self.service_versions['wms'])
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -276,7 +277,6 @@ class QgisLdsPlugin:
                 self.tr(u'&QGIS-LDS-Plugin'),
                 action)
             self.iface.removeToolBarIcon(action)
-        # remove the toolbar
         del self.toolbar
 
     def run(self):
@@ -287,16 +287,12 @@ class QgisLdsPlugin:
             self.updateServiceDataCache()
 
     def updateServiceDataCache(self):
-        ''' updates the cached service data in the
-        background'''
-        # Wait until initial data import
-        # finished then delete the cached 
-        # files and reload
+
         while not self.services_loaded:
             time.sleep(10)
             continue
         self.services_loaded=False
-        self.service_data.delAllLocalServiceXML()
+        self.local_store.delAllLocalServiceXML()
         t = threading.Thread(target=self.loadAllServices)
         t.start()
         self.cache_updated=True
@@ -317,8 +313,8 @@ class QgisLdsPlugin:
     def setApiKey(self):
         key = self.service_dlg.uTextAPIKey.text()
         self.api_key.setApiKey(key)
-        self.service_data.keyChanged()
         self.warning.hide()
+        self.local_store.delAllLocalServiceXML()
         self.services_loaded = False # key change, load data again
         self.stacked_widget.setCurrentIndex(0)
         self.loadUi()
@@ -350,10 +346,11 @@ class QgisLdsPlugin:
 
     def getPreview(self, res, res_timeout):
         image = QImage()
-        url = 'http://koordinates-tiles-d.global.ssl.fastly.net/services/tiles/v4/thumbnail/layer={0},style=auto/{1}.png'.format(self.id, res)
+        url = ('http://koordinates-tiles-d.global.ssl.fastly.net'
+            '/services/tiles/v4/thumbnail/layer={0},style=auto/{1}.png'.format(self.id, res))
         try:
             data = urllib.request.urlopen(url, timeout=res_timeout).read()
-        except: #urllib.error.HTTPError:
+        except:
             return False
         image.loadFromData(data)
         if res == '300x200':
@@ -403,8 +400,6 @@ class QgisLdsPlugin:
 
         headers = ['type','id', 'service', 'layer', 'hidden']
         self.proxy_model = CustomSortFilterProxyModel()
-        #self.proxy_model = QSortFilterProxyModel()
-        #self.proxy_model.setDynamicSortFilter(True)
         self.table_view = self.service_dlg.uDatasetsTableView
         self.table_model = LDSTableModel(data, headers)
         self.proxy_model.setSourceModel(self.table_model)
@@ -426,42 +421,20 @@ class QgisLdsPlugin:
         self.service_dlg.uBtnSaveApiKey.clicked.connect(self.setApiKey)
 
     def loadAllServices(self):
-        # Dont reload, least API key changed
         #services=['wmtsData', 'wmsData', 'wfsData']
         services=['wmts', 'wms', 'wfs']
         all_data = []
         for service in services:
-            # set service_data obj e.g self.wms_data = service obj
-            setattr(self, 
-                    '{0}_data'.format(service), 
-                    ServiceData(service, self.api_key.getApiKey(), self.service_versions)) 
-            service_data = getattr(self, '{0}_data'.format(service)).processServiceData()
-            #getattr(self, service)()
-#             if service_data['err']:
-#                 return service_data['err']
-#                 break
-            all_data.extend(service_data['info'])
+            # service data object e.g self.wms_data
+            serv_data = getattr(self, '{0}_data'.format(service))
+            serv_data.processServiceData()
+            if serv_data.err:
+                return serv_data.err
+                break
+            all_data.extend(serv_data.info)
         self.dataToTable(all_data)
         self.services_loaded = True
         return None
-
-#     # A little redundant but gives 
-#     # option in future to just select one service
-#     # rather than going through the loadAll method
-#     def wmtsData(self):
-#         self.service_data = ServiceData('wmts', self.api_key, self.service_versions)
-#         self.wmts_data = self.processServiceData('WMTS')
-#         return self.wmts_data
-# 
-#     def wmsData(self):
-#         self.service_data = ServiceData(self.api_key, self.service_versions)
-#         self.wms_data = self.requestServiceInfo('WMS')
-#         return self.wms_data
-# 
-#     def wfsData(self):
-#         self.service_data = ServiceData(self.api_key, self.service_versions)
-#         self.wfs_data = self.requestServiceInfo('WFS')
-#         return self.wfs_data
 
     def dataToTable(self, table_data):
         self.table_model.setData(table_data)
@@ -535,7 +508,6 @@ class QgisLdsPlugin:
                                    'wms') 
 
         elif 'WMTS':
-
             uri = ("IgnoreAxisOrientation=1&SmoothPixmapTransform=1&"
                    "contextualWMSLegend=0&crs={0}&dpiMode=7&format=image/png&"
                    "layers={1}-{2}&styles=style%3Dauto&tileMatrixSet={0}&"
@@ -554,4 +526,3 @@ class QgisLdsPlugin:
 
         QgsMapLayerRegistry.instance().addMapLayer(layer) 
         self.service_dlg.close()
-
