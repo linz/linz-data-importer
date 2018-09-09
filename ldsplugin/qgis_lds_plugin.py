@@ -19,7 +19,8 @@
 # LICENSE file for more information.
 
 from PyQt4.QtCore import (QSettings, QTranslator, qVersion, QCoreApplication, 
-                          Qt, QRegExp, QSize) 
+                          Qt, QRegExp, QSize, Qt) 
+
 from PyQt4.QtGui import (QAction, QIcon, QListWidgetItem, QSortFilterProxyModel,
                          QHeaderView, QMenu, QToolButton, QPixmap, QImage)
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry, 
@@ -27,20 +28,18 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry,
 from qgis.gui import QgsMessageBar
 from lds_tablemodel import LDSTableModel, LDSTableView
 from service_data import ServiceData, Localstore, ApiKey
+
 import re
 import urllib.request
 import threading
 import time
+import os.path
+from owslib import wfs, wms, wmts
 
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
 from gui.Service_dialog import ServiceDialog
-
-#from gui.Test import Test
-import os.path
-
-from owslib import wfs, wms, wmts
 
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
@@ -53,8 +52,8 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         self.invalidateFilter()
 
     def filterAcceptsRow(self, sourceRow, sourceParent):
-        index2 = self.sourceModel().index(sourceRow, 2, sourceParent) # SERVICE TYPE
-        index3 = self.sourceModel().index(sourceRow, 3, sourceParent)
+        index2 = self.sourceModel().index(sourceRow, 3, sourceParent) # SERVICE TYPE
+        index3 = self.sourceModel().index(sourceRow, 4, sourceParent)
 
         return  (self.sourceModel().data(index2, Qt.DisplayRole) in self.service_type
             and self.filterRegExp().indexIn(self.sourceModel().data(index3, Qt.DisplayRole)) >= 0) 
@@ -100,6 +99,9 @@ class QgisLdsPlugin:
         self.menu = self.tr(u'&QGIS-LDS-Plugin')
 
         # Track data reading
+        self.data_feeds = {}
+        self.domains = []
+        self.domain = None #curr domain
         self.row = None
         self.service = None
         self.id = None
@@ -110,14 +112,14 @@ class QgisLdsPlugin:
                         'wmts': '1.0.0'}
 
         # Instances 
-        self.api_key = ApiKey()
+        self.api_key_instance = ApiKey() # TODO / REVIEW NEED OF
         self.local_store = Localstore()
-        self.wmts_data = ServiceData('wmts',
-                                     self.service_versions['wmts'])
-        self.wfs_data = ServiceData('wfs', 
-                                    self.service_versions['wfs'])
-        self.wms_data = ServiceData('wms', 
-                                    self.service_versions['wms'])
+#         self.wmts_data = ServiceData('wmts',
+#                                      self.service_versions['wmts'])
+#         self.wfs_data = ServiceData('wfs', 
+#                                     self.service_versions['wfs'])
+#         self.wms_data = ServiceData('wms', 
+#                                     self.service_versions['wms'])
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -220,9 +222,12 @@ class QgisLdsPlugin:
         self.list_options = self.service_dlg.uListOptions
         self.list_options.itemClicked.connect(self.showSelectedOption)
         self.list_options.itemClicked.emit(self.list_options.item(0))
+        self.curr_list_wid_index=0
 
-        self.warning = self.service_dlg.uLabelWarning
+        self.warning = self.service_dlg.uLabelWarning #TODO mix of uElements allocated to properties and others self.service_dlg.uLabelWarning.xxxxxx
         self.warning.setStyleSheet('color:red')
+        self.warningSettings = self.service_dlg.uWarningSettings
+        self.warningSettings.setStyleSheet('color:red')
 
         self.img_preview = self.service_dlg.uImagePreview
 
@@ -256,9 +261,6 @@ class QgisLdsPlugin:
         item.setIcon(QIcon(image_path))
         self.list_options.addItem(item)
 
-        # add placeholder api key to ui
-        self.showApiKey()
-
         #set table model
         self.setTableModelView()
 
@@ -269,6 +271,100 @@ class QgisLdsPlugin:
             about_html = file.read()
             about_html.format(self.plugin_dir)
         self.service_dlg.hAboutHtml.setHtml(about_html.format(icon_path))
+
+        # populate settings
+        # default data services to combo TODO/ IMPROVE Dropdown should be ord name
+
+        self.service_dlg.uComboBoxDomain.addItems(['', #TODO // store default doms elsewhere. Global
+                                                   'geodata.nzdf.mil.nz',
+                                                  'data.linz.govt.nz',
+                                                  'data.mfe.govt.nz',
+                                                  'datafinder.stats.govt.nz',
+                                                  'lris.scinfo.org.nz',
+                                                  'OTHER'
+                                                  ])
+
+        #settings signals
+        self.service_dlg.uAddDomain.clicked.connect(self.addNewDomain)
+        for n in range(1,11):
+            getattr(self.service_dlg, 'uBtnSaveDomain{0}'.format(n)).clicked.connect(self.saveDomain)
+            getattr(self.service_dlg, 'uBtnRemove{0}'.format(n)).clicked.connect(self.saveDomain)
+        self.loadSettings()
+
+    def loadSettings(self):
+        self.domains=[]
+        api_keys = self.api_key_instance.getApiKeys()
+        if api_keys:
+            for domain, api_key in api_keys.items():
+                self.domains.append(domain)
+                getattr(self.service_dlg, 'uTextDomain{0}'.format(len(self.domains))).setText(domain)
+                getattr(self.service_dlg, 'uTextAPIKey{0}'.format(len(self.domains))).setText(api_key)
+
+        # Hide un-populated domain rows
+        for n in range(len(self.domains)+1,11):
+            getattr(self.service_dlg, 'uTextDomain{0}'.format(n)).hide()
+            getattr(self.service_dlg, 'uTextAPIKey{0}'.format(n)).hide()
+            getattr(self.service_dlg, 'uBtnRemove{0}'.format(n)).hide()
+            getattr(self.service_dlg, 'uBtnSaveDomain{0}'.format(n)).hide()
+
+    def saveDomain(self):
+        del_domain = 0
+        save_domain = 0
+
+        sending_btn = self.service_dlg.sender().objectName()
+        if sending_btn[:-1] == 'uBtnRemove':
+            del_domain = sending_btn[-1]
+        if sending_btn[:-1] == 'uBtnSaveDomain':
+            save_domain = sending_btn[-1]
+
+        keys = {}
+        for n in range (1, len(self.domains)+2):
+            if int(del_domain) == n:
+                continue
+            domain = getattr(self.service_dlg, 'uTextDomain{0}'.format(n)).text()
+            key = getattr(self.service_dlg, 'uTextAPIKey{0}'.format(n)).text().strip()
+            if domain and key:
+                keys[domain]=key
+        self.api_key_instance.setApiKeys(keys)
+        #load or reload the domain
+
+        #remove store capability docs for the removed or add domain/key
+        # if they already exits .i.e these will be reloaded
+        if save_domain: ui_elem_num = save_domain
+        else: ui_elem_num = del_domain
+
+        domain = getattr(self.service_dlg, 'uTextDomain{0}'.format(ui_elem_num)).text()
+        self.local_store.delDomainsXML(domain)
+
+        # load / Reload service data
+        self.loadSettings()
+        self.warningSettings.hide()
+        self.warning.hide()
+        try:
+            self.list_options.setCurrentItem(self.curr_list_wid_index)
+        except: 
+            self.list_options.setCurrentRow(0)
+
+        self.stacked_widget.setCurrentIndex(0)
+        self.services_loaded = False # key change, load data again
+        self.loadUi()
+
+    def addNewDomain(self):
+        domain = self.service_dlg.uComboBoxDomain.currentText()
+
+        if domain in self.domains:
+            self.service_dlg.uWarningSettings.show()
+            self.warningSettings.setText('Warning: Domains must be unique. '
+                                                      'Please edit the domain below')
+            return
+
+        if domain == 'OTHER': domain='' 
+        getattr(self.service_dlg, 'uTextDomain{0}'.format(len(self.domains)+1)).setText(domain)
+        getattr(self.service_dlg, 'uTextDomain{0}'.format(len(self.domains)+1)).show()
+        getattr(self.service_dlg, 'uTextAPIKey{0}'.format(len(self.domains)+1)).show()
+        getattr(self.service_dlg, 'uBtnRemove{0}'.format(len(self.domains)+1)).show()
+        getattr(self.service_dlg, 'uBtnSaveDomain{0}'.format(len(self.domains)+1)).show()
+        self.service_dlg.uWarningSettings.hide()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -281,10 +377,15 @@ class QgisLdsPlugin:
 
     def run(self):
         if not self.services_loaded:
-            self.loadUi()
+            if not self.api_key_instance.getApiKeys():
+                self.warning.setText('No API Details Provided - see settings')
+                self.warning.show()
+            else:
+                self.loadUi()
+                if not self.cache_updated and self.update_cache:
+                    self.updateServiceDataCache()
         self.service_dlg.show()
-        if not self.cache_updated and self.update_cache:
-            self.updateServiceDataCache()
+
 
     def updateServiceDataCache(self):
 
@@ -299,10 +400,7 @@ class QgisLdsPlugin:
 
     def loadUi(self):
         # load data to tables if API key has been set
-        if not self.api_key.getApiKey():
-            self.warning.setText('Error: LDS API key must be provided - see settings')
 
-        else:
             load_data_err = self.loadAllServices()
             if load_data_err:
                 self.warning.setText(load_data_err)
@@ -310,33 +408,49 @@ class QgisLdsPlugin:
             else:
                 self.warning.hide()
 
-    def setApiKey(self):
-        key = self.service_dlg.uTextAPIKey.text()
-        self.api_key.setApiKey(key)
-        self.warning.hide()
-        self.local_store.delAllLocalServiceXML()
-        self.services_loaded = False # key change, load data again
-        self.stacked_widget.setCurrentIndex(0)
-        self.loadUi()
+    def loadAllServices(self):
+        all_data = [] 
+        for domain in self.api_key_instance.getApiKeys():
+            services=['wmts', 'wms', 'wfs'] # TODO move somewhere globalish
+            for service in services:
+                # set service_data obj e.g self.linz_wms = service_data obj
+                data_feed = '{0}_{1}'.format(domain, service) # eg linz_wms
+                setattr(self, data_feed, ServiceData(domain,
+                                                     service, 
+                                                     self.service_versions,
+                                                     self.api_key_instance)) 
+                service_data_instance = getattr(self, data_feed)
+                self.data_feeds[data_feed]=service_data_instance #keep record of ser data insts
+                service_data_instance.processServiceData()
+                if service_data_instance.disabled:
+                    continue
+                if service_data_instance.err:
+                    return service_data_instance.err
+                all_data.extend(service_data_instance.info)
+        self.dataToTable(all_data)
+        self.services_loaded = True
+        return None
 
-    def showApiKey(self):
-        curr_key = self.api_key.getApiKey()
-        if curr_key == '':
-            curr_key = 'No API Key stored. Please save a valid API Key'
-        self.service_dlg.uTextAPIKey.setPlaceholderText(curr_key)
+    def dataToTable(self, table_data):
+        self.table_model.setData(table_data)
 
     def showSelectedOption(self, item):
         if item:
             if item.text() == 'ALL':
                 self.stacked_widget.setCurrentIndex(0)
+                self.curr_list_wid_index = self.list_options.findItems(item.text(), Qt.MatchExactly)[0]
                 self.proxy_model.setServiceType(('WMS', 'WMTS', 'WFS'))
             elif item.text() == 'WFS':
                 self.proxy_model.setServiceType((item.text()))
+                self.curr_list_wid_index = self.list_options.findItems(item.text(), Qt.MatchExactly)[0]
                 self.stacked_widget.setCurrentIndex(0)
             elif item.text() == 'WMTS':
                 self.proxy_model.setServiceType((item.text()))
+                self.curr_list_wid_index = self.list_options.findItems(item.text(), Qt.MatchExactly)[0]
                 self.stacked_widget.setCurrentIndex(0)
             elif item.text() == 'WMS':
+                self.curr_list_wid_index=0
+                self.curr_list_wid_index = self.list_options.findItems(item.text(), Qt.MatchExactly)[0]
                 self.proxy_model.setServiceType((item.text()))
                 self.stacked_widget.setCurrentIndex(0)
             elif item.text() == 'Settings':
@@ -360,11 +474,12 @@ class QgisLdsPlugin:
         return True
 
     def updDescription(self):
-        abstract = self.row[4]
-        self.service_type = self.row[0]
-        self.id = self.row[1]
-        self.service = self.row[2]
-        self.layer_title = self.row[3]
+        self.domain = self.row[0]
+        abstract = self.row[5]
+        self.service_type = self.row[1]
+        self.id = self.row[2]
+        self.service = self.row[3]
+        self.layer_title = self.row[4]
         self.service_dlg.uTextDescription.setText(abstract)
 
     def updPreview(self):
@@ -396,15 +511,15 @@ class QgisLdsPlugin:
 
     def setTableModelView(self):
         # Set Table Model
-        data = [['','','','']]
+        data = [['','','','','']]
 
-        headers = ['type','id', 'service', 'layer', 'hidden']
+        headers = ['domain', 'type','id', 'service', 'layer', 'hidden']
         self.proxy_model = CustomSortFilterProxyModel()
         self.table_view = self.service_dlg.uDatasetsTableView
         self.table_model = LDSTableModel(data, headers)
         self.proxy_model.setSourceModel(self.table_model)
         self.table_view.setModel(self.proxy_model)
-        self.table_view.setSortingEnabled(True)   
+        self.table_view.setSortingEnabled(True)
         self.table_view.horizontalHeader().setStretchLastSection(True)
 
         # Trigger updating of data abstract on user selection
@@ -418,26 +533,7 @@ class QgisLdsPlugin:
         self.service_dlg.uBtnImport.clicked.connect(self.importDataset)
 
         # Save API Key Cicked
-        self.service_dlg.uBtnSaveApiKey.clicked.connect(self.setApiKey)
-
-    def loadAllServices(self):
-        #services=['wmtsData', 'wmsData', 'wfsData']
-        services=['wmts', 'wms', 'wfs']
-        all_data = []
-        for service in services:
-            # service data object e.g self.wms_data
-            serv_data = getattr(self, '{0}_data'.format(service))
-            serv_data.processServiceData()
-            if serv_data.err:
-                return serv_data.err
-                break
-            all_data.extend(serv_data.info)
-        self.dataToTable(all_data)
-        self.services_loaded = True
-        return None
-
-    def dataToTable(self, table_data):
-        self.table_model.setData(table_data)
+#         self.service_dlg.uBtnSaveApiKey.clicked.connect(self.setApiKey) TEMP COMMENTED OUT
 
     def mapCrs(self):
         crs = str(self.canvas.mapSettings().destinationCrs().authid())
@@ -475,50 +571,53 @@ class QgisLdsPlugin:
             self.infoCRS()
 
         if self.service == "WFS":
-            url = ("https://data.linz.govt.nz/services;"
-                   "key={0}/{1}?"
-                   "SERVICE={1}&"
-                   "VERSION={2}&"
+            url = ("https://{0}/services;"
+                   "key={1}/{2}?"
+                   "SERVICE={2}&"
+                   "VERSION={3}&"
                    "REQUEST=GetFeature&"
-                   "TYPENAME=data.linz.govt.nz:{3}-{4}").format(self.api_key.getApiKey(), 
-                                                                self.service.lower(), 
-                                                                self.service_versions[self.service.lower()], 
-                                                                self.service_type, 
-                                                                self.id)
+                   "TYPENAME={0}:{4}-{5}").format(self.domain,
+                                                  self.api_key_instance.getApiKey(self.domain), 
+                                                  self.service.lower(), 
+                                                  self.service_versions[self.service.lower()], 
+                                                  self.service_type, 
+                                                  self.id)
             layer = QgsVectorLayer(url,
                                   self.layer_title,
                                   self.service.upper())  
 
         elif self.service == "WMS":
-            uri = ("crs={0}&"
+            uri = ("crs={1}&"
                    "dpiMode=7&"
                    "format=image/png&"
-                   "layers={1}-{2}&"
+                   "layers={2}-{3}&"
                    "styles=&"
-                   "url=https://data.linz.govt.nz/services;"
-                   "key={3}/{4}/{1}-{2}?"
-                   "version={5}").format(self.wmts_epsg, 
-                                        self.service_type, 
-                                        self.id, 
-                                        self.api_key.getApiKey(), 
-                                        self.service.lower(), 
-                                        self.service_versions[self.service.lower()])
+                   "url=https://{0}/services;"
+                   "key={4}/{5}/{2}-{3}?"
+                   "version={6}").format(self.domain,
+                                         self.wmts_epsg, 
+                                         self.service_type, 
+                                         self.id, 
+                                         self.api_key_instance.getApiKey(self.domain), 
+                                         self.service.lower(), 
+                                         self.service_versions[self.service.lower()])
             layer = QgsRasterLayer(uri,
                                    self.layer_title,
                                    'wms') 
 
         elif 'WMTS':
             uri = ("IgnoreAxisOrientation=1&SmoothPixmapTransform=1&"
-                   "contextualWMSLegend=0&crs={0}&dpiMode=7&format=image/png&"
-                   "layers={1}-{2}&styles=style%3Dauto&tileMatrixSet={0}&"
-                   "url=https://data.linz.govt.nz/services;"
-                   "key={3}/{4}/{5}/{1}/{2}/"
-                   "WMTSCapabilities.xml").format(self.wmts_epsg,
-                                                self.service_type, 
-                                                self.id, 
-                                                self.api_key.getApiKey(), 
-                                                self.service.lower(), 
-                                                self.service_versions[self.service.lower()])
+                   "contextualWMSLegend=0&crs={1}&dpiMode=7&format=image/png&"
+                   "layers={2}-{3}&styles=style%3Dauto&tileMatrixSet={1}&"
+                   "url=https://{0}/services;"
+                   "key={4}/{5}/{6}/{2}/{3}/"
+                   "WMTSCapabilities.xml").format(self.domain,
+                                                  self.wmts_epsg,
+                                                  self.service_type, 
+                                                  self.id, 
+                                                  self.api_key_instance.getApiKey(self.domain), 
+                                                  self.service.lower(), 
+                                                  self.service_versions[self.service.lower()])
             layer = QgsRasterLayer(uri,
                                    self.layer_title,
                                   'wms')
