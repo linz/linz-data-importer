@@ -54,10 +54,11 @@ class LDSTableModel(QAbstractTableModel):
         return len(self.arraydata)
 
     def columnCount(self, parent):
-        if self.arraydata==[['', '', '', '', '']]:
+        try:
+            return len(self.arraydata[0])-1 # hiding description
+        except:
             return 0
-        return len(self.arraydata[0])-1 # hiding description
-
+    
     def data(self, index, role):
         if not index.isValid():
             return None

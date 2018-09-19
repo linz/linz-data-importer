@@ -28,7 +28,7 @@ from lxml.etree import XMLSyntaxError, ElementTree
 from urllib2 import urlopen, URLError
 
 from PyQt4.QtCore import QSettings
-from gc import isenabled
+#from gc import isenabled
 
 class ApiKey():
     # TODO// MAKE SINGLETON
@@ -69,7 +69,7 @@ class Localstore():
         if not os.path.exists(self.pl_settings_dir):
             os.makedirs(self.pl_settings_dir)
 
-    def delLocalSeviceXML(self, file):
+    def delLocalSeviceXML(self, file=None):
         if not file:
             file = self.file
         try:
@@ -117,7 +117,7 @@ class ServiceData(Localstore):
         self.info = None # owslib data obj formatted for table
         self.err = None # any errors 
         self.disabled = False
-        
+
     def isEnabled(self):
         # Turns out some services are disabled
         # Will only know this based on the returned capabilities doc.
@@ -128,7 +128,7 @@ class ServiceData(Localstore):
             return True
         self.disabled = True
         return False
-        
+
     def getServiceData(self):
         # Get service xml
         if self.serviceXmlIsLocal():
@@ -166,7 +166,7 @@ class ServiceData(Localstore):
             self.getServiceDataTryAgain()
         if self.err:
             return
- 
+
         # Format the response data
         self.serviceInfo()
 
@@ -180,7 +180,7 @@ class ServiceData(Localstore):
                 self.obj = WebFeatureService(url=None, xml=self.xml, version=self.version,)
         except XMLSyntaxError, e:
             #most likely the locally stored xml is corrupt
-            self.err = '{0}: XMLSyntaxError'.formatt(self.domain)
+            self.err = '{0}: XMLSyntaxError'.format(self.domain)
 
     def getServiceXml(self):
 
