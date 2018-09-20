@@ -1,6 +1,7 @@
 <h1><strong>LDS Plugin</strong> - beta</h1>
 <p>The LDS Plugin couples QGIS and the <a href="https://data.linz.govt.nz/data/">LINZ 
-Data Services (LDS)</a>&nbsp;to provide simple importing of LINZ data.&nbsp;</p>
+Data Services (LDS)</a>&nbsp; (and others - see changing scope) to provide simple 
+importing of LINZ data.&nbsp;</p>
 <h2>Changing Scope</h2>
 <p>The initial scope of this plugin was to just couple the LDS and QGIS. However 
 as other New Zealand agencies also make use of the same technology the settings 
@@ -30,9 +31,9 @@ guides-and-documentation/creating-an-api-key">resources</a>.&nbsp;</p>
 <h2><strong>Coordinate Reference System</strong></h2>
 <p>As an initial release, when importing datasets via the LDS Plugin. the plugin 
 will force the QGIS projects CRS to WGS 84 Web Mercator (EPSG:3857). The user is 
-then notified by QGIS's message bar when the CRS change is made.</p>
-<p>Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the service 
-providers WMTS services are served in this projection and problems arise when 
+ notified by QGIS's message bar when the CRS change is made.</p>
+<p>Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the data providers
+ WMTS services are served in this projection and problems arise when 
 reprojecting WMTS. This is the initial release of the plugin and there are plans
 to improve the handling of CRS with subsequent releases (See the GitHub issues for more).</p>
 <h2><strong>Requests, Responses, Patience and Caching</strong></h2>

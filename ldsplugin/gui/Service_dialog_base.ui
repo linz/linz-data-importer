@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1153</width>
-    <height>696</height>
+    <height>682</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -138,7 +138,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QLabel" name="uImagePreview">
+             <widget class="QLabel" name="uLabelImgPreview">
               <property name="minimumSize">
                <size>
                 <width>300</width>
@@ -220,7 +220,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="uAddDomain">
+                       <widget class="QPushButton" name="uBtnAddDomain">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>
@@ -477,7 +477,7 @@
                        </widget>
                       </item>
                       <item row="1" column="2">
-                       <widget class="QPushButton" name="uBtnRemove1">
+                       <widget class="QPushButton" name="uBtnRemoveDomain1">
                         <property name="minimumSize">
                          <size>
                           <width>22</width>
@@ -566,7 +566,7 @@
                        </widget>
                       </item>
                       <item row="2" column="2">
-                       <widget class="QPushButton" name="uBtnRemove2">
+                       <widget class="QPushButton" name="uBtnRemoveDomain2">
                         <property name="minimumSize">
                          <size>
                           <width>22</width>
@@ -589,7 +589,7 @@
                        </widget>
                       </item>
                       <item row="3" column="2">
-                       <widget class="QPushButton" name="uBtnRemove3">
+                       <widget class="QPushButton" name="uBtnRemoveDomain3">
                         <property name="minimumSize">
                          <size>
                           <width>22</width>
@@ -612,7 +612,7 @@
                        </widget>
                       </item>
                       <item row="4" column="2">
-                       <widget class="QPushButton" name="uBtnRemove4">
+                       <widget class="QPushButton" name="uBtnRemoveDomain4">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>
@@ -629,7 +629,7 @@
                        </widget>
                       </item>
                       <item row="5" column="2">
-                       <widget class="QPushButton" name="uBtnRemove5">
+                       <widget class="QPushButton" name="uBtnRemoveDomain5">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>
@@ -646,7 +646,7 @@
                        </widget>
                       </item>
                       <item row="6" column="2">
-                       <widget class="QPushButton" name="uBtnRemove6">
+                       <widget class="QPushButton" name="uBtnRemoveDomain6">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>
@@ -663,7 +663,7 @@
                        </widget>
                       </item>
                       <item row="7" column="2">
-                       <widget class="QPushButton" name="uBtnRemove7">
+                       <widget class="QPushButton" name="uBtnRemoveDomain7">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>
@@ -680,7 +680,7 @@
                        </widget>
                       </item>
                       <item row="8" column="2">
-                       <widget class="QPushButton" name="uBtnRemove8">
+                       <widget class="QPushButton" name="uBtnRemoveDomain8">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>
@@ -697,7 +697,7 @@
                        </widget>
                       </item>
                       <item row="9" column="2">
-                       <widget class="QPushButton" name="uBtnRemove9">
+                       <widget class="QPushButton" name="uBtnRemoveDomain9">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>
@@ -714,7 +714,7 @@
                        </widget>
                       </item>
                       <item row="10" column="2">
-                       <widget class="QPushButton" name="uBtnRemove10">
+                       <widget class="QPushButton" name="uBtnRemoveDomain10">
                         <property name="maximumSize">
                          <size>
                           <width>30</width>

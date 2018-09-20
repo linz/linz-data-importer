@@ -1,7 +1,7 @@
 # LDS Data Importer [![Build Status](https://travis-ci.org/SPlanzer/QGIS-LDS-Plugin.svg?branch=master)](https://travis-ci.org/SPlanzer/QGIS-LDS-Plugin)
 
 The intent of this QGIS Plugin is to allow the easy importing of 
-[LINZ Data Service](data.govt.linz.nz) data (as well as others data - 
+[LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 
 see [Changing Scope](https://github.com/linz/QGIS-LDS-Plugin#Changing-Scope)) 
  into QIGS. 
 
@@ -11,7 +11,8 @@ see [Changing Scope](https://github.com/linz/QGIS-LDS-Plugin#Changing-Scope))
 Currently this plugin only supports >QGIS2.8 and <QGIS2.18
 
 This has limited functionality and there are plans for a QGIS3 release 
-with greater scope shortly.
+with greater scope shortly. See the [Issues](https://github.com/linz/QGIS-LDS-Plugin/issues) for more
+
 
 
 
@@ -35,13 +36,13 @@ Please see the online resource  available on the
 [LINZ website](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/which-web-service-should-i-use) for more on these protocols. 
 
 ## API Keys 
-Prior to using the plugin the services API Key must be stored via the "Settings menu"
+Prior to using the plugin a domain and related API Key must be stored via the "Settings" menu.
 When saving your API key this will trigger the plugin to request all of the services dataset information. This may take sometime.
 For more on API keys please see the [LDS user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key). 
 
 ## Coordinate Reference System
-As an initial release, when importing datasets via the LDS Plugin. the plugin will force the QGIS projects CRS to WGS 84 Web Mercator (EPSG:3857). The user is then notified by QGIS's message bar when the CRS change is made.
-Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the service providers WMTS services are served in this projection and problems arise when reprojecting WMTS. This is the initial release of the plugin and there are plans to improve the handling of CRS with subsequent releases (See the GitHub issues for more).
+As an initial release, when importing datasets via the LDS Plugin the plugin will force the QGIS projects CRS to WGS 84 Web Mercator (EPSG:3857). The user is notified by QGIS's message bar when the CRS change is made.
+Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the data providers WMTS services are served in this projection and problems arise when reprojecting WMTS. This is the initial release of the plugin and there are plans to improve the handling of CRS with subsequent releases (See the GitHub [issues](https://github.com/linz/QGIS-LDS-Plugin/issues) for more).
 
 ## Requests, Responses, Patience and Caching
 When saving a Domain and API key for the first time via the Setting menu the plugin will request the capabilities documents for each service type (WMS, WMTS, WFS). When these documents are large this can cause the plugin to appear inactive. The good news is this is the only interaction with the plug where substantial patience may be required. Once the initial documents are fetched, they will be cached and will be updated in the background each time the plugin is started.
@@ -50,5 +51,5 @@ The left hand panel allows users to filter by service types (either, All, WFS, W
 All column headers can be toggled to allow ascending or descending ordering of their data.
 Text can be entered in the "Filter Data Sets" search bar to filter the datasets by keyword. 
 ## Source Code, Further Documentation and Feedback
-Please see QGIS-LDS-Plugin at GitHub
+Please see [QGIS-LDS-Plugin](https://github.com/linz/QGIS-LDS-Plugin) at GitHub
 

@@ -28,23 +28,6 @@ from qgis.PyQt.QtGui import QImage
 from qgis.utils import plugins
 from qgis.core import QgsMapLayerRegistry, QgsApplication
 
-""""
-Note on test approach.
-
-Unit tests favoured over integration tests where straight forward
-due to expense of maintaining integration tests
-
-All test executed against a live instance of qgis. 
-
-This can be executed via the .travis or the script assistant plugin
-https://github.com/linz/qgis-scriptassistant-plugin
-
-The plan was to write individual unit tests for service_data.py. However,
-this lds_plugin.py (that is tested here) is so dependent on service_data.py
-that coverage of service_data.py is high. Further testing has been 
-limited to due to be benefit/ maintenance expense of further tests
-"""
-
 WAIT=1000
 API_KEYS=ast.literal_eval(os.getenv('LDS_PLUGIN_API_KEYS', None))
 
@@ -65,6 +48,14 @@ class UnitLevel(unittest.TestCase):
         QSettings().setValue('ldsplugin/apikey', cls.testers_keys)
 
     def copyTestData(self):
+        """
+        Copy test data from ./test/data to plugin settings dir. 
+        This makes tests run much faster than having to fetch the resources
+        from the internet repeatability 
+
+        Not available with CI (due to API Keys in file)
+        """
+
         # test files not available to CI (apikeys within)
 
         # But locally using test/data xml for reading is much faster
@@ -85,7 +76,9 @@ class UnitLevel(unittest.TestCase):
                 shutil.copy(file, self.pl_settings_dir)
 
     def setUp(self):
-        """Runs before each test."""
+        """
+        Runs before each test
+        """
 
         self.domain1='data.mfe.govt.nz'
         self.domain2='data.linz.govt.nz'
@@ -101,7 +94,10 @@ class UnitLevel(unittest.TestCase):
         self.lds_plugin.actions[0].trigger()
 
     def tearDown(self):
-        """Runs after each test"""
+        """
+        Runs after each test
+        """
+
         QTest.qWait(WAIT) # Just because I want to watch it open and close
         self.dlg.uTextFilter.setText('')
         self.dlg.close()
@@ -114,6 +110,10 @@ class UnitLevel(unittest.TestCase):
         self.lds_plugin.cache_updated=False
 
     def test_clearSettings(self):
+        """
+        Test the text is cleared from the setting tab QLineEdits
+        """
+
         # Unit test setup
         # And text to settings qLineEdits
         for n in range(1,3):
@@ -131,6 +131,10 @@ class UnitLevel(unittest.TestCase):
             self.assertEqual(getattr(self.dlg, 'uTextAPIKey{0}'.format(n)).text(), '')
 
     def test_loadSettings(self):
+        """
+        Test Settings are loaded to the Settings Tab QLineEdits
+        """
+
         #setup is loading settings so...
         self.lds_plugin.clearSettings()
         # confirm pre test state is as expected
@@ -144,6 +148,10 @@ class UnitLevel(unittest.TestCase):
         self.assertEqual(self.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
 
     def test_saveDomain_save(self):
+        """
+        Test the entering and saving of settings
+        """
+
         # Really an int test. Main thing we need to see
         # is the apikey QSettings update.
 
@@ -168,23 +176,30 @@ class UnitLevel(unittest.TestCase):
                                      self.domain2:API_KEYS[self.domain2]})
 
     def test_saveDomain_remove(self):
+        """
+        Test the removal of a settings record. 
+        """
+
         # confirm pre test state is as expected
         self.assertEqual({self.domain1:API_KEYS[self.domain1]}, self.api_key_instance.getApiKeys())
         self.lds_plugin.loadSettings()
         self.assertEqual(self.dlg.uTextDomain1.text(), self.domain1)
         self.assertEqual(self.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
         # Run the method we are testing - must be called from btn clicked
-        self.dlg.uBtnRemove1.clicked.emit(True)
+        self.dlg.uBtnRemoveDomain1.clicked.emit(True)
         # Check the record has been removed from the api settings property 
         self.assertEqual({}, self.api_key_instance.getApiKeys())
 
     def test_addNewDomain(self):
+        """
+        Test UI functionality for adding new settings details 
+        """
 
         idx=self.dlg.uComboBoxDomain.findText(self.domain2)
         self.dlg.uComboBoxDomain.setCurrentIndex(idx)
         self.assertEqual(self.dlg.uComboBoxDomain.currentText(), self.domain2)
         # Test the method
-        self.dlg.uAddDomain.clicked.emit(True)
+        self.dlg.uBtnAddDomain.clicked.emit(True)
         QTest.qWait(2000)
         self.assertEqual(self.dlg.uTextDomain2.text(), self.domain2)
         # Other rows should be hidden
@@ -193,11 +208,14 @@ class UnitLevel(unittest.TestCase):
             self.assertFalse(getattr(self.dlg, 'uTextAPIKey{0}'.format(n)).isVisible())
 
     def test_addNewDomain_duplicate(self):
+        """
+        Test case where by the user tries to add duplicate domain details
+        """
 
         idx=self.dlg.uComboBoxDomain.findText(self.domain1)
         self.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
-        self.dlg.uAddDomain.clicked.emit(True)
+        self.dlg.uBtnAddDomain.clicked.emit(True)
         # First as we are selecting a domian that already exists
         # this should show a warning
 #         self.assertTrue(self.dlg.uWarningSettings.isVisible())
@@ -206,6 +224,10 @@ class UnitLevel(unittest.TestCase):
                         'Please edit the domain below')
 
     def test_addNewDomain_lessthan_max_entires(self):
+        """
+        Test no warnings are shown when not exceeding max settings entries 
+        """
+
         self.api_key_instance.setApiKeys({'1':'1',
                                           '2':'2',
                                           '3':'3',
@@ -220,13 +242,17 @@ class UnitLevel(unittest.TestCase):
         idx=self.dlg.uComboBoxDomain.findText(self.domain1)
         self.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
-        self.dlg.uAddDomain.clicked.emit(True)
+        self.dlg.uBtnAddDomain.clicked.emit(True)
         # First as we are selecting a domian that already exists
         # this should show a warning
 #         self.assertTrue(self.dlg.uWarningSettings.isVisible())
         self.assertTrue(self.dlg.uWarningSettings.text(), '')
 
     def test_addNewDomain_greaterthan_max_entires(self):
+        """
+        Test warning is shown when exceeding max number of settings entries 
+        """
+
         self.api_key_instance.setApiKeys({'1':'1',
                                           '2':'2',
                                           '3':'3',
@@ -241,7 +267,7 @@ class UnitLevel(unittest.TestCase):
         idx=self.dlg.uComboBoxDomain.findText(self.domain1)
         self.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
-        self.dlg.uAddDomain.clicked.emit(True)
+        self.dlg.uBtnAddDomain.clicked.emit(True)
         # First as we are selecting a domian that already exists
         # this should show a warning
 #         self.assertTrue(self.dlg.uWarningSettings.isVisible())
@@ -249,15 +275,32 @@ class UnitLevel(unittest.TestCase):
                                                       '10 domain entries')
 
     def test_unload(self):
+        """
+        Not Currently Tested
+        """
+        # Run unload check icon has been removed
+
         pass
 
     def test_run(self):
+        """
+        Test via int tests 
+        """
+
         pass
 
     def test_run_warning(self):
+        """
+        Test via int tests 
+        """
+
         pass
 
     def test_updateServiceDataCache(self):
+        """
+        Test the updating of cache
+        """
+
         insitu_file_stats={}
         cached_file_stats={}
 
@@ -270,7 +313,7 @@ class UnitLevel(unittest.TestCase):
         self.lds_plugin.updateServiceDataCache()
         while not self.lds_plugin.cache_updated:
             QTest.qWait(5000)
-            
+
         for service in ['wms','wfs','wmts']:
             file='{0}_{1}.xml'.format(self.domain1,service)
             file_path=os.path.join(self.pl_settings_dir, file)
@@ -279,22 +322,34 @@ class UnitLevel(unittest.TestCase):
         self.assertNotEqual(cached_file_stats, insitu_file_stats)
 
     def test_loadUi(self):
-        """ Test via int tests """
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_loadAllServices(self):
-        """ Test via int tests """
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_dataToTable(self):
-        """ Test via int tests """
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_showSelectedOption(self):
-        """ Test via int tests """
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_getPreview(self):
+        """
+        Test the getting of a preview image
+        """
+
         match_layer_id=53309
         mismatch_layer_id=53158
         self.lds_plugin.id=match_layer_id
@@ -315,22 +370,33 @@ class UnitLevel(unittest.TestCase):
         self.assertNotEqual(bytes_mismatch, bytes_preview)
 
     def test_updDescription(self):
-        """ Test via int tests """
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_updPreview(self):
-        """ Test via int tests """
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_filterTable(self):
-        """ Test via int tests """
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_mapCrs(self):
-        """tested via test_setSRID()"""
+        """ 
+        Test via int tests 
+        """
         pass
 
     def test_enableOTF(self):
+        """
+        Test enabling QGIS's OTF
+        """
         # test current state
         otf=self.lds_plugin.canvas.hasCrsTransformEnabled()
         self.assertFalse(otf)
@@ -340,6 +406,10 @@ class UnitLevel(unittest.TestCase):
         self.assertTrue(otf)
 
     def test_setSRID(self):
+        """
+        Test the setting of the projects crs
+        """
+
         # Get plugins default srs 
         default_srid=self.lds_plugin.wmts_epsg.lstrip('EPSG:')
         test_srid_int=3793
@@ -353,9 +423,16 @@ class UnitLevel(unittest.TestCase):
         self.assertEqual(self.lds_plugin.mapCrs().lstrip('EPSG:'), str(test_srid_int))
 
     def test_infoCRS(self):
+        """
+        Not currently tested
+        """
         pass
 
     def test_importDataset_wfs(self):
+        """
+        Test the importing of WFS layers into QGIS
+        """
+
         # set plugin properties required for import
         self.lds_plugin.domain=self.domain1
         self.lds_plugin.service='WFS'
@@ -369,6 +446,10 @@ class UnitLevel(unittest.TestCase):
         self.assertEqual(title, names[0])
 
     def test_importDataset_wmts(self):
+        """
+        Test the importing of WMTS layers into QGIS
+        """
+
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
         self.lds_plugin.domain=self.domain2
@@ -383,6 +464,10 @@ class UnitLevel(unittest.TestCase):
         self.assertEqual(title, names[0])
 
     def test_importDataset_wms(self):
+        """
+        Test the importing of WMS layers into QGIS
+        """
+
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
         self.lds_plugin.domain=self.domain2

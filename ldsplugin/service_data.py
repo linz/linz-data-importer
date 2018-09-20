@@ -31,30 +31,67 @@ from PyQt4.QtCore import QSettings
 #from gc import isenabled
 
 class ApiKey():
+    """
+    Store API Keys for each domain. Required to 
+    fetch service data
+    """
+
     # TODO// MAKE SINGLETON
     def __init__(self):
        self.api_keys = self.getApiKeys()
 
     def getApiKeys(self):
+        """
+        Return Domain / API keys stored in QSettings
+
+        @return: e.g. {domain1: api_key1, domain2: api_key2}
+        @rtype: dict
+        """
+
         keys = QSettings().value('ldsplugin/apikeys')
         if not keys:
             return {}
         return keys
 
     def getApiKey(self, domain):
+        """
+        Returns an API Key related to a domain
+
+        @return: API Key
+        @rtype: str
+        """
+
         return self.api_keys[domain]
 
     def setApiKeys(self, keys):
+        """
+        Save API Keys as Qsettings Value
+
+        :param keys: {domain1: api_key1, domain2: api_key2...}
+        :type keys: dict
+        """
+
         # = {domain:api_key}
         QSettings().setValue('ldsplugin/apikeys', keys)
         self.api_keys = self.getApiKeys()
 
 class Localstore():
-    """ data service objects managing of the local store
-    or can be initiated out side of the service_data and manage
-    the local store """
+    """ 
+    Caching of capability documents
+    """
 
     def __init__(self, domain=None, service=None, file=None):
+        """
+        Initiate localstore 
+
+        :param domain: Service Domain (e.g. data.linz.govt.nz)
+        :type domain: str
+        :param service: Service Type (WMS, WMTS, or WFS)
+        :type service: str
+        :param file: file name 
+        :type file: str
+        """
+
         self.domain=domain
         self.service=service
         self.xml=None
@@ -66,10 +103,18 @@ class Localstore():
                                '{0}_{1}.xml'.format(domain, service.lower()))
 
     def ensureSettingsDir(self):
+        """
+        Create the plugins settings dir if not exists
+        """
+
         if not os.path.exists(self.pl_settings_dir):
             os.makedirs(self.pl_settings_dir)
 
     def delLocalSeviceXML(self, file=None):
+        """
+        Delete a single file
+        """
+
         if not file:
             file = self.file
         try:
@@ -78,6 +123,13 @@ class Localstore():
             pass
 
     def delDomainsXML(self, domain):
+        """
+        Delete all cached files associated with a domain
+
+        :param domain: Service Domain (e.g. data.linz.govt.nz)
+        :type domain str
+        """
+
         if not domain:
             domain = self.domain
 
@@ -88,6 +140,13 @@ class Localstore():
                 self.delLocalSeviceXML(file)
 
     def delAllLocalServiceXML(self, services=['wms','wfs','wmts']):
+        """
+        Find and delete all cached files
+
+        :param domain: list services
+        :type domain: list
+        """
+
         search_str = '|'.join(['_{}.xml'.format(x) for x in services])
 
         dir = self.pl_settings_dir
@@ -97,20 +156,52 @@ class Localstore():
                 self.delLocalSeviceXML(file)
 
     def serviceXmlIsLocal(self, file=None):
+        """
+        Test if the cached capabilties xml doc exists
+        :param file: file name 
+        :type file: str
+        @return: boolean. True file exists
+        @rtype: boolean
+        """
+
         if not file:
             file = self.file
         return os.path.isfile(file)
 
     def readLocalServiceXml(self, file=None):
+        """
+        Read the cached XML document
+
+        :param file: file name 
+        :type file: str 
+        """
+
         if not file:
             file = self.file
         with open(file, 'r') as f:
             self.xml = f.read()
 
 class ServiceData(Localstore):
+    """
+    Get, Store and Process WxS Data
+    """
+
     def __init__(self, domain, service, service_version, api_key_instance):
+        """
+        Initialise Service Data instance 
+
+        :param service: Service Type (WMS, WMTS, or WFS)
+        :type service: str
+        :param domain: Service Domain (e.g. data.linz.govt.nz)
+        :type domain: str
+        :param service_version: {'wms': '1.1.1', 'wfs': '2.0.0', 'wmts': '1.0.0'}
+        :type service_version: dict
+        :param api_key_instance: API instance 
+        :type api_key_instance: ldsplugin.service_data.ApiKey
+        """
+
         self.version = service_version[service]
-        self.api_key_int = api_key_instance # using instance as the user can change keys on us
+        self.api_key_int = api_key_instance # using one instance as the user can change keys on us
         Localstore.__init__(self, domain, service)
         # Data 
         self.obj = None #owslib data obj
@@ -119,10 +210,15 @@ class ServiceData(Localstore):
         self.disabled = False
 
     def isEnabled(self):
-        # Turns out some services are disabled
-        # Will only know this based on the returned capabilities doc.
-        # Though this doc has no header and is not simply xml parse-able
-        # so... 
+        """
+        Test if the service is enable.
+        Some services (e.g wms) are disabled for specific domains. These 
+        return XML docs without headers. 
+
+        @return: boolean. True == Service is diabled
+        @rtype: boolean
+        """
+
         disbaled_str = ('Service {0} is disabled').format(self.service.upper())
         if self.xml.find(disbaled_str) == -1:
             return True
@@ -130,6 +226,11 @@ class ServiceData(Localstore):
         return False
 
     def getServiceData(self):
+        """
+        Select method to obtain capbilties doc. 
+        Either via localstore or internet 
+        """
+
         # Get service xml
         if self.serviceXmlIsLocal():
             self.readLocalServiceXml()
@@ -137,10 +238,12 @@ class ServiceData(Localstore):
             self.getServiceXml()
 
     def getServiceDataTryAgain(self):
-        pass
-        ''' If the creating of the service obj fails
-        due to xml syntax; delete and recreate local xml
-        and try build the service obj again'''
+        """
+        If the reading of the capability doc fails - Try again.
+        This is for use cases where for some reason the user
+        has corrupted the capability doc in the localstore
+        """
+
         #Clear error, Delete local file and get it a fresh
         self.err=None
         self.delLocalSeviceXML()
@@ -152,6 +255,9 @@ class ServiceData(Localstore):
             return
 
     def processServiceData(self):
+        """
+        Get, process and format the service data
+        """
 
         self.getServiceData()
         if self.err:
@@ -168,7 +274,7 @@ class ServiceData(Localstore):
             return
 
         # Format the response data
-        self.serviceInfo()
+        self.formatForUI()
 
     def getServiceObj(self):
         try:
@@ -183,6 +289,9 @@ class ServiceData(Localstore):
             self.err = '{0}: XMLSyntaxError'.format(self.domain)
 
     def getServiceXml(self):
+        """
+        Get capability documents from the internet
+        """
 
         try:
             if self.service == 'wmts':
@@ -213,7 +322,11 @@ class ServiceData(Localstore):
             elif hasattr(e, 'code'):
                  self.err = 'Error: ({0}) {1}'.format(self.domain, e.reason)
 
-    def serviceInfo(self):
+    def formatForUI(self):
+        """
+        Format the service data to display in the UI
+        """
+
         service_data = []
         cont = self.obj.contents
 

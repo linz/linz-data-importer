@@ -41,7 +41,6 @@ import resources
 # Import the code for the dialog
 from gui.Service_dialog import ServiceDialog
 
-
 # Hardcoded service .see #20 for enhancement
 SER=['',
     'geodata.nzdf.mil.nz',
@@ -129,12 +128,6 @@ class QgisLdsPlugin:
         # Instances 
         self.api_key_instance = ApiKey() # TODO / REVIEW NEED OF
         self.local_store = Localstore()
-#         self.wmts_data = ServiceData('wmts',
-#                                      self.service_versions['wmts'])
-#         self.wfs_data = ServiceData('wfs', 
-#                                     self.service_versions['wfs'])
-#         self.wms_data = ServiceData('wms', 
-#                                     self.service_versions['wms'])
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -248,7 +241,7 @@ class QgisLdsPlugin:
         self.warningSettings = self.service_dlg.uWarningSettings
         self.warningSettings.setStyleSheet('color:red')
 
-        self.img_preview = self.service_dlg.uImagePreview
+        self.img_preview = self.service_dlg.uLabelImgPreview
 
         item = QListWidgetItem("ALL")
         image_path = os.path.join(os.path.dirname(__file__), "icons", "all.png")
@@ -298,10 +291,10 @@ class QgisLdsPlugin:
         self.service_dlg.uComboBoxDomain.addItems(SER)
 
         #settings signals
-        self.service_dlg.uAddDomain.clicked.connect(self.addNewDomain)
+        self.service_dlg.uBtnAddDomain.clicked.connect(self.addNewDomain)
         for n in range(1,11):
             getattr(self.service_dlg, 'uBtnSaveDomain{0}'.format(n)).clicked.connect(self.saveDomain)
-            getattr(self.service_dlg, 'uBtnRemove{0}'.format(n)).clicked.connect(self.saveDomain)
+            getattr(self.service_dlg, 'uBtnRemoveDomain{0}'.format(n)).clicked.connect(self.saveDomain)
         self.loadSettings()
 
     def clearSettings(self):
@@ -315,9 +308,9 @@ class QgisLdsPlugin:
 
     def loadSettings(self):
         """ 
-        Populate settings QLineEdits with domian /
-        api keys as stored via service_data.ApiKey.
-        Hide all the settings QLineEdits that do not
+        1. Populate settings QLineEdits with domain /
+        API keys as stored via service_data.ApiKey().
+        2. Hide all the settings QLineEdits that do not
         have text. 
         """
 
@@ -334,14 +327,13 @@ class QgisLdsPlugin:
         for n in range(len(self.domains)+1,11):
             getattr(self.service_dlg, 'uTextDomain{0}'.format(n)).hide()
             getattr(self.service_dlg, 'uTextAPIKey{0}'.format(n)).hide()
-            getattr(self.service_dlg, 'uBtnRemove{0}'.format(n)).hide()
+            getattr(self.service_dlg, 'uBtnRemoveDomain{0}'.format(n)).hide()
             getattr(self.service_dlg, 'uBtnSaveDomain{0}'.format(n)).hide()
 
     def saveDomain(self):
         """ 
-        Save all domain / api combinations as entered 
-        in the settings QLineEdits to service_data.ApiKey. If the 
-        calling button was a remove button do not save 
+        Save all domain / API combinations as entered by the user.
+        If the calling button was a remove button do not save 
         the text in the associated QLineEdits. 
         """
 
@@ -349,7 +341,7 @@ class QgisLdsPlugin:
         save_domain = 0
 
         sending_btn = self.service_dlg.sender().objectName()
-        if sending_btn[:-1] == 'uBtnRemove':
+        if sending_btn[:-1] == 'uBtnRemoveDomain':
             del_domain = sending_btn[-1]
         if sending_btn[:-1] == 'uBtnSaveDomain':
             save_domain = sending_btn[-1]
@@ -363,7 +355,6 @@ class QgisLdsPlugin:
             if domain and key:
                 keys[domain]=key
         self.api_key_instance.setApiKeys(keys)
-        #load or reload the domain
 
         #remove store capability docs for the removed or add domain/key
         # if they already exits .i.e these will be reloaded
@@ -388,9 +379,9 @@ class QgisLdsPlugin:
 
     def addNewDomain(self):
         """ 
-        Connected to the dialogs uAddDomain button.
-        When the button is clicked add a new row of blank
-        domain and api QLineEdits
+        Connected to the dialogs uBtnAddDomain button.
+        When the button is clicked add a new row
+        domain and API QLineEdits
         """
 
         domain = self.service_dlg.uComboBoxDomain.currentText()
@@ -411,7 +402,7 @@ class QgisLdsPlugin:
         getattr(self.service_dlg, 'uTextDomain{0}'.format(len(self.domains)+1)).setText(domain)
         getattr(self.service_dlg, 'uTextDomain{0}'.format(len(self.domains)+1)).show()
         getattr(self.service_dlg, 'uTextAPIKey{0}'.format(len(self.domains)+1)).show()
-        getattr(self.service_dlg, 'uBtnRemove{0}'.format(len(self.domains)+1)).show()
+        getattr(self.service_dlg, 'uBtnRemoveDomain{0}'.format(len(self.domains)+1)).show()
         getattr(self.service_dlg, 'uBtnSaveDomain{0}'.format(len(self.domains)+1)).show()
         self.service_dlg.uWarningSettings.hide()
 
@@ -430,9 +421,9 @@ class QgisLdsPlugin:
     def run(self):
         """ 
         Connected to the plugins tool bar icon. 
-        load the table data and show the ui 
+        load the table data and show the main UI.
         """
-        
+
         if not self.services_loaded:
             if not self.api_key_instance.getApiKeys():
                 self.warning.setText('ERROR: No API Details Provided - see settings')
@@ -445,9 +436,8 @@ class QgisLdsPlugin:
 
     def updateServiceDataCache(self):
         """ 
-        Update the local cache. This is done
-        by deleting the locally stored capability documents
-        and then re-fetching from the associated web resource
+        Update the local cache by deleting the locally stored capability 
+        documents and then re-fetching from the associated web resource
         """
 
         while not self.services_loaded:
@@ -461,8 +451,7 @@ class QgisLdsPlugin:
 
     def loadUi(self):
         """ 
-        Call the UIs data processing 
-        and handle any errors shown to the user
+        Wrapper for loadAllServices() to handle any errors
         """
 
         load_data_err = self.loadAllServices()
@@ -475,11 +464,10 @@ class QgisLdsPlugin:
 
     def loadAllServices(self):
         """ 
-        Iterate over all domains (service_data.ApiKey)
-        and service types (WMS, WMTS, WFS). Request, 
-        process and format capability documents
+        Iterate over all domains and service types (WMS, WMTS, WFS). 
+        Request, process, store and format capability documents
         """
-        
+
         all_data = [] 
         for domain in self.api_key_instance.getApiKeys():
             for service in SER_TYPES:
@@ -503,16 +491,14 @@ class QgisLdsPlugin:
 
     def showSelectedOption(self, item):
         """
-        Connected to left pane QListWidget TOC.
-        When items in the QListWidget are clicked, display the 
-        associated Tab. IF 'WMS', 'WMTS', 'WFS' or 'ALL' is clicked
-        apply the filter to the tables proxy model
-        
+        Connected to left pane QListWidget TOC. When items in the QListWidget 
+        are clicked, display the associated Tab. If 'WMS', 'WMTS', 
+        'WFS' or 'ALL' apply the filter to the tables proxy model
+
         :param item: The item in the QListWidget that was clicked
         :type item: QListWidgetItem
-        
         """
-        
+
         if item:
             if item.text() == 'ALL':
                 self.stacked_widget.setCurrentIndex(0)
@@ -539,13 +525,13 @@ class QgisLdsPlugin:
     def getPreview(self, res, res_timeout):
         """
         Fetch the preview image from the internet
-        
+
         :param res: The resolution of the image to be fetched
         :type res: str
         :param res_timeout: How long the request should wait for a response 
         :type res_timeout: int
         """
-        
+
         self.qimage = QImage()
         url = ('http://koordinates-tiles-d.global.ssl.fastly.net'
             '/services/tiles/v4/thumbnail/layer={0},style=auto/{1}.png'.format(self.id, res))
@@ -562,14 +548,9 @@ class QgisLdsPlugin:
 
     def updPreview(self):
         """ 
-        When the user selects a new record in the tableview
-        fetch the preview image associated to this to show in the UI. 
-        The images seem to be stored as 150X100 and these are serviced up
-        much faster. However a better UX is provided if 300x200 are fetched.
-        The methods tries to get the better quality image but if it is taking to
-        long moves onto the poor quality image which is always return quickly. 
+        On the tableviews rowChanged fetch the datasets preview image 
         """
-        
+
         if self.service_type != 'layer':
             self.img_preview.clear()
             self.img_preview.setText('No preview available')
@@ -585,12 +566,10 @@ class QgisLdsPlugin:
 
     def currSelection(self):
         """
-        Each time the user selects a record in the tableview
-        store the details of the record ready to be imported. 
-        Also update the abstract as shown in the UI for the 
-        selected layer.         
+        On the tableviews currentRowChanged store the details of the current 
+        record Also, update the abstract as shown in the UI
         """
-        
+
         self.domain = self.row[0]
         abstract = self.row[5]
         self.service_type = self.row[1]
@@ -601,8 +580,10 @@ class QgisLdsPlugin:
 
     def userSelection(self, selected):
         """
-        Update records tracking user selection when
-        the users selects a new record in the tableView
+        wrapper for methods required when the tableviews currentRowChanged
+
+        :param res: Current item tableView item 
+        :type res: QModelIndex
         """
 
         sourceIndex = self.proxy_model.mapToSource(selected)
@@ -623,8 +604,7 @@ class QgisLdsPlugin:
 
     def setTableModelView(self):
         """
-        Connect the tableView to the proxy model
-        to the table model
+        Connect the tableView to the proxy model to the table model
         """
         # Set Table Model
         data = [['','','','','']]
@@ -650,10 +630,13 @@ class QgisLdsPlugin:
 
     def mapCrs(self):
         """
-        
+        Return the current mapCanvas CRS
+
+        @return: crs reference (e.g EPSG:3857)
+        @rtype: str
         """
-        
-        crs = str(self.canvas.mapSettings().destinationCrs().authid())
+
+        crs = self.canvas.mapSettings().destinationCrs().authid()
         return crs
 
     def enableOTF(self):
@@ -666,9 +649,7 @@ class QgisLdsPlugin:
 
     def setSRID(self):
         """ 
-        Set the projects projection. Currently the plugin
-        is setting everything to EPSG:3857 as this is a common
-        crs for all data service data. see issue #4
+        Set the projects projection
         """
 
         crs = QgsCoordinateReferenceSystem(self.wmts_epsg_int,QgsCoordinateReferenceSystem.EpsgCrsId)
@@ -678,7 +659,7 @@ class QgisLdsPlugin:
         """
         Open a QgsMessageBar informing the projects crs has changed
         """
-        
+
         self.iface.messageBar().pushMessage("Info", 
             '''The LDS Plugin has changed the projects CRS to {0} to 
             provide a common CRS when importing LDS datasets'''.format(self.wmts_epsg),
