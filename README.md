@@ -2,16 +2,16 @@
 
 The intent of this QGIS Plugin is to allow the easy importing of 
 [LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 
-see [Changing Scope](https://github.com/linz/QGIS-LDS-Plugin#Changing-Scope)) 
+see [Changing Scope](https://github.com/linz/linz-data-importer/#Changing-Scope)) 
  into QIGS. 
 
-![](https://github.com/linz/QGIS-LDS-Plugin/blob/master/images/import_wmts.gif)
+![](https://github.com/linz/linz-data-importer/blob/master/images/import_wmts.gif)
 
 ## Supported Versions
 Currently this plugin only supports >QGIS2.8 and <QGIS2.18
 
 This has limited functionality and there are plans for a QGIS3 release 
-with greater scope shortly. See the [Issues](https://github.com/linz/QGIS-LDS-Plugin/issues) for more
+with greater scope shortly. See the [Issues](https://github.com/linz/linz-data-importer/issues) for more
 
 
 
@@ -42,7 +42,7 @@ For more on API keys please see the [LDS user resources](http://www.linz.govt.nz
 
 ## Coordinate Reference System
 As an initial release, when importing datasets via the LDS Plugin the plugin will force the QGIS projects CRS to WGS 84 Web Mercator (EPSG:3857). The user is notified by QGIS's message bar when the CRS change is made.
-Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the data providers WMTS services are served in this projection and problems arise when reprojecting WMTS. This is the initial release of the plugin and there are plans to improve the handling of CRS with subsequent releases (See the GitHub [issues](https://github.com/linz/QGIS-LDS-Plugin/issues) for more).
+Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the data providers WMTS services are served in this projection and problems arise when reprojecting WMTS. This is the initial release of the plugin and there are plans to improve the handling of CRS with subsequent releases (See the GitHub [issues](https://github.com/linz/linz-data-importer/issues) for more).
 
 ## Requests, Responses, Patience and Caching
 When saving a Domain and API key for the first time via the Setting menu the plugin will request the capabilities documents for each service type (WMS, WMTS, WFS). When these documents are large this can cause the plugin to appear inactive. The good news is this is the only interaction with the plug where substantial patience may be required. Once the initial documents are fetched, they will be cached and will be updated in the background each time the plugin is started.
@@ -51,5 +51,5 @@ The left hand panel allows users to filter by service types (either, All, WFS, W
 All column headers can be toggled to allow ascending or descending ordering of their data.
 Text can be entered in the "Filter Data Sets" search bar to filter the datasets by keyword. 
 ## Source Code, Further Documentation and Feedback
-Please see [QGIS-LDS-Plugin](https://github.com/linz/QGIS-LDS-Plugin) at GitHub
+Please see [QGIS-LDS-Plugin](https://github.com/linz/linz-data-importer/) at GitHub
 
