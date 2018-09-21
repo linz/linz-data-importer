@@ -5,7 +5,7 @@ The intent of this QGIS Plugin is to allow the easy importing of
 see [Changing Scope](https://github.com/linz/linz-data-importer/#Changing-Scope)) 
  into QIGS. 
 
-![](https://github.com/linz/linz-data-importer/blob/master/images/import_wmts.gif)
+![](https://github.com/linz/linz-data-importer/blob/master/images/example.gif)
 
 ## Supported Versions
 Currently this plugin only supports >QGIS2.8 and <QGIS2.18
