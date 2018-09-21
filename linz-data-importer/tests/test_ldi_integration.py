@@ -1,3 +1,20 @@
+"""
+/***************************************************************************
+ LINZ Data Importer
+                                 A QGIS plugin
+ Import LINZ (and others) OGC Datasets into QGIS
+                              -------------------
+        begin                : 2018-04-07
+        git sha              : $Format:%H$
+        copyright            : (C) 2017 by Land Information New Zealand
+        email                : splanzer@linz.govt.nz
+ ***************************************************************************/
+/***************************************************************************
+ *   This program is released under the terms of the 3 clause BSD license. *
+ *   see the LICENSE file for more information                             *
+ ***************************************************************************/
+"""
+
 import unittest
 import ast
 import os
@@ -11,7 +28,7 @@ from qgis.core import QgsMapLayerRegistry, QgsApplication
 import xml.etree.ElementTree as ET
 
 WAIT=1000
-API_KEYS=ast.literal_eval(os.getenv('LDS_PLUGIN_API_KEYS', None))
+API_KEYS=ast.literal_eval(os.getenv('LDI_API_KEYS', None))
 TEST_CONF={'wms':'Chart NZ 252 Lake Wakatipu',
            'wmts':'Chart NZ 632 Banks Peninsula',
            'wfs':'NZ Railway Centrelines (Topo, 1:250k)'
@@ -30,8 +47,8 @@ class CorruptXml(unittest.TestCase):
 
         # Get the test executors current key so that 
         # We can revert back to when tests are complete
-        cls.testers_keys = QSettings().value('ldsplugin/apikeys')
-        cls.lds_plugin = plugins.get('ldsplugin')
+        cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
+        cls.ldi_plugin = plugins.get('linz-data-importer')
 
     @classmethod
     def tearDownClass(cls):
@@ -39,7 +56,7 @@ class CorruptXml(unittest.TestCase):
         Clean up at TestCase teardown
         """
 
-        QSettings().setValue('ldsplugin/apikey', cls.testers_keys)
+        QSettings().setValue('linz_data_importer/apikey', cls.testers_keys)
 
     def setUp(self):
         """
@@ -47,21 +64,21 @@ class CorruptXml(unittest.TestCase):
         """
 
         #Get reference to plugin
-        self.lds_plugin = plugins.get('ldsplugin')
-        self.dlg=self.lds_plugin.service_dlg
+        self.ldi=plugins.get('linz-data-importer')
+        self.dlg=self.ldi.service_dlg
 
         # Dont run cache update
-        self.lds_plugin.update_cache=False
+        self.ldi.update_cache=False
 
         # Domain to run test against lds (only service with all WxS)
         domain='data.linz.govt.nz'
-        self.api_key_instance = self.lds_plugin.api_key_instance
+        self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain:API_KEYS[domain]})
 
         # Test data dir and plugin settigns dir
         self.test_dir=os.path.dirname(os.path.realpath(__file__))
         self.test_data_dir=os.path.join(self.test_dir, 'data')
-        self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "ldsplugin")
+        self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
 
         # Delete all service xml files in plugin settigns dir
         search_str = '|'.join(['_{}.xml'.format(x) for x in ['wms','wfs','wmts']])
@@ -117,11 +134,11 @@ class CorruptXml(unittest.TestCase):
             is_corrupt=True
         self.assertTrue(is_corrupt)
         # Run Plugin
-        self.lds_plugin.actions[0].trigger()
+        self.ldi.actions[0].trigger()
         QTest.qWait(WAIT)
         # ensure all services are are present in the table
-        data_types=set([self.lds_plugin.proxy_model.index(row, 3).data() 
-                       for row in xrange(self.lds_plugin.proxy_model.rowCount())])
+        data_types=set([self.ldi.proxy_model.index(row, 3).data() 
+                       for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
 
@@ -138,7 +155,7 @@ class UserWorkFlows (unittest.TestCase):
 
         # Get the test executors current key so that 
         # We can revert back to when tests are complete
-        cls.testers_keys = QSettings().value('ldsplugin/apikeys')
+        cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
 
     @classmethod
     def tearDownClass(cls):
@@ -147,23 +164,23 @@ class UserWorkFlows (unittest.TestCase):
         """
 
         # Runs at TestCase teardown.
-        QSettings().setValue('ldsplugin/apikey', cls.testers_keys)
+        QSettings().setValue('linz_data_importer/apikey', cls.testers_keys)
 
     def setUp(self):
         """
         Runs before each test
         """
 
-        self.lds_plugin = plugins.get('ldsplugin')
-        self.lds_plugin.update_cache=False
-        self.dlg=self.lds_plugin.service_dlg
+        self.ldi=plugins.get('linz-data-importer')
+        self.ldi.update_cache=False
+        self.dlg=self.ldi.service_dlg
 
         domain='data.linz.govt.nz'
-        self.api_key_instance = self.lds_plugin.api_key_instance
+        self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain:API_KEYS[domain]})
 
         # Run
-        self.lds_plugin.actions[0].trigger()
+        self.ldi.actions[0].trigger()
 
     def tearDown(self):
         """
@@ -212,11 +229,11 @@ class UserWorkFlows (unittest.TestCase):
         self.assertEqual(self.dlg.qStackedWidget.currentIndex(), 0)
 
         # Test there is data
-        self.assertNotEqual(self.lds_plugin.table_model.rowCount(None), 0)
+        self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
 
         # Ensure all records are of the selected type
-        data_types=set([self.lds_plugin.proxy_model.index(row, 3).data() 
-                       for row in xrange(self.lds_plugin.proxy_model.rowCount())])
+        data_types=set([self.ldi.proxy_model.index(row, 3).data() 
+                       for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),1)
         self.assertEqual(service.upper(), list(data_types)[0])
 
@@ -242,10 +259,10 @@ class UserWorkFlows (unittest.TestCase):
         self.dlg.uListOptions.itemClicked.emit(item)
         # Tests
         # Test there is data
-        self.assertNotEqual(self.lds_plugin.table_model.rowCount(None), 0)
+        self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
         # ensure all services are are present in the table
-        data_types=set([self.lds_plugin.proxy_model.index(row, 3).data() 
-                       for row in xrange(self.lds_plugin.proxy_model.rowCount())])
+        data_types=set([self.ldi.proxy_model.index(row, 3).data() 
+                       for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
 

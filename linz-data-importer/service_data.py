@@ -1,8 +1,8 @@
 """
 /***************************************************************************
- QgisLdsPlugin
+ LINZ Data Importer
                                  A QGIS plugin
- Import LDS OGC Datasets into QGIS
+ Import LINZ (and others) OGC Datasets into QGIS
                               -------------------
         begin                : 2018-04-07
         git sha              : $Format:%H$
@@ -48,7 +48,7 @@ class ApiKey():
         @rtype: dict
         """
 
-        keys = QSettings().value('ldsplugin/apikeys')
+        keys = QSettings().value('linz_data_importer/apikeys')
         if not keys:
             return {}
         return keys
@@ -72,7 +72,7 @@ class ApiKey():
         """
 
         # = {domain:api_key}
-        QSettings().setValue('ldsplugin/apikeys', keys)
+        QSettings().setValue('linz_data_importer/apikeys', keys)
         self.api_keys = self.getApiKeys()
 
 class Localstore():
@@ -95,7 +95,7 @@ class Localstore():
         self.domain=domain
         self.service=service
         self.xml=None
-        self.pl_settings_dir = os.path.join(QgsApplication.qgisSettingsDirPath(), "ldsplugin")
+        self.pl_settings_dir = os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
         self.ensureSettingsDir()
         self.file=file
         if self.service:
@@ -197,7 +197,7 @@ class ServiceData(Localstore):
         :param service_version: {'wms': '1.1.1', 'wfs': '2.0.0', 'wmts': '1.0.0'}
         :type service_version: dict
         :param api_key_instance: API instance 
-        :type api_key_instance: ldsplugin.service_data.ApiKey
+        :type api_key_instance: linz-data-importer.service_data.ApiKey
         """
 
         self.version = service_version[service]

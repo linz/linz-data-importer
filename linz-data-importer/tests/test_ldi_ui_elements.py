@@ -1,8 +1,8 @@
 """
 /***************************************************************************
- QgisLdsPlugin
+ LINZ Data Importer
                                  A QGIS plugin
- Import LDS OGC Datasets into QGIS
+ Import LINZ (and others) OGC Datasets into QGIS
                               -------------------
         begin                : 2018-04-07
         git sha              : $Format:%H$
@@ -36,9 +36,9 @@ class UiTest(unittest.TestCase):
         Runs before each test.
         """
 
-        self.lds_plugin = plugins.get('ldsplugin')
-        self.dlg=self.lds_plugin.service_dlg
-        self.lds_plugin.actions[0].trigger()
+        self.ldi=plugins.get('linz-data-importer')
+        self.dlg=self.ldi.service_dlg
+        self.ldi.actions[0].trigger()
 
     def tearDown(self):
         """

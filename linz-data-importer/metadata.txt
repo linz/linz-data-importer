@@ -1,16 +1,16 @@
 # Mandatory items:
 
 [general]
-name=QGIS-LDS-Plugin
+name=LINZ Data Importer
 qgisMinimumVersion=2.8
 description=Import LDS OGC Datasets into QGIS
-version=0.0.1
+version=0.0.2
 author=Land Information New Zealand
 email=splanzer@linz.govt.nz
 
-about=Import LDS OGC Datasets into QGIS
+about=Import LINZ (and others) OGC Datasets into QGIS
 
-tracker=https://github.com/SPlanzer/QGIS-LDS-Plugin/issues
+tracker=https://github.com/linz/linz-data-importer/issues
 repository=https://github.com/SPlanzer/QGIS-LDS-Plugin
 # End of mandatory metadata
 
@@ -20,11 +20,11 @@ repository=https://github.com/SPlanzer/QGIS-LDS-Plugin
 # changelog= TODO
 
 # Tags are comma separated with spaces allowed
-tags=wms, wfs, webservice, web, LINZ, LDS
+tags=wmts, wms, wfs, webservice, web, LINZ, LDS, MFE, Stats NZ, LRIS, NZDF
 
-homepage=https://github.com/SPlanzer/QGIS-LDS-Plugin/issues
+homepage=https://github.com/linz/linz-data-importer/
 category=Web
-icon=icon.png
+icon=icons/icon.png
 # experimental flag
 experimental=True
 

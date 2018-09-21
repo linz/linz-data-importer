@@ -1,8 +1,8 @@
 """
 /***************************************************************************
- QgisLdsPlugin
+ LINZ Data Importer
                                  A QGIS plugin
- Import LDS OGC Datasets into QGIS
+ Import LINZ (and others) OGC Datasets into QGIS
                               -------------------
         begin                : 2018-04-07
         git sha              : $Format:%H$
@@ -19,7 +19,7 @@ from PyQt4.QtCore import  *
 from PyQt4.QtGui import *
 import sys
 
-class LDSTableView(QTableView):
+class TableView(QTableView):
 
     """    
     :param QTableView: Inherits from QtGui.QWidget
@@ -45,13 +45,13 @@ class LDSTableView(QTableView):
         self.setSortingEnabled(True)
         self.setEditTriggers(QAbstractItemView.AllEditTriggers)
 
-class LDSTableModel(QAbstractTableModel):
+class TableModel(QAbstractTableModel):
     """
      models that represent table data data as a two-dimensional array of items
     """
     def __init__(self, data = [[]], headers = [], parent=None):
         """ 
-        Initialise  LDSTableModel
+        Initialise  TableModel
 
         :param data: table data
         :param data: 2d array

@@ -1,8 +1,8 @@
 """
 /***************************************************************************
- QgisLdsPlugin
+ LINZ Data Importer
                                  A QGIS plugin
- Import LDS OGC Datasets into QGIS
+ Import LINZ (and others) OGC Datasets into QGIS
                               -------------------
         begin                : 2018-04-07
         git sha              : $Format:%H$
@@ -26,7 +26,7 @@ from PyQt4.QtGui import (QAction, QIcon, QListWidgetItem, QSortFilterProxyModel,
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry, 
                        QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMessageBar
-from lds_tablemodel import LDSTableModel, LDSTableView
+from tablemodel import TableModel, TableView
 from service_data import ServiceData, Localstore, ApiKey
 
 import re
@@ -69,7 +69,7 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         return  (self.sourceModel().data(index2, Qt.DisplayRole) in self.service_type
             and self.filterRegExp().indexIn(self.sourceModel().data(index3, Qt.DisplayRole)) >= 0) 
 
-class QgisLdsPlugin:
+class LinzDataImporter:
     """
     QGIS Plugin Implementation.
     """
@@ -96,7 +96,7 @@ class QgisLdsPlugin:
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            'QgisLdsPlugin_{}.qm'.format(locale))
+            'linz-data-importer{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -106,10 +106,10 @@ class QgisLdsPlugin:
                 QCoreApplication.installTranslator(self.translator)
 
         self.actions = []
-        self.toolbar = self.iface.addToolBar(u'QgisLdsPlugin')
-        self.toolbar.setObjectName(u'QgisLdsPlugin')
+        self.toolbar = self.iface.addToolBar(u'LINZ Data Importer')
+        self.toolbar.setObjectName(u'LINZ Data Importer')
         self.tool_button = QToolButton()
-        self.menu = self.tr(u'&QGIS-LDS-Plugin')
+        self.menu = self.tr(u'&linz-data-importer')
 
         # Track data reading
         self.data_feeds = {}
@@ -140,7 +140,7 @@ class QgisLdsPlugin:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('QgisLdsPlugin', message)
+        return QCoreApplication.translate('LinzDataImporter', message)
 
     def add_action(
         self,
@@ -209,7 +209,7 @@ class QgisLdsPlugin:
             self.toolbar.addAction(action)
 
         if add_to_menu:
-            self.iface.addPluginToVectorMenu(
+            self.iface.addPluginToWebMenu(
                 self.menu,
                 action)
 
@@ -221,10 +221,10 @@ class QgisLdsPlugin:
         Create the menu entries and toolbar icons inside the QGIS GUI.
         """
 
-        icon_path = ':/plugins/QgisLdsPlugin/icons/icon.png'
+        icon_path = ':/plugins/linz-data-importer/icons/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Load LDS Data'),
+            text=self.tr(u'Load Data'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -413,7 +413,7 @@ class QgisLdsPlugin:
 
         for action in self.actions:
             self.iface.removePluginWebMenu(
-                self.tr(u'&QGIS-LDS-Plugin'),
+                self.tr(u'&linz-data-importer'),
                 action)
             self.iface.removeToolBarIcon(action)
         del self.toolbar
@@ -612,7 +612,7 @@ class QgisLdsPlugin:
         headers = ['domain', 'type','id', 'service', 'layer', 'hidden']
         self.proxy_model = CustomSortFilterProxyModel()
         self.table_view = self.service_dlg.uDatasetsTableView
-        self.table_model = LDSTableModel(data, headers)
+        self.table_model = TableModel(data, headers)
         self.proxy_model.setSourceModel(self.table_model)
         self.table_view.setModel(self.proxy_model)
         self.table_view.setSortingEnabled(True)
@@ -661,8 +661,8 @@ class QgisLdsPlugin:
         """
 
         self.iface.messageBar().pushMessage("Info", 
-            '''The LDS Plugin has changed the projects CRS to {0} to 
-            provide a common CRS when importing LDS datasets'''.format(self.wmts_epsg),
+            '''The LINZ Data Importer Plugin has changed the projects CRS to {0} to 
+            provide a common CRS when importing datasets'''.format(self.wmts_epsg),
                                              level=QgsMessageBar.INFO,
                                              duration=10)
 
