@@ -16,7 +16,6 @@
 """
 
 import unittest
-import ast
 import os
 import shutil
 import re
@@ -29,7 +28,10 @@ from qgis.utils import plugins
 from qgis.core import QgsMapLayerRegistry, QgsApplication
 
 WAIT=1000
-API_KEYS=ast.literal_eval(os.getenv('LDI_API_KEYS', None))
+
+API_KEYS={'data.linz.govt.nz':os.getenv('LDI_LINZ_KEY', None),
+          'data.mfe.govt.nz': os.getenv('LDI_MFE_KEY', None),
+          'geodata.nzdf.mil.nz':os.getenv('LDI_NZDF_KEY', None)}
 
 class UnitLevel(unittest.TestCase):
     """ Testing smallest units  against
@@ -69,6 +71,7 @@ class UnitLevel(unittest.TestCase):
             if re.search(search_str, f):
                 os.remove(os.path.join(self.pl_settings_dir, f))
 
+
         # Copy in /test/data service xml to save time.
         for f in os.listdir(self.test_data_dir):
             if re.search(search_str, f):
@@ -90,6 +93,7 @@ class UnitLevel(unittest.TestCase):
         self.api_key_instance.setApiKeys({self.domain1:API_KEYS[self.domain1]})
         self.ldi.loadSettings()
         self.ldi.update_cache=False
+        self.ldi.services_loaded=False
         # Run
         self.ldi.actions[0].trigger()
 
@@ -102,12 +106,9 @@ class UnitLevel(unittest.TestCase):
         self.dlg.uTextFilter.setText('')
         self.dlg.close()
         QgsMapLayerRegistry.instance().removeAllMapLayers()
-        self.services_loaded=False
-        self.cache_updated=False
         self.ldi.clearSettings()
         self.ldi.wmts_epsg="EPSG:3857"
         self.ldi.canvas.setCrsTransformEnabled(False)
-        self.ldi.cache_updated=False
 
     def test_clearSettings(self):
         """

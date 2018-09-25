@@ -24,7 +24,7 @@ from owslib.util import ServiceException
 from qgis.core import QgsMessageLog, QgsApplication
 
 import os.path
-from lxml.etree import XMLSyntaxError, ElementTree
+from xml.etree.ElementTree import ParseError
 from urllib2 import urlopen, URLError
 
 from PyQt4.QtCore import QSettings
@@ -284,7 +284,7 @@ class ServiceData(Localstore):
                 self.obj = WebMapTileService(url=None, xml=self.xml, version=self.version,)
             elif self.service == 'wfs':
                 self.obj = WebFeatureService(url=None, xml=self.xml, version=self.version,)
-        except XMLSyntaxError, e:
+        except ParseError, e:
             #most likely the locally stored xml is corrupt
             self.err = '{0}: XMLSyntaxError'.format(self.domain)
 

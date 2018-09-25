@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/QgisLdsPlugin" >
+    <qresource prefix="/plugins/linz-data-importer" >
         <file>icons/icon.png</file>
         <file>icons/wfs.png</file>
         <file>icons/wmts.png</file>

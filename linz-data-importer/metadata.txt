@@ -11,7 +11,7 @@ email=splanzer@linz.govt.nz
 about=Import LINZ (and others) OGC Datasets into QGIS
 
 tracker=https://github.com/linz/linz-data-importer/issues
-repository=https://github.com/SPlanzer/QGIS-LDS-Plugin
+repository=https://github.com/linz/linz-data-importer
 # End of mandatory metadata
 
 # Recommended items:

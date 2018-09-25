@@ -28,7 +28,13 @@ from qgis.core import QgsMapLayerRegistry, QgsApplication
 import xml.etree.ElementTree as ET
 
 WAIT=1000
-API_KEYS=ast.literal_eval(os.getenv('LDI_API_KEYS', None))
+
+# Using 3 env vars as issue with travis
+# when the 3 are supplied as json obj
+API_KEYS={'data.linz.govt.nz':os.getenv('LDI_LINZ_KEY', None),
+          'data.mfe.govt.nz': os.getenv('LDI_MFE_KEY', None),
+          'geodata.nzdf.mil.nz':os.getenv('LDI_NZDF_KEY', None)}
+
 TEST_CONF={'wms':'Chart NZ 252 Lake Wakatipu',
            'wmts':'Chart NZ 632 Banks Peninsula',
            'wfs':'NZ Railway Centrelines (Topo, 1:250k)'
@@ -96,7 +102,10 @@ class CorruptXml(unittest.TestCase):
                 shutil.copy(file, self.pl_settings_dir)
 
         # Copy in corrupt file for the test
-        os.remove(os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml'))
+        try:
+            os.remove(os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml'))
+        except:
+            pass
         corr_file_name='data.linz.govt.nz_wmts_corrupt.xml'
         corr_file=os.path.join(self.test_data_dir, corr_file_name) #src
         shutil.copy(corr_file, self.pl_settings_dir)

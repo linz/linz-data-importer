@@ -2,7 +2,7 @@
 
 The intent of this QGIS Plugin is to allow the easy importing of 
 [LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 
-see [Changing Scope](https://github.com/linz/linz-data-importer/#Changing-Scope)) 
+see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)) 
  into QIGS. 
 
 ![](https://github.com/linz/linz-data-importer/blob/master/images/example.gif)
