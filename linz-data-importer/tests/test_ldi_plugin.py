@@ -166,6 +166,7 @@ class UnitLevel(unittest.TestCase):
         # add the details to the ui that will be saved. 
         self.dlg.uTextDomain2.setText(self.domain2)
         self.dlg.uTextAPIKey2.setText(API_KEYS[self.domain2])
+
         # Run the method we are testing - must be called from btn clicked
         self.dlg.uBtnSaveDomain2.clicked.emit(True)
         # The 2nd api key and domain should be set and present in the ui

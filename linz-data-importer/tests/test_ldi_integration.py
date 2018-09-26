@@ -74,7 +74,7 @@ class CorruptXml(unittest.TestCase):
         self.dlg=self.ldi.service_dlg
 
         # Dont run cache update
-        self.ldi.services_loaded=False 
+        self.ldi.services_loaded=False
         self.ldi.update_cache=False
 
         # Domain to run test against lds (only service with all WxS)
