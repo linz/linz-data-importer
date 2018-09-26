@@ -27,4 +27,4 @@ install:
     - docker exec -it qgis-testing-environment sh -c "pip install pyproj"
 
 script:
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests.run_test_modules"
