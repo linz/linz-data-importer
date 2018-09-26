@@ -93,7 +93,7 @@ class UnitLevel(unittest.TestCase):
         self.api_key_instance.setApiKeys({self.domain1:API_KEYS[self.domain1]})
         self.ldi.loadSettings()
         self.ldi.update_cache=False
-        self.ldi.services_loaded=False
+        self.ldi.services_loaded=True
         # Run
         self.ldi.actions[0].trigger()
 
@@ -109,6 +109,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.clearSettings()
         self.ldi.wmts_epsg="EPSG:3857"
         self.ldi.canvas.setCrsTransformEnabled(False)
+
 
     def test_clearSettings(self):
         """
@@ -301,6 +302,9 @@ class UnitLevel(unittest.TestCase):
         """
         Test the updating of cache
         """
+
+        self.ldi.services_loaded=False
+        self.ldi.run()
 
         insitu_file_stats={}
         cached_file_stats={}

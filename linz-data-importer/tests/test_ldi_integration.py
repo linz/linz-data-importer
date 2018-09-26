@@ -74,6 +74,7 @@ class CorruptXml(unittest.TestCase):
         self.dlg=self.ldi.service_dlg
 
         # Dont run cache update
+        self.ldi.services_loaded=False 
         self.ldi.update_cache=False
 
         # Domain to run test against lds (only service with all WxS)
@@ -182,6 +183,7 @@ class UserWorkFlows (unittest.TestCase):
 
         self.ldi=plugins.get('linz-data-importer')
         self.ldi.update_cache=False
+        self.ldi.services_loaded=False 
         self.dlg=self.ldi.service_dlg
 
         domain='data.linz.govt.nz'
