@@ -69,7 +69,7 @@
          <enum>QFrame::Raised</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="swTableView">
          <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -231,8 +231,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/add.png</normaloff>:/plugins/QgisLdsPlugin/icons/add.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/add.png</normaloff>:/plugins/linz-data-importer/icons/add.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -494,8 +494,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -583,8 +583,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -606,8 +606,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -623,8 +623,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -640,8 +640,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -657,8 +657,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -674,8 +674,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -691,8 +691,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -708,8 +708,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -725,8 +725,8 @@
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
-                          <normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</normaloff>:/plugins/QgisLdsPlugin/icons/remove.png</iconset>
+                         <iconset resource="../resources.qrc">
+                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -774,6 +774,7 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+ </resources>
  <connections/>
 </ui>
