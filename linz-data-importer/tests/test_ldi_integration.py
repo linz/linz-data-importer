@@ -55,7 +55,7 @@ class CorruptXml(unittest.TestCase):
         # We can revert back to when tests are complete
         cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
         cls.ldi_plugin = plugins.get('linz-data-importer')
-
+    
     @classmethod
     def tearDownClass(cls):
         """
@@ -276,11 +276,11 @@ class UserWorkFlows (unittest.TestCase):
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(ApiKeyTest, 'test'))
-    return suite
-
-def run_tests():
-    unittest.TextTestRunner(verbosity=3).run(suite())
+# 
+# def suite():
+#     suite = unittest.TestSuite()
+#     suite.addTests(unittest.makeSuite(ApiKeyTest, 'test'))
+#     return suite
+# 
+# def run_tests():
+#     unittest.TextTestRunner(verbosity=3).run(suite())
