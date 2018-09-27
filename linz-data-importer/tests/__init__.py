@@ -2,8 +2,8 @@ import sys
 import unittest
 
 from test_ldi_plugin import UnitLevel
-from test_ldi_ui_elements.py import  UiTest
-from test_ldi_integration.py import CorruptXml, UserWorkFlows
+from test_ldi_ui_elements import  UiTest
+from test_ldi_integration import CorruptXml, UserWorkFlows
 
 def run_tests():
     suite = unittest.TestSuite()
