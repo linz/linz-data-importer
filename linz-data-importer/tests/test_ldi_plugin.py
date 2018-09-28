@@ -315,9 +315,10 @@ class UnitLevel(unittest.TestCase):
             file_path=os.path.join(self.pl_settings_dir, file)
             insitu_file_stats[file]=os.stat(file_path).st_mtime
 
+        self.cache_updated=False
+        self.update_cache=True
         self.ldi.updateServiceDataCache()
-        while not self.ldi.cache_updated:
-            QTest.qWait(35000)
+        QTest.qWait(15000)
 
         for service in ['wms','wfs','wmts']:
             file='{0}_{1}.xml'.format(self.domain1,service)
