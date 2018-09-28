@@ -336,7 +336,6 @@ class LinzDataImporter:
         If the calling button was a remove button do not save 
         the text in the associated QLineEdits. 
         """
-
         del_domain = 0
         save_domain = 0
 
@@ -447,7 +446,7 @@ class LinzDataImporter:
         self.local_store.delAllLocalServiceXML()
         t = threading.Thread(target=self.loadAllServices)
         t.start()
-        self.cache_updated=True
+        self.cache_updated=True #Needs to employ observer
 
     def loadUi(self):
         """ 
