@@ -306,6 +306,7 @@ class UnitLevel(unittest.TestCase):
 
         self.ldi.services_loaded=False
         self.ldi.run()
+        QTest.qWait(45000)
 
         insitu_file_stats={}
         cached_file_stats={}
