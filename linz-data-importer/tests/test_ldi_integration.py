@@ -146,7 +146,7 @@ class CorruptXml(unittest.TestCase):
         # Run Plugin
         self.ldi.services_loaded=False
         self.ldi.run()
-        QTest.qWait(WAIT)
+        QTest.qWait(50000)
         # ensure all services are are present in the table
         data_types=set([self.ldi.proxy_model.index(row, 3).data() 
                        for row in xrange(self.ldi.proxy_model.rowCount())])
