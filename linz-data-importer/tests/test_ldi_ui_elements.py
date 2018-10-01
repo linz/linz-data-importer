@@ -49,6 +49,11 @@ class UiTest(unittest.TestCase):
         self.dlg.close()
         self.services_loaded=False
 
+        # Remove filter set tab back to "ALL" 
+        item = self.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        self.dlg.uListOptions.itemClicked.emit(item)
+        self.assertEqual(self.dlg.qStackedWidget.currentIndex(),0)
+
     def test_service_dialog_is_active(self):
         """
         Test UI dialog is show when Plugin is ran
