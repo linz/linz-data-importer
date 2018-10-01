@@ -30,4 +30,4 @@ def run_test_modules():
     test_suite = unittest.TestLoader().discover(__location__, pattern="test_ldi_.*.py")
     unittest.TextTestRunner(verbosity=2, stream=sys.stdout).run(test_suite)
 
-run_test_modules()
+#run_test_modules()
