@@ -116,7 +116,7 @@ class CorruptXml(unittest.TestCase):
         name_file_to = os.path.join(self.pl_settings_dir, corr_file_name.replace('_corrupt',''))
         os.rename(new_corr_file, name_file_to)
         QTest.qWait(WAIT)
-
+'''
     def tearDown(self):
         """Runs after each test"""
         QTest.qWait(WAIT)
@@ -277,6 +277,7 @@ class UserWorkFlows (unittest.TestCase):
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
+'''
 # 
 # def suite():
 #     suite = unittest.TestSuite()
