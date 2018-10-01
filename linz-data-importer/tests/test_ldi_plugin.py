@@ -438,6 +438,8 @@ class UnitLevel(unittest.TestCase):
         Test the importing of WFS layers into QGIS
         """
 
+        self.ldi.selectionModel.blockSignals(True)
+
         # set plugin properties required for import
         self.ldi.domain=self.domain1
         self.ldi.service='WFS'
@@ -450,10 +452,13 @@ class UnitLevel(unittest.TestCase):
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
         self.assertEqual(title, names[0])
 
+        self.ldi.selectionModel.blockSignals(False)
+
     def test_importDataset_wmts(self):
         """
         Test the importing of WMTS layers into QGIS
         """
+        self.ldi.selectionModel.blockSignals(True)
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
@@ -468,10 +473,14 @@ class UnitLevel(unittest.TestCase):
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
         self.assertEqual(title, names[0])
 
+        self.ldi.selectionModel.blockSignals(False)
+
     def test_importDataset_wms(self):
         """
         Test the importing of WMS layers into QGIS
         """
+
+        self.ldi.selectionModel.blockSignals(True)
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
@@ -485,7 +494,8 @@ class UnitLevel(unittest.TestCase):
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
         self.assertEqual(title, names[0])
-
+        
+        self.ldi.selectionModel.blockSignals(False)
 # def suite():
 #     suite = unittest.TestSuite()
 #     suite.addTests(unittest.makeSuite(UiTest, 'test'))
