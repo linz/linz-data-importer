@@ -53,3 +53,17 @@ Text can be entered in the "Filter Data Sets" search bar to filter the datasets 
 ## Source Code, Further Documentation and Feedback
 Please see [QGIS-LDS-Plugin](https://github.com/linz/linz-data-importer/) at GitHub
 
+## Dev Notes
+
+### Tests 
+[Tests](https://github.com/linz/linz-data-importer/tree/master/linz-data-importer/tests)
+ are executed via [Travis](https://travis-ci.com/linz/linz-data-importer)
+for branches listed in the `.travis.yml` file. These Travis tests are against
+an instance of QGIS within a Docker container as made possible by the 
+[Boundless Docker container](https://hub.docker.com/r/boundlessgeo/qgis-testing-environment/). 
+
+If running these test locally they can be speed up by placing one of each of the 
+GetCapabilities documents from the [LDS](https://data.linz.govt.nz/) for each 
+services (WMS, WMTS, WFS)  in the `/tests/data/` folder. This will
+save the tests having to go and fetch these for each time. 
+
