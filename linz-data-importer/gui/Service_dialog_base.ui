@@ -40,7 +40,7 @@
        <property name="childrenCollapsible">
         <bool>false</bool>
        </property>
-       <widget class="QStackedWidget" name="qStackedWidget">
+       <widget class="QStackedWidget" name="uStackedWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
@@ -110,7 +110,7 @@
            </layout>
           </item>
           <item>
-           <widget class="QTableView" name="uDatasetsTableView">
+           <widget class="QTableView" name="uTableView">
             <property name="editTriggers">
              <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
             </property>

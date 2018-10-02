@@ -89,7 +89,6 @@ class UnitLevel(unittest.TestCase):
 
         self.ldi=plugins.get('linz-data-importer')
         self.ldi.selectionModel.blockSignals(True)
-        self.dlg=self.ldi.service_dlg
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({self.domain1:API_KEYS[self.domain1]})
         self.ldi.loadSettings()
@@ -104,8 +103,8 @@ class UnitLevel(unittest.TestCase):
         """
 
         QTest.qWait(WAIT) # Just because I want to watch it open and close
-        self.dlg.uTextFilter.setText('')
-        self.dlg.close()
+        self.ldi.dlg.uTextFilter.setText('')
+        self.ldi.dlg.close()
         QgsMapLayerRegistry.instance().removeAllMapLayers()
         self.ldi.clearSettings()
         self.ldi.wmts_epsg="EPSG:3857"
@@ -121,18 +120,18 @@ class UnitLevel(unittest.TestCase):
         # Unit test setup
         # And text to settings qLineEdits
         for n in range(1,3):
-            getattr(self.dlg, 'uTextDomain{0}'.format(n)).setText('test{0}'.format(n))
-            getattr(self.dlg, 'uTextAPIKey{0}'.format(n)).setText('test{0}'.format(n))
+            getattr(self.ldi.dlg, 'uTextDomain{0}'.format(n)).setText('test{0}'.format(n))
+            getattr(self.ldi.dlg, 'uTextAPIKey{0}'.format(n)).setText('test{0}'.format(n))
         # Check the text is there
         for n in range(1,3):
-            self.assertEqual(getattr(self.dlg, 'uTextDomain{0}'.format(n)).text(), 'test{0}'.format(n))
-            self.assertEqual(getattr(self.dlg, 'uTextAPIKey{0}'.format(n)).text(), 'test{0}'.format(n))
+            self.assertEqual(getattr(self.ldi.dlg, 'uTextDomain{0}'.format(n)).text(), 'test{0}'.format(n))
+            self.assertEqual(getattr(self.ldi.dlg, 'uTextAPIKey{0}'.format(n)).text(), 'test{0}'.format(n))
         # Run the method we are testing
         self.ldi.clearSettings()
         #did it work?
         for n in range(1,3):
-            self.assertEqual(getattr(self.dlg, 'uTextDomain{0}'.format(n)).text(), '')
-            self.assertEqual(getattr(self.dlg, 'uTextAPIKey{0}'.format(n)).text(), '')
+            self.assertEqual(getattr(self.ldi.dlg, 'uTextDomain{0}'.format(n)).text(), '')
+            self.assertEqual(getattr(self.ldi.dlg, 'uTextAPIKey{0}'.format(n)).text(), '')
 
     def test_loadSettings(self):
         """
@@ -143,13 +142,13 @@ class UnitLevel(unittest.TestCase):
         self.ldi.clearSettings()
         # confirm pre test state is as expected
         for n in range(1,11):
-            self.assertEqual(getattr(self.dlg, 'uTextDomain{0}'.format(n)).text(), '')
-            self.assertEqual(getattr(self.dlg, 'uTextAPIKey{0}'.format(n)).text(), '')
+            self.assertEqual(getattr(self.ldi.dlg, 'uTextDomain{0}'.format(n)).text(), '')
+            self.assertEqual(getattr(self.ldi.dlg, 'uTextAPIKey{0}'.format(n)).text(), '')
         # Run the method we are testing
         self.ldi.loadSettings()
         # The api keys and domain set in setup should be present in the ui
-        self.assertEqual(self.dlg.uTextDomain1.text(), self.domain1)
-        self.assertEqual(self.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
+        self.assertEqual(self.ldi.dlg.uTextDomain1.text(), self.domain1)
+        self.assertEqual(self.ldi.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
 
     def test_saveDomain_save(self):
         """
@@ -162,20 +161,20 @@ class UnitLevel(unittest.TestCase):
         # confirm pre test state is as expected
         self.assertEqual({self.domain1:API_KEYS[self.domain1]}, self.api_key_instance.getApiKeys())
         self.ldi.loadSettings()
-        self.assertEqual(self.dlg.uTextDomain1.text(), self.domain1)
-        self.assertEqual(self.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
+        self.assertEqual(self.ldi.dlg.uTextDomain1.text(), self.domain1)
+        self.assertEqual(self.ldi.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
 
         # add the details to the ui that will be saved. 
-        self.dlg.uTextDomain2.setText(self.domain2)
-        self.dlg.uTextAPIKey2.setText(API_KEYS[self.domain2])
+        self.ldi.dlg.uTextDomain2.setText(self.domain2)
+        self.ldi.dlg.uTextAPIKey2.setText(API_KEYS[self.domain2])
 
         # Run the method we are testing - must be called from btn clicked
-        self.dlg.uBtnSaveDomain2.clicked.emit(True)
+        self.ldi.dlg.uBtnSaveDomain2.clicked.emit(True)
         # The 2nd api key and domain should be set and present in the ui
         api_keys={self.domain1:API_KEYS[self.domain1], self.domain2:API_KEYS[self.domain2]}
         self.assertEqual(api_keys, self.api_key_instance.getApiKeys())
-        curr_keys={self.dlg.uTextDomain1.text():self.dlg.uTextAPIKey1.text(),
-                   self.dlg.uTextDomain2.text():self.dlg.uTextAPIKey2.text()}
+        curr_keys={self.ldi.dlg.uTextDomain1.text():self.ldi.dlg.uTextAPIKey1.text(),
+                   self.ldi.dlg.uTextDomain2.text():self.ldi.dlg.uTextAPIKey2.text()}
 
         self.assertEqual(curr_keys, {self.domain1:API_KEYS[self.domain1],
                                      self.domain2:API_KEYS[self.domain2]})
@@ -188,10 +187,10 @@ class UnitLevel(unittest.TestCase):
         # confirm pre test state is as expected
         self.assertEqual({self.domain1:API_KEYS[self.domain1]}, self.api_key_instance.getApiKeys())
         self.ldi.loadSettings()
-        self.assertEqual(self.dlg.uTextDomain1.text(), self.domain1)
-        self.assertEqual(self.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
+        self.assertEqual(self.ldi.dlg.uTextDomain1.text(), self.domain1)
+        self.assertEqual(self.ldi.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
         # Run the method we are testing - must be called from btn clicked
-        self.dlg.uBtnRemoveDomain1.clicked.emit(True)
+        self.ldi.dlg.uBtnRemoveDomain1.clicked.emit(True)
         # Check the record has been removed from the api settings property 
         self.assertEqual({}, self.api_key_instance.getApiKeys())
 
@@ -200,31 +199,31 @@ class UnitLevel(unittest.TestCase):
         Test UI functionality for adding new settings details 
         """
 
-        idx=self.dlg.uComboBoxDomain.findText(self.domain2)
-        self.dlg.uComboBoxDomain.setCurrentIndex(idx)
-        self.assertEqual(self.dlg.uComboBoxDomain.currentText(), self.domain2)
+        idx=self.ldi.dlg.uComboBoxDomain.findText(self.domain2)
+        self.ldi.dlg.uComboBoxDomain.setCurrentIndex(idx)
+        self.assertEqual(self.ldi.dlg.uComboBoxDomain.currentText(), self.domain2)
         # Test the method
-        self.dlg.uBtnAddDomain.clicked.emit(True)
+        self.ldi.dlg.uBtnAddDomain.clicked.emit(True)
         QTest.qWait(2000)
-        self.assertEqual(self.dlg.uTextDomain2.text(), self.domain2)
+        self.assertEqual(self.ldi.dlg.uTextDomain2.text(), self.domain2)
         # Other rows should be hidden
         for n in range(3,11):
-            self.assertFalse(getattr(self.dlg, 'uTextDomain{0}'.format(n)).isVisible())
-            self.assertFalse(getattr(self.dlg, 'uTextAPIKey{0}'.format(n)).isVisible())
+            self.assertFalse(getattr(self.ldi.dlg, 'uTextDomain{0}'.format(n)).isVisible())
+            self.assertFalse(getattr(self.ldi.dlg, 'uTextAPIKey{0}'.format(n)).isVisible())
 
     def test_addNewDomain_duplicate(self):
         """
         Test case where by the user tries to add duplicate domain details
         """
 
-        idx=self.dlg.uComboBoxDomain.findText(self.domain1)
-        self.dlg.uComboBoxDomain.setCurrentIndex(idx)
+        idx=self.ldi.dlg.uComboBoxDomain.findText(self.domain1)
+        self.ldi.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
-        self.dlg.uBtnAddDomain.clicked.emit(True)
+        self.ldi.dlg.uBtnAddDomain.clicked.emit(True)
         # First as we are selecting a domian that already exists
         # this should show a warning
-#         self.assertTrue(self.dlg.uWarningSettings.isVisible())
-        self.assertTrue(self.dlg.uWarningSettings.text(), 
+#         self.assertTrue(self.ldi.dlg.uWarningSettings.isVisible())
+        self.assertTrue(self.ldi.dlg.uWarningSettings.text(), 
                         'Warning: Domains must be unique. '
                         'Please edit the domain below')
 
@@ -244,14 +243,14 @@ class UnitLevel(unittest.TestCase):
                                           '9':'9',
                                           })
         self.ldi.loadSettings()
-        idx=self.dlg.uComboBoxDomain.findText(self.domain1)
-        self.dlg.uComboBoxDomain.setCurrentIndex(idx)
+        idx=self.ldi.dlg.uComboBoxDomain.findText(self.domain1)
+        self.ldi.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
-        self.dlg.uBtnAddDomain.clicked.emit(True)
+        self.ldi.dlg.uBtnAddDomain.clicked.emit(True)
         # First as we are selecting a domian that already exists
         # this should show a warning
-#         self.assertTrue(self.dlg.uWarningSettings.isVisible())
-        self.assertTrue(self.dlg.uWarningSettings.text(), '')
+#         self.assertTrue(self.ldi.dlg.uWarningSettings.isVisible())
+        self.assertTrue(self.ldi.dlg.uWarningSettings.text(), '')
 
     def test_addNewDomain_greaterthan_max_entires(self):
         """
@@ -269,14 +268,14 @@ class UnitLevel(unittest.TestCase):
                                           '9':'9',
                                           '10':'10'})
         self.ldi.loadSettings()
-        idx=self.dlg.uComboBoxDomain.findText(self.domain1)
-        self.dlg.uComboBoxDomain.setCurrentIndex(idx)
+        idx=self.ldi.dlg.uComboBoxDomain.findText(self.domain1)
+        self.ldi.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
-        self.dlg.uBtnAddDomain.clicked.emit(True)
+        self.ldi.dlg.uBtnAddDomain.clicked.emit(True)
         # First as we are selecting a domian that already exists
         # this should show a warning
-#         self.assertTrue(self.dlg.uWarningSettings.isVisible())
-        self.assertTrue(self.dlg.uWarningSettings.text(), 'Warning: You can only store up to . '
+#         self.assertTrue(self.ldi.dlg.uWarningSettings.isVisible())
+        self.assertTrue(self.ldi.dlg.uWarningSettings.text(), 'Warning: You can only store up to . '
                                                       '10 domain entries')
 
     def test_unload(self):

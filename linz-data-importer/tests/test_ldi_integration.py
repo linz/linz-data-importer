@@ -71,7 +71,6 @@ class CorruptXml(unittest.TestCase):
 
         #Get reference to plugin
         self.ldi=plugins.get('linz-data-importer')
-        self.dlg=self.ldi.service_dlg
 
         # Dont run cache update
         self.ldi.services_loaded=False
@@ -120,8 +119,8 @@ class CorruptXml(unittest.TestCase):
     def tearDown(self):
         """Runs after each test"""
         QTest.qWait(WAIT)
-        self.dlg.uTextFilter.setText('')
-        self.dlg.close()
+        self.ldi.dlg.uTextFilter.setText('')
+        self.ldi.dlg.close()
         self.services_loaded=False
 
     def test_handle_corrupt_xml(self):
@@ -185,7 +184,6 @@ class UserWorkFlows (unittest.TestCase):
         self.ldi=plugins.get('linz-data-importer')
         self.ldi.update_cache=False
         self.ldi.services_loaded=False 
-        self.dlg=self.ldi.service_dlg
 
         domain='data.linz.govt.nz'
         self.api_key_instance = self.ldi.api_key_instance
@@ -200,12 +198,12 @@ class UserWorkFlows (unittest.TestCase):
         """
 
         QTest.qWait(WAIT) # Just because I want to watch it open a close
-        self.dlg.uTextFilter.setText('')
-        self.dlg.close()
+        self.ldi.dlg.uTextFilter.setText('')
+        self.ldi.dlg.close()
         QgsMapLayerRegistry.instance().removeAllMapLayers()
         self.services_loaded=False
-        item = self.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
-        self.dlg.uListOptions.itemClicked.emit(item)
+        item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
     def test_wfs_import(self):
         """
@@ -234,11 +232,11 @@ class UserWorkFlows (unittest.TestCase):
         """
 
         # Select WxS table view
-        item = self.dlg.uListOptions.findItems(service.upper(), Qt.MatchFixedString)[0]
-        self.dlg.uListOptions.itemClicked.emit(item)
+        item = self.ldi.dlg.uListOptions.findItems(service.upper(), Qt.MatchFixedString)[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
         # Test the tableview widget is current stackedWidget
-        self.assertEqual(self.dlg.qStackedWidget.currentIndex(), 0)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
@@ -250,12 +248,12 @@ class UserWorkFlows (unittest.TestCase):
         self.assertEqual(service.upper(), list(data_types)[0])
 
         # Filter
-        self.dlg.uTextFilter.setText(TEST_CONF[service].replace('(', '\(').replace(')','\)'))
+        self.ldi.dlg.uTextFilter.setText(TEST_CONF[service].replace('(', '\(').replace(')','\)'))
         QTest.qWait(WAIT)
 
         # Import the first row
-        self.dlg.uDatasetsTableView.selectRow(0)
-        self.dlg.uBtnImport.clicked.emit(True)
+        self.ldi.dlg.uTableView.selectRow(0)
+        self.ldi.dlg.uBtnImport.clicked.emit(True)
 
         # Test the LayerRegistry to ensure the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
@@ -267,8 +265,8 @@ class UserWorkFlows (unittest.TestCase):
         """
 
         # Set up 
-        item = self.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
-        self.dlg.uListOptions.itemClicked.emit(item)
+        item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
         # Tests
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
