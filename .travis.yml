@@ -3,7 +3,7 @@ services:
 
 branches: 
   only: 
-    - int_test_refactor
+    - master
 
 env:
   global:
