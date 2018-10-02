@@ -28,7 +28,13 @@ from qgis.core import QgsMapLayerRegistry, QgsApplication
 import xml.etree.ElementTree as ET
 
 WAIT=1000
-API_KEYS=ast.literal_eval(os.getenv('LDI_API_KEYS', None))
+
+# Using 3 env vars as issue with travis
+# when the 3 are supplied as json obj
+API_KEYS={'data.linz.govt.nz':os.getenv('LDI_LINZ_KEY', None),
+          'data.mfe.govt.nz': os.getenv('LDI_MFE_KEY', None),
+          'geodata.nzdf.mil.nz':os.getenv('LDI_NZDF_KEY', None)}
+
 TEST_CONF={'wms':'Chart NZ 252 Lake Wakatipu',
            'wmts':'Chart NZ 632 Banks Peninsula',
            'wfs':'NZ Railway Centrelines (Topo, 1:250k)'
@@ -49,7 +55,7 @@ class CorruptXml(unittest.TestCase):
         # We can revert back to when tests are complete
         cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
         cls.ldi_plugin = plugins.get('linz-data-importer')
-
+    
     @classmethod
     def tearDownClass(cls):
         """
@@ -65,9 +71,9 @@ class CorruptXml(unittest.TestCase):
 
         #Get reference to plugin
         self.ldi=plugins.get('linz-data-importer')
-        self.dlg=self.ldi.service_dlg
 
         # Dont run cache update
+        self.ldi.services_loaded=False
         self.ldi.update_cache=False
 
         # Domain to run test against lds (only service with all WxS)
@@ -96,7 +102,10 @@ class CorruptXml(unittest.TestCase):
                 shutil.copy(file, self.pl_settings_dir)
 
         # Copy in corrupt file for the test
-        os.remove(os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml'))
+        try:
+            os.remove(os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml'))
+        except:
+            pass
         corr_file_name='data.linz.govt.nz_wmts_corrupt.xml'
         corr_file=os.path.join(self.test_data_dir, corr_file_name) #src
         shutil.copy(corr_file, self.pl_settings_dir)
@@ -110,8 +119,8 @@ class CorruptXml(unittest.TestCase):
     def tearDown(self):
         """Runs after each test"""
         QTest.qWait(WAIT)
-        self.dlg.uTextFilter.setText('')
-        self.dlg.close()
+        self.ldi.dlg.uTextFilter.setText('')
+        self.ldi.dlg.close()
         self.services_loaded=False
 
     def test_handle_corrupt_xml(self):
@@ -134,8 +143,9 @@ class CorruptXml(unittest.TestCase):
             is_corrupt=True
         self.assertTrue(is_corrupt)
         # Run Plugin
+        self.ldi.services_loaded=False
         self.ldi.actions[0].trigger()
-        QTest.qWait(WAIT)
+        QTest.qWait(1000)
         # ensure all services are are present in the table
         data_types=set([self.ldi.proxy_model.index(row, 3).data() 
                        for row in xrange(self.ldi.proxy_model.rowCount())])
@@ -173,7 +183,7 @@ class UserWorkFlows (unittest.TestCase):
 
         self.ldi=plugins.get('linz-data-importer')
         self.ldi.update_cache=False
-        self.dlg=self.ldi.service_dlg
+        self.ldi.services_loaded=False 
 
         domain='data.linz.govt.nz'
         self.api_key_instance = self.ldi.api_key_instance
@@ -188,12 +198,12 @@ class UserWorkFlows (unittest.TestCase):
         """
 
         QTest.qWait(WAIT) # Just because I want to watch it open a close
-        self.dlg.uTextFilter.setText('')
-        self.dlg.close()
+        self.ldi.dlg.uTextFilter.setText('')
+        self.ldi.dlg.close()
         QgsMapLayerRegistry.instance().removeAllMapLayers()
         self.services_loaded=False
-        item = self.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
-        self.dlg.uListOptions.itemClicked.emit(item)
+        item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
     def test_wfs_import(self):
         """
@@ -222,11 +232,11 @@ class UserWorkFlows (unittest.TestCase):
         """
 
         # Select WxS table view
-        item = self.dlg.uListOptions.findItems(service.upper(), Qt.MatchFixedString)[0]
-        self.dlg.uListOptions.itemClicked.emit(item)
+        item = self.ldi.dlg.uListOptions.findItems(service.upper(), Qt.MatchFixedString)[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
         # Test the tableview widget is current stackedWidget
-        self.assertEqual(self.dlg.qStackedWidget.currentIndex(), 0)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
@@ -238,12 +248,12 @@ class UserWorkFlows (unittest.TestCase):
         self.assertEqual(service.upper(), list(data_types)[0])
 
         # Filter
-        self.dlg.uTextFilter.setText(TEST_CONF[service].replace('(', '\(').replace(')','\)'))
+        self.ldi.dlg.uTextFilter.setText(TEST_CONF[service].replace('(', '\(').replace(')','\)'))
         QTest.qWait(WAIT)
 
         # Import the first row
-        self.dlg.uDatasetsTableView.selectRow(0)
-        self.dlg.uBtnImport.clicked.emit(True)
+        self.ldi.dlg.uTableView.selectRow(0)
+        self.ldi.dlg.uBtnImport.clicked.emit(True)
 
         # Test the LayerRegistry to ensure the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
@@ -255,8 +265,8 @@ class UserWorkFlows (unittest.TestCase):
         """
 
         # Set up 
-        item = self.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
-        self.dlg.uListOptions.itemClicked.emit(item)
+        item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
         # Tests
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
@@ -266,10 +276,10 @@ class UserWorkFlows (unittest.TestCase):
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
 
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(ApiKeyTest, 'test'))
-    return suite
-
-def run_tests():
-    unittest.TextTestRunner(verbosity=3).run(suite())
+# def suite():
+#     suite = unittest.TestSuite()
+#     suite.addTests(unittest.makeSuite(ApiKeyTest, 'test'))
+#     return suite
+# 
+# def run_tests():
+#     unittest.TextTestRunner(verbosity=3).run(suite())
