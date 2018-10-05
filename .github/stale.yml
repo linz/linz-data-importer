@@ -6,6 +6,7 @@ daysUntilClose: 5 # currently short for test
 exemptLabels:
   - Future Enhancement
   - on hold
+  - StaleBot Ignore
 # Label to use when marking an issue as stale
 staleLabel: Stale
 # Comment to post when marking an issue as stale. Set to `false` to disable
