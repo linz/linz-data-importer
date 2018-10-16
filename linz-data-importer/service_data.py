@@ -15,6 +15,8 @@
  ***************************************************************************/
 """
 
+
+from builtins import object
 import re
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
@@ -25,12 +27,13 @@ from qgis.core import QgsMessageLog, QgsApplication
 
 import os.path
 from xml.etree.ElementTree import ParseError
-from urllib2 import urlopen, URLError
+from urllib.request import urlopen
+from urllib.error import URLError
 
-from PyQt4.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
 #from gc import isenabled
 
-class ApiKey():
+class ApiKey(object):
     """
     Store API Keys for each domain. Required to 
     fetch service data
@@ -75,7 +78,7 @@ class ApiKey():
         QSettings().setValue('linz_data_importer/apikeys', keys)
         self.api_keys = self.getApiKeys()
 
-class Localstore():
+class Localstore(object):
     """ 
     Caching of capability documents
     """
@@ -284,7 +287,7 @@ class ServiceData(Localstore):
                 self.obj = WebMapTileService(url=None, xml=self.xml, version=self.version,)
             elif self.service == 'wfs':
                 self.obj = WebFeatureService(url=None, xml=self.xml, version=self.version,)
-        except ParseError, e:
+        except ParseError as e:
             #most likely the locally stored xml is corrupt
             self.err = '{0}: XMLSyntaxError'.format(self.domain)
 
@@ -311,11 +314,13 @@ class ServiceData(Localstore):
                                                                 self.version))
 
             self.xml = xml.read()
+            self.xml = self.xml.decode('utf-8')
+
             # write to cache
             with open(self.file, 'w') as f:
                 f.write(self.xml)
 
-        except URLError, e:
+        except URLError as e:
             if hasattr(e, 'reason'):
                 self.err = 'Error: ({0}) {1}'.format(self.domain, e.reason)
 
@@ -330,7 +335,7 @@ class ServiceData(Localstore):
         service_data = []
         cont = self.obj.contents
 
-        for dataset_id, dataset_obj in cont.iteritems():
+        for dataset_id, dataset_obj in cont.items():
             full_id = re.search(r'([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)', dataset_obj.id)
             type = full_id.group('type')
             id  =  full_id.group('id')

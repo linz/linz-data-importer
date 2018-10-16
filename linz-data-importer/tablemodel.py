@@ -15,8 +15,9 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import  *
-from PyQt4.QtGui import *
+from builtins import str
+from qgis.PyQt.QtCore import QAbstractTableModel, Qt
+from qgis.PyQt.QtWidgets import QTableView
 import sys
 
 class TableView(QTableView):
@@ -107,7 +108,7 @@ class TableModel(QAbstractTableModel):
             return None
         elif role != Qt.DisplayRole:
             return None
-        return unicode(self.arraydata[index.row()][index.column()])
+        return str(self.arraydata[index.row()][index.column()])
 
     def setData(self, data):
         """

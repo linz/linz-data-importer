@@ -14,20 +14,23 @@
  *   see the LICENSE file for more information                             *
  ***************************************************************************/
 """
+from __future__ import absolute_import
 
 # This program is released under the terms of the 3 clause BSD license. See the
 # LICENSE file for more information.
 
-from PyQt4.QtCore import (QSettings, QTranslator, qVersion, QCoreApplication, 
-                          Qt, QRegExp, QSize, Qt) 
+from builtins import range
+from builtins import object
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QRegExp, QSize, Qt 
 
-from PyQt4.QtGui import (QAction, QIcon, QListWidgetItem, QSortFilterProxyModel,
-                         QHeaderView, QMenu, QToolButton, QPixmap, QImage)
-from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry, 
-                       QgsCoordinateReferenceSystem)
+from qgis.PyQt.QtWidgets import QAction, QListWidgetItem, QHeaderView, QMenu, QToolButton
+from qgis.PyQt.QtGui import QIcon, QPixmap, QImage
+from qgis.PyQt.QtCore import QSortFilterProxyModel
+from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsProject,
+                       QgsCoordinateReferenceSystem, Qgis)
 from qgis.gui import QgsMessageBar
-from tablemodel import TableModel, TableView
-from service_data import ServiceData, Localstore, ApiKey
+from .tablemodel import TableModel, TableView
+from .service_data import ServiceData, Localstore, ApiKey
 
 import re
 import urllib.request
@@ -37,9 +40,9 @@ import os.path
 from owslib import wfs, wms, wmts
 
 # Initialize Qt resources from file resources.py
-import resources
+from . import resources
 # Import the code for the dialog
-from gui.Service_dialog import ServiceDialog
+from .gui.Service_dialog import ServiceDialog
 
 # Hardcoded service .see #20 for enhancement
 SER=['',
@@ -69,7 +72,7 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         return  (self.sourceModel().data(index2, Qt.DisplayRole) in self.service_type
             and self.filterRegExp().indexIn(self.sourceModel().data(index3, Qt.DisplayRole)) >= 0) 
 
-class LinzDataImporter:
+class LinzDataImporter(object):
     """
     QGIS Plugin Implementation.
     """
@@ -275,7 +278,7 @@ class LinzDataImporter:
         about_file=os.path.join(self.plugin_dir, 'about.html')
         icon_path=os.path.join(self.plugin_dir, 'icons')
         with open(about_file) as file:
-            about_html=file.read().decode("utf-8")
+            about_html=file.read()
             about_html.format(self.plugin_dir)
         self.dlg.hAboutHtml.setHtml(about_html.format(icon_path))
 
@@ -312,7 +315,7 @@ class LinzDataImporter:
         self.clearSettings()
         api_keys=self.api_key_instance.getApiKeys()
         if api_keys:
-            for domain, api_key in api_keys.items():
+            for domain, api_key in list(api_keys.items()):
                 self.domains.append(domain)
                 getattr(self.dlg, 'uTextDomain{0}'.format(len(self.domains))).setText(domain)
                 getattr(self.dlg, 'uTextAPIKey{0}'.format(len(self.domains))).setText(api_key)
@@ -631,13 +634,13 @@ class LinzDataImporter:
         crs=self.canvas.mapSettings().destinationCrs().authid()
         return crs
 
-    def enableOTF(self):
-        """
-        Enable on the fly projection
-        """
-
-        if not self.iface.mapCanvas().hasCrsTransformEnabled():
-            self.canvas.setCrsTransformEnabled(True)
+#     def enableOTF(self): # Always enabled in QGIS three - REMOVE
+#         """
+#         Enable on the fly projection
+#         """
+# 
+#         if not self.iface.mapCanvas().hasCrsTransformEnabled():
+#             self.canvas.setCrsTransformEnabled(True)
 
     def setSRID(self):
         """ 
@@ -655,7 +658,7 @@ class LinzDataImporter:
         self.iface.messageBar().pushMessage("Info", 
             '''The LINZ Data Importer Plugin has changed the projects CRS to {0} to 
             provide a common CRS when importing datasets'''.format(self.wmts_epsg),
-                                             level=QgsMessageBar.INFO,
+                                             level=Qgis.Info,
                                              duration=10)
 
     def zoomTo(self):
@@ -672,7 +675,6 @@ class LinzDataImporter:
         # and the user notified
         # ESPG:3857 as all WMTS datasets are served in the CRS
 
-        self.enableOTF()
         if self.mapCrs() != self.wmts_epsg:
             self.setSRID()
             self.infoCRS()
@@ -730,5 +732,5 @@ class LinzDataImporter:
                                   'wms')
         else: pass # ERRORnot supported
 
-        QgsMapLayerRegistry.instance().addMapLayer(layer) 
+        QgsProject.instance().addMapLayer(layer) 
         self.dlg.close()
