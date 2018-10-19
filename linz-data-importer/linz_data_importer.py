@@ -17,6 +17,8 @@
 
 # This program is released under the terms of the 3 clause BSD license. See the
 # LICENSE file for more information.
+import sip
+sip.setapi('QString', 2)
 
 from PyQt4.QtCore import (QSettings, QTranslator, qVersion, QCoreApplication, 
                           Qt, QRegExp, QSize, Qt) 
@@ -56,17 +58,17 @@ SER_TYPES=['wmts', 'wms', 'wfs']
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
     def __init__(self, parent=None):
         super(CustomSortFilterProxyModel, self).__init__(parent)
-        self.service_type=('WMS', 'WMTS', 'WFS')
+        self.data_type=('WMS', 'WMTS', 'WFS')
 
     def setServiceType(self, service_type):
-        self.service_type=service_type
+        self.data_type=service_type
         self.invalidateFilter()
 
     def filterAcceptsRow(self, sourceRow, sourceParent):
-        index2=self.sourceModel().index(sourceRow, 3, sourceParent) # SERVICE TYPE
+        index2=self.sourceModel().index(sourceRow, 2, sourceParent) # SERVICE TYPE
         index3=self.sourceModel().index(sourceRow, 4, sourceParent)
 
-        return  (self.sourceModel().data(index2, Qt.DisplayRole) in self.service_type
+        return  (self.sourceModel().data(index2, Qt.DisplayRole) in self.data_type
             and self.filterRegExp().indexIn(self.sourceModel().data(index3, Qt.DisplayRole)) >= 0) 
 
 class LinzDataImporter:
@@ -119,8 +121,9 @@ class LinzDataImporter:
         self.service=None
         self.id=None
         self.layer_title=None
-        self.wmts_epsg='EPSG:3857'
-        self.wmts_epsg_int=3857
+        self.selected_crs=None
+        self.selected_crs_int=None
+        self.layers_loaded=False
         self.service_versions={'wfs': '2.0.0', 
                         'wms': '1.1.1' , 
                         'wmts': '1.0.0'}
@@ -233,6 +236,8 @@ class LinzDataImporter:
         self.dlg.uListOptions.itemClicked.connect(self.showSelectedOption)
         self.dlg.uListOptions.itemClicked.emit(self.dlg.uListOptions.item(0))
         self.curr_list_wid_index=0
+
+        self.dlg.uCRSCombo.currentIndexChanged.connect(self.layerCrsSelected)
 
         self.dlg.uLabelWarning.setStyleSheet('color:red')
         self.dlg.uWarningSettings.setStyleSheet('color:red')
@@ -515,6 +520,11 @@ class LinzDataImporter:
             elif item.text() == 'About':
                 self.dlg.uStackedWidget.setCurrentIndex(2)
 
+    def layerCrsSelected(self):
+        self.selected_crs = str(self.dlg.uCRSCombo.currentText())
+        if self.selected_crs:
+            self.selected_crs_int = int(self.selected_crs.strip('EPSG:'))
+
     def getPreview(self, res, res_timeout):
         """
         Fetch the preview image from the internet
@@ -544,7 +554,7 @@ class LinzDataImporter:
         On the tableviews rowChanged fetch the datasets preview image 
         """
 
-        if self.service_type != 'layer':
+        if self.data_type != 'layer':
             self.dlg.uLabelImgPreview.clear()
             self.dlg.uLabelImgPreview.setText('No preview available')
             return 
@@ -565,10 +575,18 @@ class LinzDataImporter:
 
         self.domain=self.row[0]
         abstract=self.row[5]
-        self.service_type=self.row[1]
-        self.id=self.row[2]
-        self.service=self.row[3]
+        self.data_type=self.row[1]
+        self.id=self.row[3]
+        self.service=self.row[2]
         self.layer_title=self.row[4]
+        self.crs_options=self.row[6]
+        self.dlg.uCRSCombo.clear()
+        if self.data_type != 'table':
+            self.dlg.uCRSCombo.addItems(self.crs_options)
+            curr_crs = self.mapCrs()
+            if curr_crs in self.crs_options:
+                idx = self.dlg.uCRSCombo.findText(curr_crs)
+                self.dlg.uCRSCombo.setCurrentIndex(idx)
         self.dlg.uTextDescription.setText(abstract)
 
     def userSelection(self, selected):
@@ -592,7 +610,7 @@ class LinzDataImporter:
 
         filter_text=self.dlg.uTextFilter.text()
         self.proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        self.proxy_model.setFilterKeyColumn(3)
+        self.proxy_model.setFilterKeyColumn(2)
         self.proxy_model.setFilterRegExp(filter_text)
 
     def setTableModelView(self):
@@ -602,13 +620,17 @@ class LinzDataImporter:
         # Set Table Model
         data=[['','','','','']]
 
-        headers=['domain', 'type','id', 'service', 'layer', 'hidden']
+        headers=['domain', 'type','service', 'id', 'layer name', '_desc', '_crs']
         self.proxy_model=CustomSortFilterProxyModel()
         self.table_model=TableModel(data, headers)
         self.proxy_model.setSourceModel(self.table_model)
         self.dlg.uTableView.setModel(self.proxy_model)
         self.dlg.uTableView.setSortingEnabled(True)
         self.dlg.uTableView.horizontalHeader().setStretchLastSection(True)
+        self.dlg.uTableView.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
+        self.dlg.uTableView.horizontalHeader().setResizeMode(1, QHeaderView.ResizeToContents)
+        self.dlg.uTableView.horizontalHeader().setResizeMode(2, QHeaderView.ResizeToContents)
+        self.dlg.uTableView.horizontalHeader().setResizeMode(3, QHeaderView.ResizeToContents)
 
         # Trigger updating of data abstract on user selection
         self.selectionModel=self.dlg.uTableView.selectionModel()
@@ -633,30 +655,32 @@ class LinzDataImporter:
 
     def enableOTF(self):
         """
-        Enable on the fly projection
+        Enable on the fly projection (OTF). This plugin forces OTF
         """
 
         if not self.iface.mapCanvas().hasCrsTransformEnabled():
             self.canvas.setCrsTransformEnabled(True)
+        # Notify user?
 
-    def setSRID(self):
+    def setProjectSRID(self):
         """ 
-        Set the projects projection
+        Set the projects projection. This is only done when a layer
+        is imported and no others have been already.
         """
 
-        crs=QgsCoordinateReferenceSystem(self.wmts_epsg_int,QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs=QgsCoordinateReferenceSystem(self.selected_crs_int,QgsCoordinateReferenceSystem.EpsgCrsId)
         self.canvas.setDestinationCrs(crs)
 
-    def infoCRS(self):
-        """
-        Open a QgsMessageBar informing the projects crs has changed
-        """
-
-        self.iface.messageBar().pushMessage("Info", 
-            '''The LINZ Data Importer Plugin has changed the projects CRS to {0} to 
-            provide a common CRS when importing datasets'''.format(self.wmts_epsg),
-                                             level=QgsMessageBar.INFO,
-                                             duration=10)
+#     def infoCRS(self):
+#         """
+#         Open a QgsMessageBar informing the projects crs has changed
+#         """
+# 
+#         self.iface.messageBar().pushMessage("Info", 
+#             '''The LINZ Data Importer Plugin has changed the projects CRS to {0} to 
+#             provide a common CRS when importing datasets'''.format(self.selected_crs),
+#                                              level=QgsMessageBar.INFO,
+#                                              duration=10)
 
     def zoomTo(self):
         ''' zoom to newly imported'''
@@ -668,14 +692,10 @@ class LinzDataImporter:
         """
         Import the selected dataset to QGIS
         """
-        # MVP once a layer is imported the CRS is changed to ESPG:3857
-        # and the user notified
-        # ESPG:3857 as all WMTS datasets are served in the CRS
 
         self.enableOTF()
-        if self.mapCrs() != self.wmts_epsg:
-            self.setSRID()
-            self.infoCRS()
+        if not self.layers_loaded:
+            self.setProjectSRID()
 
         if self.service == "WFS":
             url=("https://{0}/services;"
@@ -687,7 +707,7 @@ class LinzDataImporter:
                                                   self.api_key_instance.getApiKey(self.domain), 
                                                   self.service.lower(), 
                                                   self.service_versions[self.service.lower()], 
-                                                  self.service_type, 
+                                                  self.data_type, 
                                                   self.id)
             layer=QgsVectorLayer(url,
                                   self.layer_title,
@@ -702,8 +722,8 @@ class LinzDataImporter:
                    "url=https://{0}/services;"
                    "key={4}/{5}/{2}-{3}?"
                    "version={6}").format(self.domain,
-                                         self.wmts_epsg, 
-                                         self.service_type, 
+                                         self.selected_crs, 
+                                         self.data_type, 
                                          self.id, 
                                          self.api_key_instance.getApiKey(self.domain), 
                                          self.service.lower(), 
@@ -719,8 +739,8 @@ class LinzDataImporter:
                    "url=https://{0}/services;"
                    "key={4}/{5}/{6}/{2}/{3}/"
                    "WMTSCapabilities.xml").format(self.domain,
-                                                  self.wmts_epsg,
-                                                  self.service_type, 
+                                                  self.selected_crs,
+                                                  self.data_type, 
                                                   self.id, 
                                                   self.api_key_instance.getApiKey(self.domain), 
                                                   self.service.lower(), 
@@ -731,4 +751,5 @@ class LinzDataImporter:
         else: pass # ERRORnot supported
 
         QgsMapLayerRegistry.instance().addMapLayer(layer) 
+        self.layers_loaded=True
         self.dlg.close()

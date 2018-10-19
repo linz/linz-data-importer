@@ -110,7 +110,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.wmts_epsg="EPSG:3857"
         self.ldi.canvas.setCrsTransformEnabled(False)
         self.ldi.selectionModel.blockSignals(False)
-
+        self.layers_loaded=False
 
     def test_clearSettings(self):
         """
@@ -411,28 +411,21 @@ class UnitLevel(unittest.TestCase):
         otf=self.ldi.canvas.hasCrsTransformEnabled()
         self.assertTrue(otf)
 
-    def test_setSRID(self):
+    def test_setProjectSRID(self):
         """
         Test the setting of the projects crs
         """
 
         # Get plugins default srs 
-        default_srid=self.ldi.wmts_epsg.lstrip('EPSG:')
         test_srid_int=3793
         # Test current state
         self.assertNotEqual(self.ldi.mapCrs(), test_srid_int)
 
         # Change srid via method
-        self.ldi.wmts_epsg_int=test_srid_int
+        self.ldi.selected_crs_int=test_srid_int
+        self.ldi.setProjectSRID()
         # Test method
-        self.ldi.setSRID()
         self.assertEqual(self.ldi.mapCrs().lstrip('EPSG:'), str(test_srid_int))
-
-    def test_infoCRS(self):
-        """
-        Not currently tested
-        """
-        pass
 
     def test_importDataset_wfs(self):
         """
@@ -440,12 +433,13 @@ class UnitLevel(unittest.TestCase):
         """
 
         # set plugin properties required for import
-        self.ldi.domain=self.domain1
+        self.ldi.domain=self.domain1 #mfe
         self.ldi.service='WFS'
         self.ldi.service_type='layer'
-        self.ldi.id='52759'
+        self.ldi.id='53318'
         title='test_wfs'
         self.ldi.layer_title=title
+        self.ldi.selected_crs_int=2193
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
@@ -458,12 +452,13 @@ class UnitLevel(unittest.TestCase):
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
-        self.ldi.domain=self.domain2
+        self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMTS'
         self.ldi.service_type='layer'
         self.ldi.id='51320'
         title='test_wmts'
         self.ldi.layer_title=title
+        self.ldi.selected_crs_int=3857
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
@@ -476,9 +471,10 @@ class UnitLevel(unittest.TestCase):
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
-        self.ldi.domain=self.domain2
+        self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMS'
         self.ldi.service_type='layer'
+        self.ldi.selected_crs_int=3857
         self.ldi.id='51409'
         title='test_wms'
         self.ldi.layer_title=title

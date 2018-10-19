@@ -3,7 +3,7 @@ services:
 
 branches: 
   only: 
-    - master
+    - crs_handling
 
 env:
   global:

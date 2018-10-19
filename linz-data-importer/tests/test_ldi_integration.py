@@ -147,7 +147,7 @@ class CorruptXml(unittest.TestCase):
         self.ldi.actions[0].trigger()
         QTest.qWait(1000)
         # ensure all services are are present in the table
-        data_types=set([self.ldi.proxy_model.index(row, 3).data() 
+        data_types=set([self.ldi.proxy_model.index(row, 2).data() 
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
@@ -242,7 +242,7 @@ class UserWorkFlows (unittest.TestCase):
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
 
         # Ensure all records are of the selected type
-        data_types=set([self.ldi.proxy_model.index(row, 3).data() 
+        data_types=set([self.ldi.proxy_model.index(row, 2).data() 
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),1)
         self.assertEqual(service.upper(), list(data_types)[0])
@@ -271,7 +271,7 @@ class UserWorkFlows (unittest.TestCase):
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
         # ensure all services are are present in the table
-        data_types=set([self.ldi.proxy_model.index(row, 3).data() 
+        data_types=set([self.ldi.proxy_model.index(row, 2).data() 
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
