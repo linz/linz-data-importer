@@ -660,7 +660,11 @@ class LinzDataImporter:
 
         if not self.iface.mapCanvas().hasCrsTransformEnabled():
             self.canvas.setCrsTransformEnabled(True)
-        # Notify user?
+
+            self.iface.messageBar().pushMessage("Info", 
+                                                '''The LINZ Data Importer Plugin has enabled OTF ''',
+                                                level=QgsMessageBar.INFO,
+                                                duration=12)
 
     def setProjectSRID(self):
         """ 
@@ -670,17 +674,11 @@ class LinzDataImporter:
 
         crs=QgsCoordinateReferenceSystem(self.selected_crs_int,QgsCoordinateReferenceSystem.EpsgCrsId)
         self.canvas.setDestinationCrs(crs)
-
-#     def infoCRS(self):
-#         """
-#         Open a QgsMessageBar informing the projects crs has changed
-#         """
-# 
-#         self.iface.messageBar().pushMessage("Info", 
-#             '''The LINZ Data Importer Plugin has changed the projects CRS to {0} to 
-#             provide a common CRS when importing datasets'''.format(self.selected_crs),
-#                                              level=QgsMessageBar.INFO,
-#                                              duration=10)
+        self.iface.messageBar().pushMessage("Info", 
+                                            '''The LINZ Data Importer Plugin has changed the projects
+                                            projection to that of the imported layer''',
+                                            level=QgsMessageBar.INFO,
+                                            duration=6)
 
     def zoomTo(self):
         ''' zoom to newly imported'''

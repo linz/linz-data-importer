@@ -435,7 +435,7 @@ class UnitLevel(unittest.TestCase):
         # set plugin properties required for import
         self.ldi.domain=self.domain1 #mfe
         self.ldi.service='WFS'
-        self.ldi.service_type='layer'
+        self.ldi.data_type='layer'
         self.ldi.id='53318'
         title='test_wfs'
         self.ldi.layer_title=title
@@ -454,7 +454,7 @@ class UnitLevel(unittest.TestCase):
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
         self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMTS'
-        self.ldi.service_type='layer'
+        self.ldi.data_type='layer'
         self.ldi.id='51320'
         title='test_wmts'
         self.ldi.layer_title=title
@@ -473,7 +473,7 @@ class UnitLevel(unittest.TestCase):
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
         self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMS'
-        self.ldi.service_type='layer'
+        self.ldi.data_type='layer'
         self.ldi.selected_crs_int=3857
         self.ldi.id='51409'
         title='test_wms'

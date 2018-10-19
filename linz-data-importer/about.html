@@ -14,28 +14,30 @@ interface also allows these other agencies open data web portals to be configure
 <li><a href="https://lris.scinfo.org.nz/">lris.scinfo.org.nz</a>&nbsp;(Manaaki Whenua - Landcare Research)</li>
 <li><a href="https://geodata.nzdf.mil.nz/">https://geodata.nzdf.mil.nz</a>&nbsp;(Te Ope Kātua o Aotearoa - New Zealand Defence Force</li>
 </ul>
-<p>Future releases will look to broaden the scope of the plugin further 
-to include all WFS, WMS, WMTS OGC web services served from any domain.&nbsp;</p>
 <h2><strong>Selecting a Service&nbsp;</strong></h2>
 <p>The LDS Plugin supports data served over WFS, WMS and WMTS protocols.&nbsp;</p>
 <p>Please see the&nbsp;<a href="http://www.linz.govt.nz/data/linz-data-service/guides-
 and-documentation/which-web-service-should-i-use">online resource</a>&nbsp; available 
 on the LINZ website for more on these protocols.&nbsp;</p>
 <h2><strong>API Keys&nbsp;</strong></h2>
-<p>Prior to using the plugin the services API Key must be stored via the "Settings menu"</p>
-<p>When saving your API key this will trigger the plugin to request all of the services 
-dataset information. This may take sometime.</p>
-<p>For more on API keys please see the 
+<p>Prior to using the plugin a domain and related API Key must be stored via the 
+"Settings" menu. When saving your API key this will trigger the plugin to request 
+all of the services dataset information. This may take sometime. For more on API 
+keys please see the LDS user resources.</p>
 LDS&nbsp;<a href="http://www.linz.govt.nz/data/linz-data-service/
 guides-and-documentation/creating-an-api-key">resources</a>.&nbsp;</p>
 <h2><strong>Coordinate Reference System</strong></h2>
-<p>As an initial release, when importing datasets via the LDS Plugin. the plugin 
-will force the QGIS projects CRS to WGS 84 Web Mercator (EPSG:3857). The user is 
- notified by QGIS's message bar when the CRS change is made.</p>
-<p>Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the data providers
- WMTS services are served in this projection and problems arise when 
-reprojecting WMTS. This is the initial release of the plugin and there are plans
-to improve the handling of CRS with subsequent releases (See the GitHub issues for more).</p>
+<p>The available CRS options for each layer are shown next to the import button 
+(This is in terms of its ESPG code). If the datasource is stored in multiple CRSs 
+the user can select which CRS to be requested from the server.</p>
+<p>* Note if the QGIS projects CRS and the imported datasets CRS do not match, 
+QGIS will reporject the imported data to the projects CRS. Beware: reprojecting 
+data can degrade spatial accuracies and relationships.</p>
+<p>When importing the first dataset via the plugin for the QGIS session the plugin 
+will change the QGIS projects CRS to match the imported data. If On The Fly (OTF) 
+projection is not enable The plugin will also turn this on to allow any further 
+datasets to be reprojected. Both these project settings changes will be notified 
+to the user when they occur.</p>
 <h2><strong>Requests, Responses, Patience and Caching</strong></h2>
 <p>When saving a Domain and API key for the first time via the Setting menu the 
 plugin will request the capabilities documents for each service type (WMS, WMTS, WFS). 
