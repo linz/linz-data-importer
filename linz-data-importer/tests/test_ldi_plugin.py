@@ -426,22 +426,23 @@ class UnitLevel(unittest.TestCase):
         # Test method
         self.assertEqual(self.ldi.mapCrs().lstrip('EPSG:'), str(test_srid_int))
 
-#     def test_importDataset_wfs(self):
-#         """
-#         Test the importing of WFS layers into QGIS
-#         """
-# 
-#         # set plugin properties required for import
-#         self.ldi.domain=self.domain1 #mfe
-#         self.ldi.service='WFS'
-#         self.ldi.data_type='layer'
-#         self.ldi.id='53318'
-#         self.ldi.layer_title='test_wfs'
-#         self.ldi.selected_crs_int=2193
-#         self.ldi.importDataset()
-#         #test the layer has been imported
-#         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
-#         self.assertEqual(title, names[0])
+    def test_importDataset_wfs(self):
+        """
+        Test the importing of WFS layers into QGIS
+        """
+
+        # set plugin properties required for import
+        self.ldi.domain=self.domain1 #mfe
+        self.ldi.service='WFS'
+        self.ldi.data_type='layer'
+        self.ldi.id='53318'
+        self.ldi.layer_title='test_wfs'
+        self.ldi.selected_crs='ESPG:2193'
+        self.ldi.selected_crs_int=2193
+        self.ldi.importDataset()
+        #test the layer has been imported
+        names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
+        self.assertEqual(self.ldi.layer_title, names[0])
 
     def test_importDataset_wmts(self):
         """
@@ -454,12 +455,13 @@ class UnitLevel(unittest.TestCase):
         self.ldi.service='WMTS'
         self.ldi.data_type='layer'
         self.ldi.id='51320'
-        ldi.layer_title='test_wmts'
+        self.ldi.layer_title='test_wmts'
+        self.ldi.selected_crs='EPSG:3857'
         self.ldi.selected_crs_int=3857
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
 
     def test_importDataset_wms(self):
         """
@@ -471,13 +473,14 @@ class UnitLevel(unittest.TestCase):
         self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMS'
         self.ldi.data_type='layer'
+        self.ldi.selected_crs='EPSG:3857'
         self.ldi.selected_crs_int=3857
         self.ldi.id='51409'
         self.ldi.layer_title='test_wms'
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
 
 # def suite():
 #     suite = unittest.TestSuite()
