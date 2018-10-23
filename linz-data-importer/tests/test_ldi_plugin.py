@@ -107,7 +107,6 @@ class UnitLevel(unittest.TestCase):
         self.ldi.dlg.close()
         QgsMapLayerRegistry.instance().removeAllMapLayers()
         self.ldi.clearSettings()
-        self.ldi.wmts_epsg="EPSG:3857"
         self.ldi.canvas.setCrsTransformEnabled(False)
         self.ldi.selectionModel.blockSignals(False)
         self.layers_loaded=False
@@ -427,23 +426,22 @@ class UnitLevel(unittest.TestCase):
         # Test method
         self.assertEqual(self.ldi.mapCrs().lstrip('EPSG:'), str(test_srid_int))
 
-    def test_importDataset_wfs(self):
-        """
-        Test the importing of WFS layers into QGIS
-        """
-
-        # set plugin properties required for import
-        self.ldi.domain=self.domain1 #mfe
-        self.ldi.service='WFS'
-        self.ldi.data_type='layer'
-        self.ldi.id='53318'
-        title='test_wfs'
-        self.ldi.layer_title=title
-        self.ldi.selected_crs_int=2193
-        self.ldi.importDataset()
-        #test the layer has been imported
-        names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+#     def test_importDataset_wfs(self):
+#         """
+#         Test the importing of WFS layers into QGIS
+#         """
+# 
+#         # set plugin properties required for import
+#         self.ldi.domain=self.domain1 #mfe
+#         self.ldi.service='WFS'
+#         self.ldi.data_type='layer'
+#         self.ldi.id='53318'
+#         self.ldi.layer_title='test_wfs'
+#         self.ldi.selected_crs_int=2193
+#         self.ldi.importDataset()
+#         #test the layer has been imported
+#         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
+#         self.assertEqual(title, names[0])
 
     def test_importDataset_wmts(self):
         """
@@ -456,8 +454,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.service='WMTS'
         self.ldi.data_type='layer'
         self.ldi.id='51320'
-        title='test_wmts'
-        self.ldi.layer_title=title
+        ldi.layer_title='test_wmts'
         self.ldi.selected_crs_int=3857
         self.ldi.importDataset()
         #test the layer has been imported
@@ -476,8 +473,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.data_type='layer'
         self.ldi.selected_crs_int=3857
         self.ldi.id='51409'
-        title='test_wms'
-        self.ldi.layer_title=title
+        self.ldi.layer_title='test_wms'
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
