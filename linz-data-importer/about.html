@@ -3,9 +3,9 @@
 Data Services (LDS)</a>&nbsp; (and others - see changing scope) to provide simple 
 importing of LINZ data.&nbsp;</p>
 <h2>Changing Scope</h2>
-<p>The initial scope of this plugin was to just couple the LDS and QGIS. However 
-as other New Zealand agencies also make use of the same technology the settings 
-interface also allows these other agencies open data web portals to be configured.&nbsp;</p>
+<p>The initial scope of this plugin was to couple the LDS and QGIS. However 
+as other New Zealand agencies also make use of the same technology their data 
+can also be imported.&nbsp;</p>
 <p>At time of release this plugin supports the coupling of the below open data portals with QGIS:</p>
 <ul>
 <li><a href="https://data.linz.govt.nz/">data.linz.govt.nz</a>&nbsp;(Toitū Te Whenua - Land Information New Zealand)</li>
@@ -14,39 +14,42 @@ interface also allows these other agencies open data web portals to be configure
 <li><a href="https://lris.scinfo.org.nz/">lris.scinfo.org.nz</a>&nbsp;(Manaaki Whenua - Landcare Research)</li>
 <li><a href="https://geodata.nzdf.mil.nz/">https://geodata.nzdf.mil.nz</a>&nbsp;(Te Ope Kātua o Aotearoa - New Zealand Defence Force</li>
 </ul>
-<p>Future releases will look to broaden the scope of the plugin further 
-to include all WFS, WMS, WMTS OGC web services served from any domain.&nbsp;</p>
-<h2><strong>Selecting a Service&nbsp;</strong></h2>
+<h2><strong>Selecting a Service / Protocol&nbsp;</strong></h2>
 <p>The LDS Plugin supports data served over WFS, WMS and WMTS protocols.&nbsp;</p>
 <p>Please see the&nbsp;<a href="http://www.linz.govt.nz/data/linz-data-service/guides-
 and-documentation/which-web-service-should-i-use">online resource</a>&nbsp; available 
 on the LINZ website for more on these protocols.&nbsp;</p>
 <h2><strong>API Keys&nbsp;</strong></h2>
-<p>Prior to using the plugin the services API Key must be stored via the "Settings menu"</p>
-<p>When saving your API key this will trigger the plugin to request all of the services 
-dataset information. This may take sometime.</p>
-<p>For more on API keys please see the 
+<p>Prior to using the plugin, a domain and related API Key must be stored via the 
+"Settings" menu. When saving your API key this will trigger the plugin to request 
+all of the domain's dataset information. This may take sometime. For more on API 
+keys please see the LDS user resources.</p>
 LDS&nbsp;<a href="http://www.linz.govt.nz/data/linz-data-service/
 guides-and-documentation/creating-an-api-key">resources</a>.&nbsp;</p>
 <h2><strong>Coordinate Reference System</strong></h2>
-<p>As an initial release, when importing datasets via the LDS Plugin. the plugin 
-will force the QGIS projects CRS to WGS 84 Web Mercator (EPSG:3857). The user is 
- notified by QGIS's message bar when the CRS change is made.</p>
-<p>Currently WGS 84 Web Mercator (EPSG:3857) is used by default as all the data providers
- WMTS services are served in this projection and problems arise when 
-reprojecting WMTS. This is the initial release of the plugin and there are plans
-to improve the handling of CRS with subsequent releases (See the GitHub issues for more).</p>
+<p>The available CRS options for each layer are shown next to the import button (This is in 
+terms of EPSG code). If the data source is stored in multiple CRSs the user 
+can select which CRS the dataset is to be requested in from the server. </p>
+<p>* Note; if the QGIS projects CRS and the imported datasets CRS do not match, 
+QGIS will reproject the imported data to the projects CRS. Beware: reprojecting 
+data can degrade spatial accuracies and relationships.</p>
+<p>When importing the first dataset via the plugin for a QGIS session, the plugin 
+will change the QGIS projects CRS to match the imported data. If On The Fly (OTF)
+projection is not enable, the plugin will enable OTF to allow any 
+further datasets to be reprojected to the project's / QGIS session's CRS. 
+When these changes occur the user will be informed via the QGIS message bar.</p>
 <h2><strong>Requests, Responses, Patience and Caching</strong></h2>
-<p>When saving a Domain and API key for the first time via the Setting menu the 
-plugin will request the capabilities documents for each service type (WMS, WMTS, WFS). 
-When these documents are large this can cause the plugin to appear inactive. 
-The good news is this is the only interaction with the plug where substantial patience
-may be required. Once the initial documents are fetched, they will be cached and 
-will be updated in the background each time the plugin is started.</p>
+<p>When saving a Domain and API key for the first time via the Setting menu, the plugin 
+will request the capabilities documents for each service / protocol type (WMS, WMTS, WFS). 
+The data portal's server can be slow to respond with these documents causing the 
+plugin to appear inactive. The good news is this is the only interaction with the 
+plugin where substantial patience may be required. Once the initial documents
+are fetched, they will be cached and updated in the background each time 
+the plugin is started.</p>
 <h2><strong>Filtering</strong></h2>
 <p>The left hand panel allows users to filter by service types (either, All, WFS, WMS, WMTS).</p>
 <p>All column headers can be toggled to allow ascending or descending ordering of their data.</p>
 <p>Text can be entered in the "Filter Data Sets" search bar to filter the datasets by keyword.&nbsp;</p>
 <h2><strong>Source Code, Further Documentation and Feedback</strong></h2>
-<p>Please see <a href="https://github.com/linz/linz-data-importer/">QGIS-LDS-Plugin</a> at GitHub</p>
+<p>Please see the <a href="https://github.com/linz/linz-data-importer/">LINZ-Data-Importer</a> repository at GitHub</p>
 <p></p>

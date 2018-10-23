@@ -324,16 +324,29 @@ class ServiceData(Localstore):
 
     def formatForUI(self):
         """
-        Format the service data to display in the UI
+        Format the service data to display in the UI 
         """
 
         service_data = []
         cont = self.obj.contents
 
         for dataset_id, dataset_obj in cont.iteritems():
+            crs=[]
             full_id = re.search(r'([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)', dataset_obj.id)
             type = full_id.group('type')
-            id  =  full_id.group('id')
-            service_data.append([self.domain, type, id, self.service.upper(), dataset_obj.title, dataset_obj.abstract])
+            id = full_id.group('id')
+            # Get and standarise espg codes
+            if self.service == 'wmts':
+                crs = dataset_obj.tilematrixsets
+                crs = [item.strip('EPSG:') for item in crs]
+            elif self.service in ('wfs'):
+                crs = dataset_obj.crsOptions
+                crs = [ item.code for item in crs]
+            elif self.service in ('wms'):
+                crs = dataset_obj.crsOptions
+                crs = [item.strip('urn:ogc:def:crs:EPSG::') for item in crs]
+            crs = ['EPSG:{0}'.format(item) for item in crs]
+            service_data.append([self.domain, type, self.service.upper(), id,
+                                 dataset_obj.title, dataset_obj.abstract, crs])
 
         self.info = service_data

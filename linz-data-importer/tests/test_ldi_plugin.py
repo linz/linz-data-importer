@@ -107,10 +107,9 @@ class UnitLevel(unittest.TestCase):
         self.ldi.dlg.close()
         QgsMapLayerRegistry.instance().removeAllMapLayers()
         self.ldi.clearSettings()
-        self.ldi.wmts_epsg="EPSG:3857"
         self.ldi.canvas.setCrsTransformEnabled(False)
         self.ldi.selectionModel.blockSignals(False)
-
+        self.layers_loaded=False
 
     def test_clearSettings(self):
         """
@@ -411,28 +410,21 @@ class UnitLevel(unittest.TestCase):
         otf=self.ldi.canvas.hasCrsTransformEnabled()
         self.assertTrue(otf)
 
-    def test_setSRID(self):
+    def test_setProjectSRID(self):
         """
         Test the setting of the projects crs
         """
 
         # Get plugins default srs 
-        default_srid=self.ldi.wmts_epsg.lstrip('EPSG:')
         test_srid_int=3793
         # Test current state
         self.assertNotEqual(self.ldi.mapCrs(), test_srid_int)
 
         # Change srid via method
-        self.ldi.wmts_epsg_int=test_srid_int
+        self.ldi.selected_crs_int=test_srid_int
+        self.ldi.setProjectSRID()
         # Test method
-        self.ldi.setSRID()
         self.assertEqual(self.ldi.mapCrs().lstrip('EPSG:'), str(test_srid_int))
-
-    def test_infoCRS(self):
-        """
-        Not currently tested
-        """
-        pass
 
     def test_importDataset_wfs(self):
         """
@@ -440,16 +432,17 @@ class UnitLevel(unittest.TestCase):
         """
 
         # set plugin properties required for import
-        self.ldi.domain=self.domain1
+        self.ldi.domain=self.domain1 #mfe
         self.ldi.service='WFS'
-        self.ldi.service_type='layer'
-        self.ldi.id='52759'
-        title='test_wfs'
-        self.ldi.layer_title=title
+        self.ldi.data_type='layer'
+        self.ldi.id='53318'
+        self.ldi.layer_title='test_wfs'
+        self.ldi.selected_crs='ESPG:2193'
+        self.ldi.selected_crs_int=2193
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
 
     def test_importDataset_wmts(self):
         """
@@ -458,16 +451,17 @@ class UnitLevel(unittest.TestCase):
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
-        self.ldi.domain=self.domain2
+        self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMTS'
-        self.ldi.service_type='layer'
+        self.ldi.data_type='layer'
         self.ldi.id='51320'
-        title='test_wmts'
-        self.ldi.layer_title=title
+        self.ldi.layer_title='test_wmts'
+        self.ldi.selected_crs='EPSG:3857'
+        self.ldi.selected_crs_int=3857
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
 
     def test_importDataset_wms(self):
         """
@@ -476,16 +470,17 @@ class UnitLevel(unittest.TestCase):
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
-        self.ldi.domain=self.domain2
+        self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMS'
-        self.ldi.service_type='layer'
+        self.ldi.data_type='layer'
+        self.ldi.selected_crs='EPSG:3857'
+        self.ldi.selected_crs_int=3857
         self.ldi.id='51409'
-        title='test_wms'
-        self.ldi.layer_title=title
+        self.ldi.layer_title='test_wms'
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
 
 # def suite():
 #     suite = unittest.TestSuite()
