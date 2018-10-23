@@ -338,14 +338,12 @@ class ServiceData(Localstore):
             # Get and standarise espg codes
             if self.service == 'wmts':
                 crs = dataset_obj.tilematrixsets
-                crs = [item.strip('EPSG:') for item in crs]
             elif self.service in ('wfs'):
                 crs = dataset_obj.crsOptions
-                crs = [ item.code for item in crs]
+                crs = ['EPSG:{0}'.format(item.code) for item in crs]
             elif self.service in ('wms'):
                 crs = dataset_obj.crsOptions
-                crs = [item.strip('urn:ogc:def:crs:EPSG::') for item in crs]
-            crs = ['EPSG:{0}'.format(item) for item in crs]
+                crs = ['EPSG:{0}'.format(item.strip('urn:ogc:def:crs:EPSG::')) for item in crs]
             service_data.append([self.domain, type, self.service.upper(), id,
                                  dataset_obj.title, dataset_obj.abstract, crs])
 
