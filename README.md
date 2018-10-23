@@ -5,7 +5,7 @@ The intent of this QGIS Plugin is to allow the easy importing of
 see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)) 
  into QIGS. 
 
-![](https://github.com/linz/linz-data-importer/blob/master/images/example.gif)
+![](https://github.com/linz/linz-data-importer/blob/master/images/import_example.gif)
 
 ## Supported Versions
 Currently this plugin only supports those versions >QGIS2.8 and <QGIS2.18
@@ -23,7 +23,6 @@ At the time of release this plugin supports the coupling of the below open data 
 * [datafinder.stats.govt.nz](datafinder.stats.govt.nz) (Tatauranga Aotearoa - Statistics New Zealand)
 * [lris.scinfo.org.nz](lris.scinfo.org.nz) (Manaaki Whenua - Landcare Research)
 * [geodata.nzdf.mil.nz](geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force
-
 
 ## Selecting a Service / Protocol
 The LDS Plugin supports data served over WFS, WMS and WMTS protocols. 
