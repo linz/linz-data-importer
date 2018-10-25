@@ -15,8 +15,7 @@
  ***************************************************************************/
 """
 
-# This program is released under the terms of the 3 clause BSD license. See the
-# LICENSE file for more information.
+
 import sip
 sip.setapi('QString', 2)
 
@@ -432,20 +431,23 @@ class LinzDataImporter:
                     self.updateServiceDataCache()
         self.dlg.show()
 
+    def purgeCache(self):
+        """
+        Delete any cache files that are not the most current 
+        """
+
+        self.local_store.purgeCache()
+
     def updateServiceDataCache(self):
         """ 
         Update the local cache by deleting the locally stored capability 
         documents and then re-fetching from the associated web resource
         """
 
-        while not self.services_loaded:
-            time.sleep(10)
-            continue
         self.services_loaded=False
-        self.local_store.delAllLocalServiceXML()
-        t=threading.Thread(target=self.loadAllServices)
+        t = threading.Thread(target=self.loadAllServices, args=(True,))
         t.start()
-        self.cache_updated=True #Needs to employ observer
+        self.cache_updated=True
 
     def loadUi(self):
         """ 
@@ -460,13 +462,13 @@ class LinzDataImporter:
         else:
             self.dlg.uLabelWarning.hide()
 
-    def loadAllServices(self):
+    def loadAllServices(self, update_cache=False):
         """ 
         Iterate over all domains and service types (WMS, WMTS, WFS). 
         Request, process, store and format capability documents
         """
 
-        all_data=[] 
+        all_data=[]
         for domain in self.api_key_instance.getApiKeys():
             for service in SER_TYPES:
                 # set service_data obj e.g self.linz_wms=service_data obj
@@ -474,7 +476,8 @@ class LinzDataImporter:
                 setattr(self, data_feed, ServiceData(domain,
                                                      service, 
                                                      self.service_versions,
-                                                     self.api_key_instance)) 
+                                                     self.api_key_instance,
+                                                     update_cache)) 
                 service_data_instance=getattr(self, data_feed)
                 self.data_feeds[data_feed]=service_data_instance #keep record of ser data insts
                 service_data_instance.processServiceData()
@@ -485,6 +488,9 @@ class LinzDataImporter:
                 all_data.extend(service_data_instance.info)
         self.table_model.setData(all_data)
         self.services_loaded=True
+
+        if update_cache:
+            self.purgeCache() 
         return None
 
     def showSelectedOption(self, item):
@@ -611,7 +617,7 @@ class LinzDataImporter:
         filter_text=self.dlg.uTextFilter.text()
         self.proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.proxy_model.setFilterKeyColumn(2)
-        self.proxy_model.setFilterRegExp(filter_text)
+        self.proxy_model.setFilterFixedString(filter_text)
 
     def setTableModelView(self):
         """

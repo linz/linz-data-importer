@@ -16,16 +16,19 @@
 """
 
 import re
+import time
+import glob
+
+import os
+from xml.etree.ElementTree import ParseError
+from urllib2 import urlopen, URLError
+
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
 
 from owslib.wmts import WebMapTileService
 from owslib.util import ServiceException 
 from qgis.core import QgsMessageLog, QgsApplication
-
-import os.path
-from xml.etree.ElementTree import ParseError
-from urllib2 import urlopen, URLError
 
 from PyQt4.QtCore import QSettings
 #from gc import isenabled
@@ -100,7 +103,9 @@ class Localstore():
         self.file=file
         if self.service:
             self.file = os.path.join(self.pl_settings_dir , 
-                               '{0}_{1}.xml'.format(domain, service.lower()))
+                               '{0}_{1}_{2}.xml'.format(domain, 
+                                                        service.lower(), 
+                                                        time.strftime("%Y%m%d%H%M%S")))
 
     def ensureSettingsDir(self):
         """
@@ -133,6 +138,7 @@ class Localstore():
         if not domain:
             domain = self.domain
 
+        # Should use glob for consistency and simplicity
         dir = self.pl_settings_dir
         for f in os.listdir(self.pl_settings_dir):
             if re.search(domain, f):
@@ -149,15 +155,52 @@ class Localstore():
 
         search_str = '|'.join(['_{}.xml'.format(x) for x in services])
 
+        # Should use glob for consistency and simplicity
         dir = self.pl_settings_dir
         for f in os.listdir(self.pl_settings_dir):
             if re.search(search_str, f):
                 file = os.path.join(dir, f)
                 self.delLocalSeviceXML(file)
 
+    def purgeCache(self):
+        """
+        Delete all cached documents but the 
+        most current
+        """
+        file_metadata={}
+        os.chdir(self.pl_settings_dir)
+        cache_files = glob.glob('*_*_[0-9]*.xml')
+
+        # Get cache metadata
+        for f in cache_files:
+            file_data=re.search(r'(?P<domain>.*)(_)(?P<service>wms|wmts|wfs)(_)(?P<time>[0-9]+)\.xml', f)
+            domain=file_data.group('domain') 
+            service=file_data.group('service') 
+            timestamp=file_data.group('time') 
+            if domain not in file_metadata:
+                file_metadata[domain]={}
+            if service not in file_metadata[domain]:
+                file_metadata[domain][service]=[]
+            file_metadata[domain][service].append(timestamp)
+
+        # get list of most current
+        curr_files = []
+        for dom, v in file_metadata.iteritems():
+            for ser , file_times in v.iteritems():
+                curr_files.append('{0}_{1}_{2}.xml'.format(dom, 
+                                                           ser, 
+                                                           sorted(file_times)[-1]))
+
+        # del old files
+        for file in cache_files:
+            if file not in curr_files:
+                self.delLocalSeviceXML(file)
+
     def serviceXmlIsLocal(self, file=None):
         """
         Test if the cached capabilties xml doc exists
+        and if so set the services file to match this
+
         :param file: file name 
         :type file: str
         @return: boolean. True file exists
@@ -165,8 +208,13 @@ class Localstore():
         """
 
         if not file:
-            file = self.file
-        return os.path.isfile(file)
+            os.chdir(self.pl_settings_dir)
+            files = glob.glob('{0}_{1}_*.xml'.format(self.domain, 
+                                                    self.service.lower()))
+            if files:
+                self.file = sorted(files)[-1]
+                return True
+        return False
 
     def readLocalServiceXml(self, file=None):
         """
@@ -186,7 +234,7 @@ class ServiceData(Localstore):
     Get, Store and Process WxS Data
     """
 
-    def __init__(self, domain, service, service_version, api_key_instance):
+    def __init__(self, domain, service, service_version, api_key_instance, upd_cache=False):
         """
         Initialise Service Data instance 
 
@@ -202,6 +250,7 @@ class ServiceData(Localstore):
 
         self.version = service_version[service]
         self.api_key_int = api_key_instance # using one instance as the user can change keys on us
+        self.upd_cache=upd_cache
         Localstore.__init__(self, domain, service)
         # Data 
         self.obj = None #owslib data obj
@@ -231,7 +280,13 @@ class ServiceData(Localstore):
         Either via localstore or internet 
         """
 
-        # Get service xml
+        # If cache get new data and overwrite local store
+        if self.upd_cache:
+            self.getServiceXml()
+            return
+
+        # Plugin opened for first time
+        # Read data from local store if exists
         if self.serviceXmlIsLocal():
             self.readLocalServiceXml()
         else:
@@ -240,10 +295,10 @@ class ServiceData(Localstore):
     def getServiceDataTryAgain(self):
         """
         If the reading of the capability doc fails - Try again.
-        This is for use cases where for some reason the user
-        has corrupted the capability doc in the localstore
+        This is for use cases where for some reason the capability
+        doc in the localstore has become corrupted 
         """
-
+ 
         #Clear error, Delete local file and get it a fresh
         self.err=None
         self.delLocalSeviceXML()

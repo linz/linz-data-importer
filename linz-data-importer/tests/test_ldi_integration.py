@@ -20,6 +20,7 @@ import ast
 import os
 import shutil
 import re
+import glob
 
 from PyQt4.QtTest import QTest
 from qgis.PyQt.QtCore import Qt, QSettings
@@ -76,7 +77,7 @@ class CorruptXml(unittest.TestCase):
         self.ldi.services_loaded=False
         self.ldi.update_cache=False
 
-        # Domain to run test against lds (only service with all WxS)
+        # Domain to run test against = lds (only service with all WxS)
         domain='data.linz.govt.nz'
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain:API_KEYS[domain]})
@@ -87,23 +88,28 @@ class CorruptXml(unittest.TestCase):
         self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
 
         # Delete all service xml files in plugin settigns dir
-        search_str = '|'.join(['_{}.xml'.format(x) for x in ['wms','wfs','wmts']])
-        for f in os.listdir(self.pl_settings_dir):
-            if re.search(search_str, f):
-                os.remove(os.path.join(self.pl_settings_dir, f))
+        os.chdir(self.pl_settings_dir)
+        cache_files = glob.glob('*_*_[0-9]*.xml')
+        for file in cache_files:
+            os.remove(os.path.join(self.pl_settings_dir, file))
 
         # Copy in /test/data service xml to save time if they exist. 
         # In most cases they dont as I can not make available with API Key
         # via github. If these are not avilable wms and wfs will be fetch for data portal
-        files=['{0}_{1}.xml'.format(domain,x) for x in ['wms','wfs','wmts']]
-        for f in files:
-            file=os.path.join(self.test_data_dir, f)
-            if os.path.exists(file):
-                shutil.copy(file, self.pl_settings_dir)
+        os.chdir(self.test_data_dir)
+        #test_files=['{0}_{1}.xml'.format(domain,x) for x in ['wms','wfs','wmts']]
+        test_files=glob.glob('data.linz.govt.nz_*_[0-9]*.xml')
+        for file in test_files:
+            file=os.path.join(self.test_data_dir, file)
+            #if os.path.exists(file):
+            shutil.copy(file, self.pl_settings_dir)
 
         # Copy in corrupt file for the test
         try:
-            os.remove(os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml'))
+            os.chdir(self.pl_settings_dir)
+            wmts_file=glob.glob('data.linz.govt.nz_wmts_*.xml')
+            wmts_file=os.path.join(self.pl_settings_dir, wmts_file[0])
+            os.remove(wmts_file)
         except:
             pass
         corr_file_name='data.linz.govt.nz_wmts_corrupt.xml'
@@ -112,7 +118,7 @@ class CorruptXml(unittest.TestCase):
 
         # Rename
         new_corr_file = os.path.join(self.pl_settings_dir, corr_file_name)
-        name_file_to = os.path.join(self.pl_settings_dir, corr_file_name.replace('_corrupt',''))
+        name_file_to = os.path.join(self.pl_settings_dir, corr_file_name.replace('_corrupt','_20181025141022'))
         os.rename(new_corr_file, name_file_to)
         QTest.qWait(WAIT)
 
@@ -135,7 +141,9 @@ class CorruptXml(unittest.TestCase):
         """
 
         #Test file is corrupt
-        cpt_file=os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml')
+        os.chdir(self.pl_settings_dir)
+        cpt_file=glob.glob('data.linz.govt.nz_wmts_[0-9]*.xml')[0]
+        cpt_file=os.path.join(self.pl_settings_dir, cpt_file)
         is_corrupt=False
         try:
             ET.parse(cpt_file)
@@ -151,52 +159,55 @@ class CorruptXml(unittest.TestCase):
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
-
+ 
 class UserWorkFlows (unittest.TestCase):
     """
     Testr user work flows to import data via the plugin
     """
-
+ 
     @classmethod
     def setUpClass(cls):
         """
         Set up at TestCase init
         """
-
+ 
         # Get the test executors current key so that 
         # We can revert back to when tests are complete
         cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
-
+ 
     @classmethod
     def tearDownClass(cls):
         """
         Clean up at TestCase teardown
         """
-
+ 
         # Runs at TestCase teardown.
         QSettings().setValue('linz_data_importer/apikey', cls.testers_keys)
-
+ 
     def setUp(self):
         """
         Runs before each test
         """
-
+ 
         self.ldi=plugins.get('linz-data-importer')
         self.ldi.update_cache=False
         self.ldi.services_loaded=False 
-
+ 
         domain='data.linz.govt.nz'
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain:API_KEYS[domain]})
-
+ 
+        self.ldi.selected_crs='ESPG:2193'
+        self.ldi.selected_crs_int=2193
+ 
         # Run
         self.ldi.actions[0].trigger()
-
+ 
     def tearDown(self):
         """
         Runs after each test
         """
-
+ 
         QTest.qWait(WAIT) # Just because I want to watch it open a close
         self.ldi.dlg.uTextFilter.setText('')
         self.ldi.dlg.close()
@@ -204,66 +215,66 @@ class UserWorkFlows (unittest.TestCase):
         self.services_loaded=False
         item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-
+ 
     def test_wfs_import(self):
         """
         Test display, filtering, selection and importing of WFS data 
         """
-
+ 
         self.import_service('wfs')
-
+ 
     def test_wms_import(self):
         """
         Test display, filtering, selection and importing of WFS data 
         """
-
+ 
         self.import_service('wms')
-
+ 
     def test_wmts_import(self):
         """
         Test display, filtering, selection and importing of WFS data 
         """
-
+ 
         self.import_service('wmts')
-
+ 
     def import_service(self, service):
         """
         Executes tests for all "test_w<x>s_import" methods
         """
-
+ 
         # Select WxS table view
         item = self.ldi.dlg.uListOptions.findItems(service.upper(), Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-
+ 
         # Test the tableview widget is current stackedWidget
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
-
+ 
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
-
+ 
         # Ensure all records are of the selected type
         data_types=set([self.ldi.proxy_model.index(row, 2).data() 
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),1)
         self.assertEqual(service.upper(), list(data_types)[0])
-
+ 
         # Filter
-        self.ldi.dlg.uTextFilter.setText(TEST_CONF[service].replace('(', '\(').replace(')','\)'))
+        self.ldi.dlg.uTextFilter.setText(TEST_CONF[service])
         QTest.qWait(WAIT)
-
+ 
         # Import the first row
         self.ldi.dlg.uTableView.selectRow(0)
         self.ldi.dlg.uBtnImport.clicked.emit(True)
-
+ 
         # Test the LayerRegistry to ensure the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
         self.assertEqual(TEST_CONF[service], names[0])
-
+ 
     def test_all_services(self):
         """
         Test all services are shown in table 
         """
-
+ 
         # Set up 
         item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
