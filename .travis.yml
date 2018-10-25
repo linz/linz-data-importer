@@ -3,7 +3,7 @@ services:
 
 branches: 
   only: 
-    - crs_handling
+    - clear_cache
 
 env:
   global:
