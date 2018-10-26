@@ -20,6 +20,7 @@ import os
 import shutil
 import re
 import io
+import glob
 
 from PyQt4.QtTest import QTest
 from qgis.PyQt.QtCore import Qt, QSettings, QBuffer
@@ -71,7 +72,6 @@ class UnitLevel(unittest.TestCase):
             if re.search(search_str, f):
                 os.remove(os.path.join(self.pl_settings_dir, f))
 
-
         # Copy in /test/data service xml to save time.
         for f in os.listdir(self.test_data_dir):
             if re.search(search_str, f):
@@ -109,7 +109,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.clearSettings()
         self.ldi.canvas.setCrsTransformEnabled(False)
         self.ldi.selectionModel.blockSignals(False)
-        self.layers_loaded=False
+        self.ldi.layers_loaded=False
 
     def test_clearSettings(self):
         """
@@ -310,8 +310,10 @@ class UnitLevel(unittest.TestCase):
         insitu_file_stats={}
         cached_file_stats={}
 
+        os.chdir(self.pl_settings_dir)
         for service in ['wms','wfs','wmts']:
-            file='{0}_{1}.xml'.format(self.domain1,service)
+            files=glob.glob('{0}_{1}*.xml'.format(self.domain1,service))
+            file=files[-1]
             file_path=os.path.join(self.pl_settings_dir, file)
             insitu_file_stats[file]=os.stat(file_path).st_mtime
 
@@ -321,7 +323,8 @@ class UnitLevel(unittest.TestCase):
         QTest.qWait(15000)
 
         for service in ['wms','wfs','wmts']:
-            file='{0}_{1}.xml'.format(self.domain1,service)
+            files=glob.glob('{0}_{1}*.xml'.format(self.domain1,service))
+            file=files[-1]
             file_path=os.path.join(self.pl_settings_dir, file)
             cached_file_stats[file]=os.stat(file_path).st_mtime
         self.assertNotEqual(cached_file_stats, insitu_file_stats)

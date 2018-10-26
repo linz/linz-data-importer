@@ -13,6 +13,9 @@
     <height>682</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>LINZ Data Importer</string>
   </property>
@@ -801,6 +804,57 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>uTextFilter</tabstop>
+  <tabstop>uCRSCombo</tabstop>
+  <tabstop>uBtnImport</tabstop>
+  <tabstop>uListOptions</tabstop>
+  <tabstop>uTableView</tabstop>
+  <tabstop>uTextDescription</tabstop>
+  <tabstop>uComboBoxDomain</tabstop>
+  <tabstop>uBtnAddDomain</tabstop>
+  <tabstop>uTextAPIKey5</tabstop>
+  <tabstop>uTextAPIKey1</tabstop>
+  <tabstop>uTextAPIKey2</tabstop>
+  <tabstop>uBtnSaveDomain7</tabstop>
+  <tabstop>uTextAPIKey4</tabstop>
+  <tabstop>uTextAPIKey8</tabstop>
+  <tabstop>uBtnSaveDomain1</tabstop>
+  <tabstop>uTextAPIKey6</tabstop>
+  <tabstop>uTextAPIKey10</tabstop>
+  <tabstop>uTextAPIKey9</tabstop>
+  <tabstop>uTextDomain1</tabstop>
+  <tabstop>uTextDomain10</tabstop>
+  <tabstop>uTextDomain8</tabstop>
+  <tabstop>uTextDomain9</tabstop>
+  <tabstop>uBtnSaveDomain6</tabstop>
+  <tabstop>uBtnSaveDomain3</tabstop>
+  <tabstop>uBtnSaveDomain10</tabstop>
+  <tabstop>uBtnSaveDomain8</tabstop>
+  <tabstop>uBtnSaveDomain2</tabstop>
+  <tabstop>uTextDomain6</tabstop>
+  <tabstop>uTextDomain7</tabstop>
+  <tabstop>uTextDomain4</tabstop>
+  <tabstop>uTextDomain5</tabstop>
+  <tabstop>uBtnRemoveDomain1</tabstop>
+  <tabstop>uTextAPIKey3</tabstop>
+  <tabstop>uBtnSaveDomain4</tabstop>
+  <tabstop>uBtnSaveDomain9</tabstop>
+  <tabstop>uTextDomain2</tabstop>
+  <tabstop>uTextDomain3</tabstop>
+  <tabstop>uBtnSaveDomain5</tabstop>
+  <tabstop>uTextAPIKey7</tabstop>
+  <tabstop>uBtnRemoveDomain2</tabstop>
+  <tabstop>uBtnRemoveDomain3</tabstop>
+  <tabstop>uBtnRemoveDomain4</tabstop>
+  <tabstop>uBtnRemoveDomain5</tabstop>
+  <tabstop>uBtnRemoveDomain6</tabstop>
+  <tabstop>uBtnRemoveDomain7</tabstop>
+  <tabstop>uBtnRemoveDomain8</tabstop>
+  <tabstop>uBtnRemoveDomain9</tabstop>
+  <tabstop>uBtnRemoveDomain10</tabstop>
+  <tabstop>hAboutHtml</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
