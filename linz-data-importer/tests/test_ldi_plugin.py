@@ -72,7 +72,6 @@ class UnitLevel(unittest.TestCase):
             if re.search(search_str, f):
                 os.remove(os.path.join(self.pl_settings_dir, f))
 
-
         # Copy in /test/data service xml to save time.
         for f in os.listdir(self.test_data_dir):
             if re.search(search_str, f):
@@ -110,7 +109,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.clearSettings()
         self.ldi.canvas.setCrsTransformEnabled(False)
         self.ldi.selectionModel.blockSignals(False)
-        self.layers_loaded=False
+        self.ldi.layers_loaded=False
 
     def test_clearSettings(self):
         """

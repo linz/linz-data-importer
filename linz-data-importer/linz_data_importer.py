@@ -15,7 +15,6 @@
  ***************************************************************************/
 """
 
-
 import sip
 sip.setapi('QString', 2)
 
@@ -31,11 +30,11 @@ from tablemodel import TableModel, TableView
 from service_data import ServiceData, Localstore, ApiKey
 
 import re
-import urllib.request
 import threading
 import time
 import os.path
 from owslib import wfs, wms, wmts
+from urllib2 import urlopen
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -545,7 +544,7 @@ class LinzDataImporter:
         url=('http://koordinates-tiles-d.global.ssl.fastly.net'
             '/services/tiles/v4/thumbnail/layer={0},style=auto/{1}.png'.format(self.id, res))
         try:
-            img_data=urllib.request.urlopen(url, timeout=res_timeout).read()
+            img_data=urlopen(url, timeout=res_timeout).read()
         except:
             return False
         self.qimage.loadFromData(img_data)
