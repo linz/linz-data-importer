@@ -46,54 +46,54 @@ class CorruptXml(unittest.TestCase):
     """
     Test methods for handling corrupt localstore
     """
- 
+
     @classmethod
     def setUpClass(cls):
         """
         Set up at TestCase init
         """
- 
+
         # Get the test executors current key so that 
         # We can revert back to when tests are complete
         cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
         #cls.ldi_plugin = plugins.get('linz-data-importer')
- 
+
     @classmethod
     def tearDownClass(cls):
         """
         Clean up at TestCase teardown
         """
- 
+
         QSettings().setValue('linz_data_importer/apikey', cls.testers_keys)
- 
+
     def setUp(self):
         """
         Runs before each test
         """
- 
+
         #Get reference to plugin
         self.ldi=plugins.get('linz-data-importer')
- 
+
         # Dont run cache update
         self.ldi.services_loaded=False
         self.ldi.update_cache=False
- 
+
         # Domain to run test against = lds (only service with all WxS)
         domain='data.linz.govt.nz'
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain:API_KEYS[domain]})
- 
+
         # Test data dir and plugin settigns dir
         self.test_dir=os.path.dirname(os.path.realpath(__file__))
         self.test_data_dir=os.path.join(self.test_dir, 'data')
         self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
- 
+
         # Delete all service xml files in plugin settigns dir
         os.chdir(self.pl_settings_dir)
         cache_files = glob.glob('*_*_[0-9]*.xml')
         for file in cache_files:
             os.remove(os.path.join(self.pl_settings_dir, file))
- 
+
         # Copy in /test/data service xml to save time if they exist. 
         # In most cases they dont as I can not make available with API Key
         # via github. If these are not avilable wms and wfs will be fetch for data portal
@@ -104,7 +104,7 @@ class CorruptXml(unittest.TestCase):
             file=os.path.join(self.test_data_dir, file)
             #if os.path.exists(file):
             shutil.copy(file, self.pl_settings_dir)
- 
+
         # Copy in corrupt file for the test
         try:
             os.chdir(self.pl_settings_dir)
@@ -116,31 +116,31 @@ class CorruptXml(unittest.TestCase):
         corr_file_name='data.linz.govt.nz_wmts_corrupt.xml'
         corr_file=os.path.join(self.test_data_dir, corr_file_name) #src
         shutil.copy(corr_file, self.pl_settings_dir)
- 
+
         # Rename
         new_corr_file = os.path.join(self.pl_settings_dir, corr_file_name)
         name_file_to = os.path.join(self.pl_settings_dir, corr_file_name.replace('_corrupt','_20181025141022'))
         os.rename(new_corr_file, name_file_to)
         QTest.qWait(WAIT)
- 
+
     def tearDown(self):
         """Runs after each test"""
         QTest.qWait(WAIT)
         self.ldi.dlg.uTextFilter.setText('')
         self.ldi.dlg.close()
         self.services_loaded=False
- 
+
     def test_handle_corrupt_xml(self):
         """
         Setup has
         1. placed  corrupt file in the cache
- 
+
         Test
         1. Test file is corrupt
         1. Runs plug
         2. Test file is not corrupt
         """
- 
+
         #Test file is corrupt
         os.chdir(self.pl_settings_dir)
         cpt_file=glob.glob('data.linz.govt.nz_wmts_[0-9]*.xml')[0]
@@ -161,98 +161,98 @@ class CorruptXml(unittest.TestCase):
         self.assertEqual(len(data_types),3)
         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
 
-class cacheTest(unittest.TestCase):
-    """
-    Test method for clearing old files from cache
-    """
+# class cacheTest(unittest.TestCase):
+#     """
+#     Test method for clearing old files from cache
+#     """
+# 
+#     def setUp(self):
+#         # 1. create six files
+#         # 2. three suffixed with one date three with the other
+#         # 3. Run the purge. Should only be the newest left.
+#         self.ldi=plugins.get('linz-data-importer')
+#         self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
+# 
+#         self.old_file1='data.govt.test.nz_wfs_000000000000001.xml'
+#         self.old_file2='data.govt.test.nz_wfs_000000000000003.xml'
+#         self.new_file='data.govt.test.nz_wfs_999999999999999.xml'
+#         self.test_files = [self.old_file1, self.old_file2, self.new_file]
+# 
+#         for file in self.test_files:
+#             with open(file, "w") as f:
+#                 f.write("")
+# 
+#     def tearDown(self):
+#         """Runs after each test"""
+# 
+#         for file in self.test_files:
+#             try:
+#                 os.remove(file)
+#             except:
+#                 pass
+# 
+#     def test_purgeCache(self):
+#         """
+#         Test the purge removes the old files leaving
+#         just the most current
+#         """
+# 
+#         os.chdir(self.pl_settings_dir)
+#         pre_purge_test_files=glob.glob('data.govt.test.nz_wfs_[0-9]*.xml')
+#         self.assertEqual(sorted(pre_purge_test_files), sorted(self.test_files))
+#         self.ldi.local_store.purgeCache()
+#         post_purge_test_files=glob.glob('data.govt.test.nz_wfs_[0-9]*.xml')
+#         self.assertEqual(post_purge_test_files, ['data.govt.test.nz_wfs_999999999999999.xml'])
 
-    def setUp(self):
-        # 1. create six files
-        # 2. three suffixed with one date three with the other
-        # 3. Run the purge. Should only be the newest left.
-        self.ldi=plugins.get('linz-data-importer')
-        self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
 
-        self.old_file1='data.govt.test.nz_wfs_000000000000001.xml'
-        self.old_file2='data.govt.test.nz_wfs_000000000000003.xml'
-        self.new_file='data.govt.test.nz_wfs_999999999999999.xml'
-        self.test_files = [self.old_file1, self.old_file2, self.new_file]
-
-        for file in self.test_files:
-            with open(file, "w") as f:
-                f.write("")
-
-    def tearDown(self):
-        """Runs after each test"""
-
-        for file in self.test_files:
-            try:
-                os.remove(file)
-            except:
-                pass
-
-    def test_purgeCache(self):
-        """
-        Test the purge removes the old files leaving
-        just the most current
-        """
-
-        os.chdir(self.pl_settings_dir)
-        pre_purge_test_files=glob.glob('data.govt.test.nz_wfs_[0-9]*.xml')
-        self.assertEqual(sorted(pre_purge_test_files), sorted(self.test_files))
-        self.ldi.local_store.purgeCache()
-        post_purge_test_files=glob.glob('data.govt.test.nz_wfs_[0-9]*.xml')
-        self.assertEqual(post_purge_test_files, ['data.govt.test.nz_wfs_999999999999999.xml'])
- 
- 
 class UserWorkFlows(unittest.TestCase):
     """
     Testr user work flows to import data via the plugin
     """
- 
+
     @classmethod
     def setUpClass(cls):
         """
         Set up at TestCase init
         """
- 
+
         # Get the test executors current key so that 
         # We can revert back to when tests are complete
         cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
- 
+
     @classmethod
     def tearDownClass(cls):
         """
         Clean up at TestCase teardown
         """
- 
+
         # Runs at TestCase teardown.
         QSettings().setValue('linz_data_importer/apikey', cls.testers_keys)
- 
+
     def setUp(self):
         """
         Runs before each test
         """
- 
+
         self.ldi=plugins.get('linz-data-importer')
         self.ldi.update_cache=False
         self.ldi.services_loaded=False 
- 
+
         domain='data.linz.govt.nz'
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain:API_KEYS[domain]})
- 
+
         self.ldi.selected_crs='ESPG:2193'
         self.ldi.selected_crs_int=2193
- 
+
         # Run
         self.ldi.actions[0].trigger()
- 
+
     def tearDown(self):
         """
         Runs after each test
         """
- 
+
         QTest.qWait(WAIT) # Just because I want to watch it open a close
         self.ldi.dlg.uTextFilter.setText('')
         self.ldi.dlg.close()
@@ -260,66 +260,66 @@ class UserWorkFlows(unittest.TestCase):
         self.services_loaded=False
         item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
- 
+
     def test_wfs_import(self):
         """
         Test display, filtering, selection and importing of WFS data 
         """
- 
+
         self.import_service('wfs')
- 
+
     def test_wms_import(self):
         """
         Test display, filtering, selection and importing of WFS data 
         """
- 
+
         self.import_service('wms')
- 
+
     def test_wmts_import(self):
         """
         Test display, filtering, selection and importing of WFS data 
         """
- 
+
         self.import_service('wmts')
- 
+
     def import_service(self, service):
         """
         Executes tests for all "test_w<x>s_import" methods
         """
- 
+
         # Select WxS table view
         item = self.ldi.dlg.uListOptions.findItems(service.upper(), Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
- 
+
         # Test the tableview widget is current stackedWidget
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
- 
+
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
- 
+
         # Ensure all records are of the selected type
         data_types=set([self.ldi.proxy_model.index(row, 2).data() 
                        for row in xrange(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),1)
         self.assertEqual(service.upper(), list(data_types)[0])
- 
+
         # Filter
         self.ldi.dlg.uTextFilter.setText(TEST_CONF[service])
         QTest.qWait(WAIT)
- 
+
         # Import the first row
         self.ldi.dlg.uTableView.selectRow(0)
         self.ldi.dlg.uBtnImport.clicked.emit(True)
- 
+
         # Test the LayerRegistry to ensure the layer has been imported
         names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
         self.assertEqual(TEST_CONF[service], names[0])
- 
+
     def test_all_services(self):
         """
         Test all services are shown in table 
         """
- 
+
         # Set up 
         item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
