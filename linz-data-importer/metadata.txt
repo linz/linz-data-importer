@@ -4,7 +4,7 @@
 name=LINZ Data Importer
 qgisMinimumVersion=2.8
 description=Import LDS OGC Datasets into QGIS
-version=1.0.2
+version=1.0.3
 author=Land Information New Zealand
 email=splanzer@linz.govt.nz
 

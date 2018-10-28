@@ -3,7 +3,7 @@ services:
 
 branches: 
   only: 
-    - clear_cache
+    - master
 
 env:
   global:
