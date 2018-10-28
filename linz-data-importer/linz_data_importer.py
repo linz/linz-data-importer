@@ -736,21 +736,22 @@ class LinzDataImporter:
                                    'wms') 
 
         elif 'WMTS':
-            uri=("IgnoreAxisOrientation=1&SmoothPixmapTransform=1&"
-                   "contextualWMSLegend=0&crs={1}&dpiMode=7&format=image/png&"
-                   "layers={2}-{3}&styles=style%3Dauto&tileMatrixSet={1}&"
-                   "url=https://{0}/services;"
-                   "key={4}/{5}/{6}/{2}/{3}/"
-                   "WMTSCapabilities.xml").format(self.domain,
-                                                  self.selected_crs,
-                                                  self.data_type, 
-                                                  self.id, 
-                                                  self.api_key_instance.getApiKey(self.domain), 
-                                                  self.service.lower(), 
-                                                  self.service_versions[self.service.lower()])
+            uri=("SmoothPixmapTransform=1"
+                 "&contextualWMSLegend=0"
+                 "&crs={1}&dpiMode=7&format=image/png"
+                 "&layers={2}-{3}&styles=style%3Dauto&tileMatrixSet={1}"
+                 "&url=https://{0}/services;"
+                 "key={4}/{5}/{6}/{2}/{3}/"
+                 "WMTSCapabilities.xml").format(self.domain,
+                                                self.selected_crs,
+                                                self.data_type, 
+                                                self.id, 
+                                                self.api_key_instance.getApiKey(self.domain), 
+                                                self.service.lower(), 
+                                                self.service_versions[self.service.lower()])
             layer=QgsRasterLayer(uri,
-                                   self.layer_title,
-                                  'wms')
+                                 self.layer_title,
+                                'wms')
         else: pass # ERRORnot supported
 
         QgsMapLayerRegistry.instance().addMapLayer(layer) 
