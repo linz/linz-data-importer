@@ -1,9 +1,9 @@
-# LDS Data Importer [![Build Status](https://travis-ci.org/SPlanzer/QGIS-LDS-Plugin.svg?branch=master)](https://travis-ci.org/SPlanzer/QGIS-LDS-Plugin)
+# LDS Data Importer [![Build Status](https://travis-ci.org/SPlanzer/QGIS-LDS-Plugin.svg?branch=master)](https://travis-ci.com/linz/linz-data-importer)
 
 The intent of this QGIS Plugin is to allow the easy importing of 
 [LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 
 see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)) 
- into QIGS. 
+ into QGIS. 
 
 ![](https://github.com/linz/linz-data-importer/blob/master/images/import_example.gif)
 
@@ -22,7 +22,7 @@ At the time of release this plugin supports the coupling of the below open data 
 * [data.mfe.govt.nz](data.mfe.govt.nz) (Manatū Mō Te Taiao - Ministry for the Environment)
 * [datafinder.stats.govt.nz](datafinder.stats.govt.nz) (Tatauranga Aotearoa - Statistics New Zealand)
 * [lris.scinfo.org.nz](lris.scinfo.org.nz) (Manaaki Whenua - Landcare Research)
-* [geodata.nzdf.mil.nz](geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force
+* [geodata.nzdf.mil.nz](geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force)
 
 ## Selecting a Service / Protocol
 The LDS Plugin supports data served over WFS, WMS and WMTS protocols. 
@@ -31,7 +31,7 @@ Please see the resource available on the
 
 ## API Keys 
 Prior to using the plugin, a domain and related API Key must be stored via the "Settings" menu.
-When saving your API key this will trigger the plugin to request all of the domain's dataset information. This may take sometime.
+When saving your API key this will trigger the plugin to request all of the domain's dataset information. This may take some time.
 For more on API keys please see the [LDS user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key). 
 
 
@@ -39,17 +39,17 @@ For more on API keys please see the [LDS user resources](http://www.linz.govt.nz
 
 
 ## Coordinate Reference System (CRS)
-The available CRS options for each layer are shown next to the import button (This is in 
+The available CRS options for each layer are shown next to the import button (in 
 terms of EPSG code). If the data source is stored in multiple CRSs the user
 can select which CRS the dataset is to be requested in from the server. 
 
-\* Note; if the QGIS projects CRS and the imported datasets CRS do not
-match, QGIS will reproject the imported data to the projects CRS.
+\* Note; if the QGIS project's CRS and the imported dataset's CRS do not
+match, QGIS will reproject the imported data to the project's CRS.
 **Beware:** reprojecting data can degrade spatial accuracies and relationships.
 
 When importing the first dataset via the plugin for a QGIS session, the plugin 
-will change the QGIS projects CRS to match the imported data. If On The Fly (OTF)
-projection is not enable, the plugin will enable OTF to allow any 
+will change the QGIS project's CRS to match the imported data. If On The Fly (OTF)
+projection is not enabled, the plugin will enable OTF to allow any 
 further datasets to be reprojected to the project's / QGIS session's CRS. 
 When these changes occur the user will be informed via the QGIS message bar.
 
@@ -66,7 +66,7 @@ The left hand panel allows users to filter by service / protocol types (either, 
 All column headers can be toggled to allow ascending or descending ordering of their data.
 Text can be entered in the "Filter Data Sets" search bar to filter the datasets by keyword. 
 ## Source Code, Further Documentation and Feedback
-Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/) repository at GitHub
+Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/) repository on GitHub.
 
 ## Dev Notes
 
@@ -77,11 +77,11 @@ for branches listed in the `.travis.yml` file. These Travis tests are against
 an instance of QGIS within a Docker container as made possible by the 
 [Boundless Docker container](https://hub.docker.com/r/boundlessgeo/qgis-testing-environment/). 
 
-If running these test locally they can be speed up by placing one of each of the 
+If running these test locally they can be sped up by placing one of each of the 
 GetCapabilities documents from the [LDS](https://data.linz.govt.nz/) for each 
-services (WMS, WMTS, WFS)  in the `/tests/data/` folder. This will
+protocol (WMS, WMTS, WFS)  in the `/tests/data/` folder. This will
 save the tests having to go and fetch these each time. 
 
 ### Thanks
-Thanks to all those at LINZ who have provided input and feedback. 
+Thanks to all those at LINZ who have provided input and feedback.  
 And thanks to Pete King for the icons.
