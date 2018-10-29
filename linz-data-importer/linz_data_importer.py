@@ -54,6 +54,7 @@ SER=['',
     'OTHER'
     ]
 
+
 SER_TYPES=['wmts', 'wms', 'wfs']
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):

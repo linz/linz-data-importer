@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import QAbstractTableModel, Qt
 from qgis.PyQt.QtWidgets import QTableView
 import sys
 
+
 class TableView(QTableView):
 
     """    
