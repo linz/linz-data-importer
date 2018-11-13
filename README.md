@@ -1,11 +1,11 @@
-# LDS Data Importer [![Build Status](https://travis-ci.org/SPlanzer/QGIS-LDS-Plugin.svg?branch=master)](https://travis-ci.com/linz/linz-data-importer)
+# LDS Data Importer [![Build Status](https://travis-ci.org/SPlanzer/QGIS-LDS-Plugin.svg?branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer)
 
 The intent of this QGIS Plugin is to allow the easy importing of 
 [LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 
 see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)) 
  into QGIS. 
 
-![](https://github.com/linz/linz-data-importer/blob/master/images/import_example.gif)
+![](https://github.com/linz/linz-data-importer/blob/master_qgis3/images/import_example.gif)
 
 ## Supported Versions
 Currently this plugin only supports those versions >QGIS2.8 and <QGIS2.18
@@ -35,7 +35,7 @@ When saving your API key this will trigger the plugin to request all of the doma
 For more on API keys please see the [LDS user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key). 
 
 
-![Example of Domains configured via the settings menu](https://github.com/linz/linz-data-importer/blob/master/images/settings_example.png)
+![Example of Domains configured via the settings menu](https://github.com/linz/linz-data-importer/blob/master_qgis3/images/settings_example.png)
 
 
 ## Coordinate Reference System (CRS)
@@ -71,7 +71,7 @@ Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/)
 ## Dev Notes
 
 ### Tests
-[Tests](https://github.com/linz/linz-data-importer/tree/master/linz-data-importer/tests)
+[Tests](https://github.com/linz/linz-data-importer/tree/master_qgis3/linz-data-importer/tests)
  are executed via [Travis](https://travis-ci.com/linz/linz-data-importer)
 for branches listed in the `.travis.yml` file. These Travis tests are against
 an instance of QGIS within a Docker container as made possible by the 
