@@ -55,7 +55,7 @@ class CorruptXml(unittest.TestCase):
         # We can revert back to when tests are complete
         cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
         cls.ldi_plugin = plugins.get('linz-data-importer')
-    
+
     @classmethod
     def tearDownClass(cls):
         """
@@ -76,7 +76,7 @@ class CorruptXml(unittest.TestCase):
         self.ldi.services_loaded=False
         self.ldi.update_cache=False
 
-        # Domain to run test against lds (only service with all WxS)
+        # Domain to run test against (lds only service with all WxS)
         domain='data.linz.govt.nz'
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain:API_KEYS[domain]})
@@ -94,7 +94,7 @@ class CorruptXml(unittest.TestCase):
 
         # Copy in /test/data service xml to save time if they exist. 
         # In most cases they dont as I can not make available with API Key
-        # via github. If these are not avilable wms and wfs will be fetch for data portal
+        # via github. If these are not available wms and wfs will be fetch for data portal
         files=['{0}_{1}.xml'.format(domain,x) for x in ['wms','wfs','wmts']]
         for f in files:
             file=os.path.join(self.test_data_dir, f)
