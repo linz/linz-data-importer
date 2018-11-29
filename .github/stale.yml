@@ -4,8 +4,7 @@ daysUntilStale: 5 # currently short for test
 daysUntilClose: 5 # currently short for test
 # Issues with these labels will never be considered stale
 exemptLabels:
-  - Future Enhancement
-  - on hold
+  - enhancement
   - StaleBot Ignore
 # Label to use when marking an issue as stale
 staleLabel: Stale
