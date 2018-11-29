@@ -3,12 +3,13 @@
 [general]
 name=LINZ Data Importer
 qgisMinimumVersion=2.8
-description=Import LDS OGC Datasets into QGIS
+qgisMaximumVersion=2.18
+description=Import LINZ (and others) OGC Datasets into QGIS
 version=1.0.3
 author=Land Information New Zealand
 email=splanzer@linz.govt.nz
 
-about=Import LINZ (and others) OGC Datasets into QGIS
+about=Couple QGIS with the LINZ Data Service (LDS) for easy LINZ data discovery and importation
 
 tracker=https://github.com/linz/linz-data-importer/issues
 repository=https://github.com/linz/linz-data-importer
