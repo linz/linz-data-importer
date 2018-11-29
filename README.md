@@ -1,4 +1,4 @@
-# LDS Data Importer [![Build Status](https://travis-ci.org/linz/linz-data-importer.svg?branch=master_qgis2)](https://travis-ci.com/linz/linz-data-importer)
+# LDS Data Importer [![Build Status](https://travis-ci.org/linz/linz-data-importer.svg?branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer)
 
 The intent of this QGIS Plugin is to allow the easy importing of 
 [LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 

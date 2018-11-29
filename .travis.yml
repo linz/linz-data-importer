@@ -3,7 +3,7 @@ services:
 
 branches: 
   only: 
-    - master_qgis2
+    - master_qgis3
 
 env:
   global:
