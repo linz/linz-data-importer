@@ -4,7 +4,7 @@ The intent of this QGIS Plugin is to allow the easy importing of
 see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)) 
  into QGIS. 
 
-![](https://github.com/linz/linz-data-importer/blob/master/images/import_example.gif)
+![](https://github.com/linz/linz-data-importer/blob/master_qgis2/images/import_example.gif)
 
 ## Supported Versions
 Currently this plugin only supports those versions >QGIS2.8 and <QGIS2.18
@@ -34,7 +34,7 @@ When saving your API key this will trigger the plugin to request all of the doma
 For more on API keys please see the [LDS user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key). 
 
 
-![Example of Domains configured via the settings menu](https://github.com/linz/linz-data-importer/blob/master/images/settings_example.png)
+![Example of Domains configured via the settings menu](https://github.com/linz/linz-data-importer/blob/master_qgis2/images/settings_example.png)
 
 
 ## Coordinate Reference System (CRS)
