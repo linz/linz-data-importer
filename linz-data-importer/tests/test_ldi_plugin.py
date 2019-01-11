@@ -21,14 +21,15 @@ import shutil
 import re
 import io
 
-from PyQt4.QtTest import QTest
+from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtCore import Qt, QSettings, QBuffer
 from qgis.PyQt.QtGui import QImage
 from qgis.utils import plugins
-from qgis.core import QgsMapLayerRegistry, QgsApplication
+from qgis.core import QgsProject, QgsApplication
 
 WAIT=1000
 
+# Must have the below envi vars set 
 API_KEYS={'data.linz.govt.nz':os.getenv('LDI_LINZ_KEY', None),
           'data.mfe.govt.nz': os.getenv('LDI_MFE_KEY', None),
           'geodata.nzdf.mil.nz':os.getenv('LDI_NZDF_KEY', None)}
@@ -105,12 +106,10 @@ class UnitLevel(unittest.TestCase):
         QTest.qWait(WAIT) # Just because I want to watch it open and close
         self.ldi.dlg.uTextFilter.setText('')
         self.ldi.dlg.close()
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
         self.ldi.clearSettings()
         self.ldi.wmts_epsg="EPSG:3857"
-        self.ldi.canvas.setCrsTransformEnabled(False)
         self.ldi.selectionModel.blockSignals(False)
-
 
     def test_clearSettings(self):
         """
@@ -368,12 +367,9 @@ class UnitLevel(unittest.TestCase):
         test_img_match = QImage(test_image1) #should match
         test_img_mismatch = QImage(test_image2) #shouldn't match
 
-        bytes_preview=preview_img.bits().asstring(preview_img.numBytes())
-        bytes_match=test_img_match.bits().asstring(test_img_match.numBytes())
-        bytes_mismatch=test_img_mismatch.bits().asstring(test_img_mismatch.numBytes())
         # Is the downloaded image the as the stored?  
-        self.assertEqual(bytes_match, bytes_preview)
-        self.assertNotEqual(bytes_mismatch, bytes_preview)
+        self.assertEqual(test_img_match, preview_img)
+        self.assertNotEqual(test_img_mismatch, preview_img)
 
     def test_updDescription(self):
         """ 
@@ -398,18 +394,6 @@ class UnitLevel(unittest.TestCase):
         Test via int tests 
         """
         pass
-
-    def test_enableOTF(self):
-        """
-        Test enabling QGIS's OTF
-        """
-        # test current state
-        otf=self.ldi.canvas.hasCrsTransformEnabled()
-        self.assertFalse(otf)
-        # Run the mthod
-        self.ldi.enableOTF()
-        otf=self.ldi.canvas.hasCrsTransformEnabled()
-        self.assertTrue(otf)
 
     def test_setSRID(self):
         """
@@ -448,7 +432,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.layer_title=title
         self.ldi.importDataset()
         #test the layer has been imported
-        names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
+        names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(title, names[0])
 
     def test_importDataset_wmts(self):
@@ -466,7 +450,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.layer_title=title
         self.ldi.importDataset()
         #test the layer has been imported
-        names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
+        names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(title, names[0])
 
     def test_importDataset_wms(self):
@@ -484,7 +468,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.layer_title=title
         self.ldi.importDataset()
         #test the layer has been imported
-        names = [layer.name() for layer in QgsMapLayerRegistry.instance().mapLayers().values()]
+        names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(title, names[0])
 
 # def suite():

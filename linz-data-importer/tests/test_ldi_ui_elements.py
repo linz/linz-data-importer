@@ -17,12 +17,13 @@
 
 import unittest
 import time
-from PyQt4.QtTest import QTest
+
+from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import (QListWidget, QTableView, QLabel, QTextEdit,
-                             QLineEdit, QPushButton, QListWidget)
+from qgis.PyQt.QtWidgets import (QListWidget, QTableView, QLabel, QTextEdit,
+                                 QLineEdit, QPushButton)
 from qgis.utils import plugins
-from PyQt4.Qt import QComboBox
+from qgis.PyQt.Qt import QComboBox
 
 WAIT=1000
 

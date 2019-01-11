@@ -27,11 +27,12 @@ from qgis.core import QgsMessageLog, QgsApplication
 
 import os.path
 from xml.etree.ElementTree import ParseError
+from lxml import etree
+
 from urllib.request import urlopen
 from urllib.error import URLError
 
 from qgis.PyQt.QtCore import QSettings
-#from gc import isenabled
 
 class ApiKey(object):
     """
@@ -182,7 +183,7 @@ class Localstore(object):
 
         if not file:
             file = self.file
-        with open(file, 'r') as f:
+        with open(file, 'rb') as f:
             self.xml = f.read()
 
 class ServiceData(Localstore):
@@ -224,7 +225,7 @@ class ServiceData(Localstore):
         """
 
         disbaled_str = ('Service {0} is disabled').format(self.service.upper())
-        if self.xml.find(disbaled_str) == -1:
+        if self.xml.find(disbaled_str.encode()) == -1:
             return True
         self.disabled = True
         return False
@@ -313,12 +314,10 @@ class ServiceData(Localstore):
                                                                 self.service.lower(),
                                                                 self.service.upper(),
                                                                 self.version))
-
             self.xml = xml.read()
-            self.xml = self.xml.decode('utf-8')
 
             # write to cache
-            with open(self.file, 'w') as f:
+            with open(self.file, 'wb') as f:
                 f.write(self.xml)
 
         except URLError as e:
