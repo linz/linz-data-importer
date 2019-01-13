@@ -133,24 +133,24 @@ class CorruptXml(unittest.TestCase):
         1. Runs plug
         2. Test file is not corrupt
         """
-        pass
         #Test file is corrupt
-#         cpt_file=os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml')
-#         is_corrupt=False
-#         try:
-#             ET.parse(cpt_file)
-#         except ET.ParseError:
-#             is_corrupt=True
-#         self.assertTrue(is_corrupt)
-#         # Run Plugin
-#         self.ldi.services_loaded=False
-#         self.ldi.actions[0].trigger()
-#         ##QTest.qWait(1000)
-#         # ensure all services are are present in the table
-#         data_types=set([self.ldi.proxy_model.index(row, 3).data() 
-#                        for row in range(self.ldi.proxy_model.rowCount())])
-#         self.assertEqual(len(data_types),3)
-#         self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
+        cpt_file=os.path.join(self.pl_settings_dir, 'data.linz.govt.nz_wmts.xml')
+        is_corrupt=False
+        try:
+            ET.parse(cpt_file)
+        except ET.ParseError:
+            is_corrupt=True
+        self.assertTrue(is_corrupt)
+        # Run Plugin
+        self.ldi.services_loaded=False
+        self.ldi.actions[0].trigger()
+        ##QTest.qWait(1000)
+        # ensure all services are present in the table
+        data_types=set([self.ldi.proxy_model.index(row, 3).data() 
+                       for row in range(self.ldi.proxy_model.rowCount())])
+        self.assertEqual(len(data_types),3)
+        self.assertEqual(sorted([u'WMS', u'WFS', u'WMTS']), 
+                         sorted(list(data_types)))
 
 class UserWorkFlows (unittest.TestCase):
     """
@@ -274,7 +274,8 @@ class UserWorkFlows (unittest.TestCase):
         data_types=set([self.ldi.proxy_model.index(row, 3).data() 
                        for row in range(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
-        self.assertEqual([u'WMS', u'WFS', u'WMTS'], list(data_types))
+        self.assertEqual(sorted([u'WMS', u'WFS', u'WMTS']), 
+                         sorted(list(data_types)))
 
 # def suite():
 #     suite = unittest.TestSuite()

@@ -635,14 +635,6 @@ class LinzDataImporter(object):
         crs=self.canvas.mapSettings().destinationCrs().authid()
         return crs
 
-#     def enableOTF(self): # Always enabled in QGIS three - REMOVE
-#         """
-#         Enable on the fly projection
-#         """
-# 
-#         if not self.iface.mapCanvas().hasCrsTransformEnabled():
-#             self.canvas.setCrsTransformEnabled(True)
-
     def setSRID(self):
         """ 
         Set the projects projection

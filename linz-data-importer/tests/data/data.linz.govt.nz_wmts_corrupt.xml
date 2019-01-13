@@ -50,29 +50,7 @@
                 <ows:Value>KVP</ows:Value>
               </ows:AllowedValues>
             </ows:Constraint>
-          </ows:Get>
-        </ows:HTTP>
-      </ows:DCP>
-    </ows:Operation>
-  </ows:OperationsMetadata>
-
-  <Contents>
-
-
-
-
-<Layer>
-  <ows:Title>Chart NZ 4314 Manukau Harbour</ows:Title>
-  <ows:Abstract>Raster chart image of: NZ 4314 Manukau Harbour  
-
-This data was compiled for the use at the following scale: 1:3000 
-
-File reference: NZ431402.tif
-
-THIS DATA DOES NOT REPLACE NAUTICAL CHARTS AND MUST NOT TO BE USED FOR NAVIGATION.
-
-The hydrographic raster data made available through the LINZ Data Service is based on the Paper Navigational Charts published and maintained by the New Zealand Hydrographic Authority at Land Information New Zealand (LINZ).
-
+<<< DATA REMOVED TO CORRUPT FILE >>>
 The online New Zealand Chart Catalogue provides more detailed and the most up to date information about New Zealand charts: [New Zealand Chart Catalogue](http://www.linz.govt.nz/hydro/charts/nz202-chart-catalogue)
 
 Information on symbols and abbreviations used on nautical charts: [Symbols and Abbreviations](http://www.linz.govt.nz/hydro/charts/chart-symbols-terms-abbreviations)
