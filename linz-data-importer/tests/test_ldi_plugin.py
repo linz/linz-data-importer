@@ -20,6 +20,7 @@ import os
 import shutil
 import re
 import io
+import glob 
 
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtCore import Qt, QSettings, QBuffer
@@ -310,8 +311,10 @@ class UnitLevel(unittest.TestCase):
         insitu_file_stats={}
         cached_file_stats={}
 
+        os.chdir(self.pl_settings_dir)
         for service in ['wms','wfs','wmts']:
-            file='{0}_{1}.xml'.format(self.domain1,service)
+            files=glob.glob('{0}_{1}*.xml'.format(self.domain1,service))
+            file=files[-1]
             file_path=os.path.join(self.pl_settings_dir, file)
             insitu_file_stats[file]=os.stat(file_path).st_mtime
 
@@ -321,7 +324,8 @@ class UnitLevel(unittest.TestCase):
         QTest.qWait(15000)
 
         for service in ['wms','wfs','wmts']:
-            file='{0}_{1}.xml'.format(self.domain1,service)
+            files=glob.glob('{0}_{1}*.xml'.format(self.domain1,service))
+            file=files[-1]
             file_path=os.path.join(self.pl_settings_dir, file)
             cached_file_stats[file]=os.stat(file_path).st_mtime
         self.assertNotEqual(cached_file_stats, insitu_file_stats)
@@ -395,28 +399,21 @@ class UnitLevel(unittest.TestCase):
         """
         pass
 
-    def test_setSRID(self):
+    def test_setProjectSRID(self):
         """
         Test the setting of the projects crs
         """
 
         # Get plugins default srs 
-        default_srid=self.ldi.wmts_epsg.lstrip('EPSG:')
         test_srid_int=3793
         # Test current state
         self.assertNotEqual(self.ldi.mapCrs(), test_srid_int)
 
         # Change srid via method
-        self.ldi.wmts_epsg_int=test_srid_int
+        self.ldi.selected_crs_int=test_srid_int
+        self.ldi.setProjectSRID()
         # Test method
-        self.ldi.setSRID()
         self.assertEqual(self.ldi.mapCrs().lstrip('EPSG:'), str(test_srid_int))
-
-    def test_infoCRS(self):
-        """
-        Not currently tested
-        """
-        pass
 
     def test_importDataset_wfs(self):
         """
@@ -424,16 +421,17 @@ class UnitLevel(unittest.TestCase):
         """
 
         # set plugin properties required for import
-        self.ldi.domain=self.domain1
+        self.ldi.domain=self.domain1 #mfe
         self.ldi.service='WFS'
-        self.ldi.service_type='layer'
-        self.ldi.id='52759'
-        title='test_wfs'
-        self.ldi.layer_title=title
+        self.ldi.data_type='layer'
+        self.ldi.id='53318'
+        self.ldi.layer_title='test_wfs'
+        self.ldi.selected_crs='ESPG:2193'
+        self.ldi.selected_crs_int=2193
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
 
     def test_importDataset_wmts(self):
         """
@@ -442,16 +440,17 @@ class UnitLevel(unittest.TestCase):
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
-        self.ldi.domain=self.domain2
+        self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMTS'
-        self.ldi.service_type='layer'
+        self.ldi.data_type='layer'
         self.ldi.id='51320'
-        title='test_wmts'
-        self.ldi.layer_title=title
+        self.ldi.layer_title='test_wmts'
+        self.ldi.selected_crs='EPSG:3857'
+        self.ldi.selected_crs_int=3857
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
 
     def test_importDataset_wms(self):
         """
@@ -460,16 +459,19 @@ class UnitLevel(unittest.TestCase):
 
         # set plugin properties required for import
         self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
-        self.ldi.domain=self.domain2
+        self.ldi.domain=self.domain2 #linz
         self.ldi.service='WMS'
-        self.ldi.service_type='layer'
+        self.ldi.data_type='layer'
+        self.ldi.selected_crs='EPSG:3857'
+        self.ldi.selected_crs_int=3857
         self.ldi.id='51409'
-        title='test_wms'
-        self.ldi.layer_title=title
+        self.ldi.layer_title='test_wms'
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-        self.assertEqual(title, names[0])
+        self.assertEqual(self.ldi.layer_title, names[0])
+
+
 
 # def suite():
 #     suite = unittest.TestSuite()

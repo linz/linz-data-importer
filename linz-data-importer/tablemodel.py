@@ -89,7 +89,7 @@ class TableModel(QAbstractTableModel):
         """
 
         try:
-            return len(self.arraydata[0])-1 # hiding description
+            return len(self.arraydata[0])-2 # hiding description
         except:
             return 0
 

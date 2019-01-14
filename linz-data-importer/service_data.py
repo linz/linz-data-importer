@@ -15,9 +15,10 @@
  ***************************************************************************/
 """
 
+import re        
+import time        
+import glob
 
-from builtins import object
-import re
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
 
@@ -105,8 +106,9 @@ class Localstore(object):
         self.file=file
         if self.service:
             self.file = os.path.join(self.pl_settings_dir , 
-                               '{0}_{1}.xml'.format(domain, service.lower()))
-
+                               '{0}_{1}_{2}.xml'.format(domain, 
+                                                        service.lower(), 
+                                                        time.strftime("%Y%m%d%H%M%S")))
     def ensureSettingsDir(self):
         """
         Create the plugins settings dir if not exists
@@ -160,9 +162,46 @@ class Localstore(object):
                 file = os.path.join(dir, f)
                 self.delLocalSeviceXML(file)
 
+
+
+    def purgeCache(self):
+        """
+        Delete all cached documents but the 
+        most current
+        """
+        file_metadata={}
+        os.chdir(self.pl_settings_dir)
+        cache_files = glob.glob('*_*_[0-9]*.xml')
+
+        # Get cache metadata
+        for f in cache_files:
+            file_data=re.search(r'(?P<domain>.*)(_)(?P<service>wms|wmts|wfs)(_)(?P<time>[0-9]+)\.xml', f)
+            domain=file_data.group('domain') 
+            service=file_data.group('service') 
+            timestamp=file_data.group('time') 
+            if domain not in file_metadata:
+                file_metadata[domain]={}
+            if service not in file_metadata[domain]:
+                file_metadata[domain][service]=[]
+            file_metadata[domain][service].append(timestamp)
+
+        # get list of most current
+        curr_files = []
+        for dom, v in file_metadata.items():
+            for ser , file_times in v.items():
+                curr_files.append('{0}_{1}_{2}.xml'.format(dom, 
+                                                           ser, 
+                                                           sorted(file_times)[-1]))
+
+        # del old files
+        for file in cache_files:
+            if file not in curr_files:
+                self.delLocalSeviceXML(file)
+
     def serviceXmlIsLocal(self, file=None):
         """
         Test if the cached capabilties xml doc exists
+        and if so set the services file to match this
         :param file: file name 
         :type file: str
         @return: boolean. True file exists
@@ -170,8 +209,13 @@ class Localstore(object):
         """
 
         if not file:
-            file = self.file
-        return os.path.isfile(file)
+            os.chdir(self.pl_settings_dir)
+            files = glob.glob('{0}_{1}_*.xml'.format(self.domain, 
+                                                    self.service.lower()))
+            if files:
+                self.file = sorted(files)[-1]
+                return True
+        return False
 
     def readLocalServiceXml(self, file=None):
         """
@@ -191,7 +235,7 @@ class ServiceData(Localstore):
     Get, Store and Process WxS Data
     """
 
-    def __init__(self, domain, service, service_version, api_key_instance):
+    def __init__(self, domain, service, service_version, api_key_instance, upd_cache=False):        
         """
         Initialise Service Data instance 
 
@@ -207,6 +251,7 @@ class ServiceData(Localstore):
 
         self.version = service_version[service]
         self.api_key_int = api_key_instance # using one instance as the user can change keys on us
+        self.upd_cache=upd_cache
         Localstore.__init__(self, domain, service)
         # Data 
         self.obj = None #owslib data obj
@@ -236,12 +281,17 @@ class ServiceData(Localstore):
         Either via localstore or internet 
         """
 
-        # Get service xml
+        # If cache get new data and overwrite local store
+        if self.upd_cache:
+            self.getServiceXml()
+            return
+
+        # Plugin opened for first time
+        # Read data from local store if exists
         if self.serviceXmlIsLocal():
             self.readLocalServiceXml()
         else:
             self.getServiceXml()
-
     def getServiceDataTryAgain(self):
         """
         If the reading of the capability doc fails - Try again.
@@ -330,16 +380,27 @@ class ServiceData(Localstore):
 
     def formatForUI(self):
         """
-        Format the service data to display in the UI
+        Format the service data to display in the UI 
         """
 
         service_data = []
         cont = self.obj.contents
 
         for dataset_id, dataset_obj in cont.items():
+            crs=[]
             full_id = re.search(r'([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)', dataset_obj.id)
             type = full_id.group('type')
-            id  =  full_id.group('id')
-            service_data.append([self.domain, type, id, self.service.upper(), dataset_obj.title, dataset_obj.abstract])
+            id = full_id.group('id')
+            # Get and standarise espg codes
+            if self.service == 'wmts':
+                crs = dataset_obj.tilematrixsets
+            elif self.service in ('wfs'):
+                crs = dataset_obj.crsOptions
+                crs = ['EPSG:{0}'.format(item.code) for item in crs]
+            elif self.service in ('wms'):
+                crs = dataset_obj.crsOptions
+                crs = ['EPSG:{0}'.format(item.strip('urn:ogc:def:crs:EPSG::')) for item in crs]
+            service_data.append([self.domain, type, self.service.upper(), id,
+                                 dataset_obj.title, dataset_obj.abstract, crs])
 
         self.info = service_data
