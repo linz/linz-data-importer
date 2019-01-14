@@ -465,6 +465,16 @@ class LinzDataImporter(object):
         else:
             self.dlg.uLabelWarning.hide()
 
+    def setSectionSize(self):
+        """
+        Set tableview col width based on contents 
+        """
+        
+        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+       
     def loadAllServices(self, update_cache=False):
         """ 
         Iterate over all domains and service types (WMS, WMTS, WFS). 
@@ -490,6 +500,7 @@ class LinzDataImporter(object):
                     return service_data_instance.err
                 all_data.extend(service_data_instance.info)
         self.table_model.setData(all_data)
+        self.setSectionSize()
         self.services_loaded=True
 
         if update_cache:
@@ -636,10 +647,6 @@ class LinzDataImporter(object):
         self.dlg.uTableView.setModel(self.proxy_model)
         self.dlg.uTableView.setSortingEnabled(True)
         self.dlg.uTableView.horizontalHeader().setStretchLastSection(True)
-        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        self.dlg.uTableView.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
 
         # Trigger updating of data abstract on user selection
         self.selectionModel=self.dlg.uTableView.selectionModel()
