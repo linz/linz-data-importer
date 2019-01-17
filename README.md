@@ -1,4 +1,4 @@
-# LDS Data Importer [![Build Status](https://travis-ci.org/linz/linz-data-importer.svg?branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer)
+# LDS Data Importer [![Build Status](https://api.travis-ci.com/linz/linz-data-importer.svg?token=4YGqrWWw1nJqpi344cuy&branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer)
 
 The intent of this QGIS Plugin is to allow the easy importing of 
 [LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 
@@ -7,16 +7,11 @@ see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)
 
 ![](https://github.com/linz/linz-data-importer/blob/master_qgis3/images/import_example.gif)
 
-## Supported Versions
-Currently this plugin only supports those versions >QGIS2.8 and <QGIS2.18
-
-Support for QGIS3 is not far off. 
-
 ## Changing Scope
 The initial scope of this plugin was to couple the LDS and QGIS. However 
 as other New Zealand agencies also make use of the same technology their data 
 can also be imported.
- 
+
 At the time of release this plugin supports the coupling of the below open data portals with QGIS:
 * [data.linz.govt.nz](data.linz.govt.nz) (Toitū Te Whenua - Land Information New Zealand)
 * [data.mfe.govt.nz](data.mfe.govt.nz) (Manatū Mō Te Taiao - Ministry for the Environment)
@@ -77,10 +72,6 @@ for branches listed in the `.travis.yml` file. These Travis tests are against
 an instance of QGIS within a Docker container as made possible by the 
 [Boundless Docker container](https://hub.docker.com/r/boundlessgeo/qgis-testing-environment/). 
 
-If running these test locally they can be sped up by placing one of each of the 
-GetCapabilities documents from the [LDS](https://data.linz.govt.nz/) for each 
-protocol (WMS, WMTS, WFS)  in the `/tests/data/` folder. This will
-save the tests having to go and fetch these each time. 
 
 ### Thanks
 Thanks to all those at LINZ who have provided input and feedback.  
