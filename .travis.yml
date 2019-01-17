@@ -1,30 +1,37 @@
+sudo: false
 services:
-    - docker
-
-branches: 
-  only: 
-    - master_qgis3
-
+- docker
 env:
   global:
-      - PLUGIN_NAME=linz-data-importer
-      - secure: "i4fkdFGJxqp30cb3t/CB9rszbcC8YvEyrM7cAoGfERFneNhXanlXFEtsBBEMJ+T4rA/IsebBdrWk2DNwg4vI92Pd2puZdvKVAT8zDmadJo0MvkJI9gGURAG3FOGhfb+SCwt2GXHn5tMBTIqe+o8hhJ69ZK73U0plGSdoqAXNmq2HyMNa+rvzOCJT234hMdijp/RjDgflAOnl9wTzGy62fthcG2vyiwinkeHcf2htdP/xR++5j+0tSKyfqb+9DMTCWwsrZ2RrmMUF55WSzYRwt98BOtcEQdmlwP7XVHBX/ySdp12w6kZ/EhQl8d362YP+mUM/E13tijQF1EZcZiMNJ1vbEF9GA0qo5YxOjNAvvOWoLBbxXOqxWJsjSsluFJZiyS0h09UoOvzldNCa0PzQpfLH/E3Diqtkd6IGqUWPMTaxcJ1d9WglBBiw2gD807lMBSULpJiHfvmVxBFy/wfi3WQ1txusr0eBOA0GqlIR6A4FGbH7Rj1m9sHK0oDAgUiUF82BREF244lG8Ecq2JjL+5z/Do1M6b9rK65M+FygmpcTKNm9WHmyiGy5aWarjvP3P7nzf86UvnuWbqJsJNgrf/o8k+tCY03PUiGvDyVjvc0BtX0z5QPSBi98rppGgd+OFriQdLMiLtyg+ej1C1ZvwRJrd1WFzMgZGML7GxWKBXA="
-      - secure: "icytWBJqEWu9ADdTOidzlV8ymPlMgjmEYZbo+vdqkc3q51+TuThPVE+DDNI12C96Apj+v8zKGblfowQFiyi7qpau8uJmo2EtGNgwpwHn48HumFzexxQeyriNENerQKLmtpQ4o9UvL3FoODIqbsuvmj2lbEewlrKo0//fW2ewozSQOsyxwKJ9J64wLIsBt4v95EXWbG+hKkD7Ps3q9Q/lIITY02l25tcKSUHqXehDHNDVXdGI6SdU14SgG/AeypJVzwGZf8iBOj0lvEPTK0F2VvhEeXq/lfXglMwPePlYBweJFQURdXPCfjK/2Nlcw/saEGew7fywjpq3nSBV8+gbaISOE3xBgogHU0G2U1BWmB3qtUtWDl+ggN5+UL5xgOLEvAYqsWqHCsPNJqh768F1udOQ/6XcaMLpj1nwEXiX8e3v/GAtQFf9rEqZ5BxEQoJjzcteI7P1Dv1GaaAlx6psIWq9eHwP01ytXUNdbgXL9wrj7trKQ+iYB11V7avO8GaJtBQh8YTEAJ86AT65X4Jwzz2dC5H54qbv8340CTpAtouzX1u8uW1Ea7B3Nm05cA6/ckIFLFHkTT8QPe2m4SyY45/Ex0kg4Qd85fxWZma9WooKHYTeBferC9SYuib7PZmyJqWUSQvxfKenOl342uyFm+vUS8aWtmiu6W1jZJ6XG4I="
-      - secure: "YprBSdN9jOZmB64FafzhN1vhoG2bcjMt/uq/b5gYnYNk8IzIYMMNowoirwRizk6qXXdmNXfENtlnQ3pEGZpbjaUPGEhkD1X/kcdlGLbqwxMxcAKxewskobRyOy/41XjZgyrhlHH9++1dddAFC08ooznBiZMh56I1YM11uRd3dHy9mhUouGBBew7+nZ6dViDkOx3CMfTXhfc+0SmaLkZSA0OuhCZzDqCHVIAzfhHHsP5X5ZmB3qcchB+anGBk+6xdkk0BXepc5qAfMgJ3ybX7OopjFgdFNZOWa79e7a0g1dT1sSygp9lkRlw4TT1fHmvP37Fhi40vgahzZSAupXQD3sSorQ8x5++OlmmaVrdrJS+3MPJSBMFeRq90/eWH/Ajh5IobkoL6ZBhb1hntNlVVmH5Z3wKzcFYgVOBOmFNjX0/jvY14b3BgxMNAJcdXOxk0gOSPxHuMdcNNJs5XqKJyi8bvJY4uDv6k1y7sF+5vB76PObBUNi3mNjWecmc6Y1xbMx4V3o/2giwbVC3z/iFjSsF0N46xWw1W7Uz5c8+JgSNCRh/duzcRrvs0cFH/in6wLq/vIvOg2TmDg2HwXSzy8W2ivNCi57ESubcyyJ6SVDdLify294Y+lDUyDZ2j7q33ZjASVXFaSkM5PBsOt7eFDh/GKYfsGqUOQgW3vkO4hy0="
+  - PLUGIN_NAME=linz-data-importer
+  - IMAGE=elpaso/qgis-testing-environment
+  - secure: PZcpgPWyCIN95vEu+T3/PGdl9cds1u99OeprAI8w+iG0srbA0ngSQ5RBS0/TXNMDeX+hZZadL6YAyZxVtBD9JlgnAHO+pNQs4qRxX+aYr4+3Yk+JD/gqBf64MyIYsgd3KxiTD8KDNuHWgVFZTo3jYxRz5KWaosptjs5qgplMHefFiYau3jLeLKa7rvnrGT8iptipBo96vQ2+cebbyVrlKNw1gmyRM7F54TtuvBAupQN9uOPp4nlzoa57Xhz3/IEfcMtlA++cQxhWmGD+qYOQgEkj1nhJYnBg3UDlckDRSB0wxPcnLUwaN6lNxcth2VrMRg/Lag1Sq10glr2nE/uEB4w6XhMUz2NHW+2bJeIeH/vBwrnsE86HVkC/vAQYRXo95IS/Y7HTSb9lp0WfhLQ5nEUBa8C1DWd6Kon5IjZFZnyn9z7CFqOmVoLuzHzkfCs2TmTXMuPchVu9CTVC76H3TuwXFSJ0bbk2dVjyLhPZfV0MnA8Y1JOZtnAvFwonrfRbFvrRQT22u4ktegawaGZF7ZFcravxp8YbRLV0aWV0e151srw3v0xajtBZs26JcI84ylcWz+GiF1Jb84WdZ+og3qCpmaUsxjG/PQBJugTLBXmgKn3f/tVh3RwAmzzM/5D9qHq+RuCX0WwUmU3y1DEPKh5JJ2dS5b9+UnOoJij145s=
+  - secure: VQgoCslYLcFsk5Yy1R17Vf02VFR60ExlxOQ3NfRtHINFIPf/MGBOGodY/BFRVXGCgLMTI9aZQMXgnw2kqWgEShB5peUP+nmhfYEA8zNVWVSWBBLH0aAfH6CmKnhOrGSqu1UQLrMY6wEuhjLxI/98UYUbxoXRkL1VKHWI+NkBe/X0sws5Ni2S5kicXRqy5xcHqH+PWSyEdAQEqj7LhhmB0wWBEuzceoQmv3VxFbaxT7MQsppWscXPGEwKp4yEYXke49q2WgIUDwEwhNY+Np7NGCI7ItxwOAUNUPwZgB6w0h6bllrf74R5lxZXsjGXpt9gvE7eBPsZtp/2bdc2dtSaja+UwXM+2LAwwXhnPziNed3giilv0BIkfbiPO0wzPZgGwJRvlQ84Lx52odBrakqn5Auiyn3QmLJfV+ifYWXOweoa4/4CCmzhC385Ci4SceYkCGv+v892WAAG7OrLzg0H64E5tEy6JAFgilPSwOeHqGErmkMM98tx+rxR/glP2Tn/YGBjTa2FtMH2s5QyMF+xZGu2XPILcc163bSj5m8TkNDKgFCt49xda5IcaA1pT3Ew1OJfw98Ndcux7KBG0bcuTYqcfFRbSCUeESH8IwKBBhI7EsxybpFvK+kHXOd17QDBDFYQ3gcn5h6pdRTOwEGVnVlfOzYBvM1/A9Y9SCRJYBY=
+  - secure: LqEbJdP1SS8+mX9u+mY2QAADzJjpBsC30QB028iALUGF7K+WwVtB2/Rmrg0+KGHvJaq0ybmWDr2Kko5lppVOpYFszmGVmsJwYV4ufzt5JkGLJJM23kVKHzc63EHr9vyTrjz8A70OLZnVmhRKiAfuuYmbfrBqQePCpmXWYEBNFJZuhGBK5SVzq5OYnrp83RRKD8GSG7QoAtuhALDMZk9/W4Qhjcepjloy7h9309k9pGiJfkGcfZBb6xjPeGwd8rxDq3z4Sg2Tmm+pAUb5pW2svNmEJvMa2jn7kQ/lBEEhO6Yt3hNNvEGEfdLtjJPRPoUWF0N/WB855zRbhh96hUNzFTRv5/ilASRx3sMMW2eVTxJnobvU2Q+V2jqmBwAr/O4phFr5pM8wbw+s/x3CvfUbif+7bL1nJz3dXNDxLxWLnexbfVg0FiQzGaUj7tGzwd3qfiyiZVzyCAusg0WHprFrKSXZnx1Z+sxKc0BPOhl5FHayIxcdgSlsWtqaluiEGKqvUxs7cE95zgyW82p7xuli+ZGF2XFwNE9NizcsUyBkXRB91TzdpZfENK1f8UNBGbQqc33cyqBbP2YtbRiFB8gNOCj/lediIk2misY0ppbPgV40QnvmbVBKzkbMSC3lyEgvhzMeIxLkhEaJCtSnIRqxc3xGVqOmWWX2xI9oK9gu7b0=
   matrix:
-    #  - QGIS_VERSION_TAG=release PYTHON_EXECUTABLE=python PIP_EXECUTABLE=pip
-      - QGIS_VERSION_TAG=master_2 PYTHON_EXECUTABLE=python PIP_EXECUTABLE=pip
-    # - QGIS_VERSION_TAG=master PYTHON_EXECUTABLE=python PIP_EXECUTABLE=pip
-
+  - QGIS_VERSION_TAG=master
+language: python
+cache:
+  directories:
+  - "$HOME/.cache/pip"
+python:
+- '3.6'
+branches:
+  only:
+  - master_qgis3
+addons:
+  apt:
+    packages:
+    - git
+    - python-software-properties
 before_install:
-    - docker pull boundlessgeo/qgis-testing-environment:${QGIS_VERSION_TAG}
-    - docker tag boundlessgeo/qgis-testing-environment:${QGIS_VERSION_TAG} qgis-testing-environment
+- docker pull ${IMAGE}:${QGIS_VERSION_TAG}
 install:
-    - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e LDI_LINZ_KEY -e LDI_MFE_KEY -e LDI_NZDF_KEY -e DISPLAY=:99 qgis-testing-environment 
-    - sleep 10
-    - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
-    - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory /root/.qgis2/python/plugins/${PLUGIN_NAME}"
-    - docker exec -it qgis-testing-environment sh -c "pip install pyproj"
-
+- pip install --upgrade pip
+- docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory
+  -e LDI_LINZ_KEY -e LDI_MFE_KEY -e LDI_NZDF_KEY -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+- sleep 10
+- docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
+- docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory /root/.local/share/QGIS/QGIS3/profiles/default/${PLUGIN_NAME}"
 script:
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests.run_test_modules"
+- docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests.run_test_modules"

@@ -766,4 +766,4 @@ class LinzDataImporter(object):
         QgsProject.instance().addMapLayer(layer)
         self.layers_loaded=True
         self.dlg.close()
-        
+   

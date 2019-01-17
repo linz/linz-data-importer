@@ -27,8 +27,13 @@ from owslib.util import ServiceException
 from qgis.core import QgsMessageLog, QgsApplication
 
 import os.path
-from lxml.etree import XMLSyntaxError
-from lxml import etree
+
+try: 
+    from lxml import etree
+    from lxml.etree import XMLSyntaxError
+except ImportError:  
+    from xml import etree 
+    from xml.etree.ElementTree import ParseError as XMLSyntaxError
 
 from urllib.request import urlopen
 from urllib.error import URLError
@@ -40,7 +45,6 @@ class ApiKey(object):
     Store API Keys for each domain. Required to 
     fetch service data
     """
-
 
     # TODO// MAKE SINGLETON
     def __init__(self):

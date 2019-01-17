@@ -158,10 +158,10 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
 
-# def suite():
-#     suite = unittest.TestSuite()
-#     suite.addTests(unittest.makeSuite(UiTest, 'test'))
-#     return suite
-# 
-# def run_tests():
-#     unittest.TextTestRunner(verbosity=3).run(suite())
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(UiTest, 'test'))
+    return suite
+ 
+def run_tests():
+    unittest.TextTestRunner(verbosity=3).run(suite())

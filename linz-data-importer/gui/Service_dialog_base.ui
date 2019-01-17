@@ -781,8 +781,14 @@
                </item>
                <item>
                 <widget class="QLabel" name="label_3">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
                  <property name="text">
-                  <string>* When saving the domain details for the first time the UI may appear to &quot;freeze&quot; while obtaining domain data. Please be patient, this will be cached and updated in the background there after.</string>
+                  <string>* When saving the domain details for the first time the UI may appear to &quot;freeze&quot; while obtaining domain data. Please be patient, this will be cached and updated in the background thereafter.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>

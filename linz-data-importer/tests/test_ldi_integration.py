@@ -261,12 +261,12 @@ class UserWorkFlows(unittest.TestCase):
         item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
-#     def test_wfs_import(self):
-#         """
-#         Test display, filtering, selection and importing of WFS data 
-#         """
-# 
-#         self.import_service('wfs')
+    def test_wfs_import(self):
+        """
+        Test display, filtering, selection and importing of WFS data 
+        """
+ 
+        self.import_service('wfs')
 
     def test_wms_import(self):
         """
@@ -304,7 +304,7 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(service.upper(), list(data_types)[0])
 
         # Filter
-        self.ldi.dlg.uTextFilter.setText(TEST_CONF[service].replace('(', '\(').replace(')','\)'))
+        self.ldi.dlg.uTextFilter.setText(TEST_CONF[service])
         QTest.qWait(WAIT)
 
         # Import the first row
