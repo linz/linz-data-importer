@@ -27,7 +27,7 @@ homepage=https://github.com/linz/linz-data-importer/
 category=Web
 icon=icons/icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
