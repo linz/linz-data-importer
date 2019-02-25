@@ -281,7 +281,7 @@ class LinzDataImporter(object):
         self.dlg.hAboutHtml.setOpenExternalLinks(True)
         about_file=os.path.join(self.plugin_dir, 'about.html')
         icon_path=os.path.join(self.plugin_dir, 'icons')
-        with open(about_file) as file:
+        with open(about_file, "r", encoding="utf-8") as file:
             about_html=file.read()
             about_html.format(self.plugin_dir)
         self.dlg.hAboutHtml.setHtml(about_html.format(icon_path))
