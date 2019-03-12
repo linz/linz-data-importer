@@ -89,7 +89,7 @@ class UnitLevel(unittest.TestCase):
         self.domain2='data.linz.govt.nz'
         self.copyTestData()
 
-        self.ldi=plugins.get('linz-data-importer')
+        self.ldi=plugins.get('linz_data_importer')
         self.ldi.selectionModel.blockSignals(True)
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({self.domain1:API_KEYS[self.domain1]})

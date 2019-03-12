@@ -3,7 +3,7 @@
 
 
 import os
-
+#from .ExtendedCombobox import ExtendedCombobox
 from PyQt5 import QtGui, QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(

@@ -71,7 +71,7 @@ class CorruptXml(unittest.TestCase):
         """
 
         #Get reference to plugin
-        self.ldi=plugins.get('linz-data-importer')
+        self.ldi=plugins.get('linz_data_importer')
 
         # Dont run cache update
         self.ldi.services_loaded=False
@@ -170,7 +170,7 @@ class cacheTest(unittest.TestCase):
         # 1. create six files
         # 2. three suffixed with one date three with the other
         # 3. Run the purge. Should only be the newest left.
-        self.ldi=plugins.get('linz-data-importer')
+        self.ldi=plugins.get('linz_data_importer')
         self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
  
         self.old_file1='data.govt.test.nz_wfs_000000000000001.xml'
@@ -234,7 +234,7 @@ class UserWorkFlows(unittest.TestCase):
         Runs before each test
         """
 
-        self.ldi=plugins.get('linz-data-importer')
+        self.ldi=plugins.get('linz_data_importer')
         self.ldi.update_cache=False
         self.ldi.services_loaded=False 
 
@@ -333,6 +333,17 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(sorted([u'WMS', u'WFS', u'WMTS']), 
                          sorted(list(data_types)))
 
+
+    def test_crs_combo_filter(self):
+        """
+        Test the importing of WMS layers into QGIS
+        """
+
+        #set text
+        self.ldi.dlg.uCRSCombo.lineEdit().setText('ESPG:2193')
+        #check that the lineEdit set the correct item in combobox
+        self.assertEqual('ESPG:2193', self.ldi.dlg.uCRSCombo.currentText())
+        
 # def suite():
 #     suite = unittest.TestSuite()
 #     suite.addTests(unittest.makeSuite(ApiKeyTest, 'test'))

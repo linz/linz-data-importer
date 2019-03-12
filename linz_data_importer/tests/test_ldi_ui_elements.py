@@ -37,7 +37,7 @@ class UiTest(unittest.TestCase):
         Runs before each test.
         """
 
-        self.ldi=plugins.get('linz-data-importer')
+        self.ldi=plugins.get('linz_data_importer')
         self.ldi.actions[0].trigger()
 
     def tearDown(self):

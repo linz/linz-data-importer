@@ -16,10 +16,10 @@
 """
 
 from builtins import str
-from qgis.PyQt.QtCore import QAbstractTableModel, Qt
-from qgis.PyQt.QtWidgets import QTableView
+from qgis.PyQt.QtCore import QAbstractTableModel, Qt, QSortFilterProxyModel
+from qgis.PyQt.QtWidgets import QTableView, QComboBox, QApplication, QCompleter
+from qgis.PyQt.QtGui import QStandardItem 
 import sys
-
 
 class TableView(QTableView):
 
@@ -62,6 +62,7 @@ class TableModel(QAbstractTableModel):
         :param parent: None
         :param parent: None
         """
+
         QAbstractTableModel.__init__(self, parent)
         self.arraydata = data
         self.header = headers
@@ -166,3 +167,90 @@ class TableModel(QAbstractTableModel):
         """
 
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+
+class ExtendedCombobox( QComboBox ):
+    """
+    Overwrite combobox to provide text filtering of
+    combobox list. 
+    """
+    
+    def __init__(self,  parent):
+        """
+        Initialise  ExtendedCombobox
+        
+        :param parent: Parent of combobox
+        :type parent: PyQt5.QtWidgets.QWidget
+        """
+        
+        super(ExtendedCombobox, self).__init__(parent)
+ 
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setEditable(True)
+        self.completer = QCompleter(self)
+ 
+        # always show all completions
+        self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        self.pFilterModel = QSortFilterProxyModel(self)
+        self.pFilterModel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        self.completer.setPopup(self.view())
+        self.setCompleter(self.completer)
+        self.lineEdit().textEdited.connect(self.pFilterModel.setFilterFixedString)
+        self.completer.activated.connect(self.setTextIfCompleterIsClicked)
+ 
+    def setModel(self, model):
+        """
+        Set the model to use the Filter model
+
+        :param model: The model to be used by the combobox
+        :type model: PyQt5.QtGui.QStandardItemModel
+        """
+        
+        super(ExtendedCombobox, self).setModel(model)
+        self.pFilterModel.setSourceModel(model)
+        self.completer.setModel(self.pFilterModel)
+ 
+    def setModelColumn(self, column):
+        """
+        :param model: The model to be used by the combobox
+        :type model: PyQt5.QtGui.QStandardItemModel
+        """
+        
+        self.completer.setCompletionColumn(column)
+        self.pFilterModel.setFilterKeyColumn(column)
+        super(ExtendedCombobox, self).setModelColumn(column)
+  
+    def view(self):
+        """
+        A QListView of items stored in the model
+        
+        :return: items stored in the model
+        :rtype: PyQt5.QtWidgets.QListView
+        """
+
+
+        return self.completer.popup()
+ 
+    def index(self):
+        """
+        Index of the current item in the combobox.
+        
+        :return: index of the current item
+        :rtype: int
+        """
+        
+        return self.currentIndex()
+ 
+    def setTextIfCompleterIsClicked(self, text):
+        """
+        :param text: The current text of the qlineedit
+        :type text: str
+        
+        If the combobx lineedit is clicked, set the lineedits
+        current item as the combobox's current item 
+        """
+    
+        if text:
+            index = self.findText(text)
+            self.setCurrentIndex(index)
+ 
+
