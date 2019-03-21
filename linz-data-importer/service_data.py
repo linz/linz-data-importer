@@ -24,7 +24,7 @@ from owslib.wfs import WebFeatureService
 
 from owslib.wmts import WebMapTileService
 from owslib.util import ServiceException 
-from qgis.core import QgsMessageLog, QgsApplication
+from qgis.core import QgsApplication
 
 import os.path
 
@@ -39,6 +39,7 @@ from urllib.request import urlopen
 from urllib.error import URLError
 
 from qgis.PyQt.QtCore import QSettings
+
 
 class ApiKey(object):
     """
@@ -166,8 +167,6 @@ class Localstore(object):
                 file = os.path.join(dir, f)
                 self.delLocalSeviceXML(file)
 
-
-
     def purgeCache(self):
         """
         Delete all cached documents but the 
@@ -281,7 +280,7 @@ class ServiceData(Localstore):
 
     def getServiceData(self):
         """
-        Select method to obtain capbilties doc. 
+        Select method to obtain capabilities doc. 
         Either via localstore or internet 
         """
 
@@ -381,30 +380,45 @@ class ServiceData(Localstore):
 
             elif hasattr(e, 'code'):
                  self.err = 'Error: ({0}) {1}'.format(self.domain, e.reason)
-
+    
+    def sortCrs(self):
+        # wms returns some no valid crs values            
+        valid = re.compile('^EPSG\:\d+')
+        self.crs = [s for s in self.crs if valid.match(s)]
+        # sort
+        self.crs.sort(key = lambda x: int(x.split(':')[1]))
+    
     def formatForUI(self):
         """
         Format the service data to display in the UI 
         """
-
+        
+        wms_crs = []
         service_data = []
         cont = self.obj.contents
-
         for dataset_id, dataset_obj in cont.items():
-            crs=[]
+            self.crs=[]
             full_id = re.search(r'([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)', dataset_obj.id)
             type = full_id.group('type')
             id = full_id.group('id')
             # Get and standarise espg codes
             if self.service == 'wmts':
-                crs = dataset_obj.tilematrixsets
+                self.crs = dataset_obj.tilematrixsets
+                self.sortCrs()
             elif self.service in ('wfs'):
-                crs = dataset_obj.crsOptions
-                crs = ['EPSG:{0}'.format(item.code) for item in crs]
+                self.crs = dataset_obj.crsOptions
+                self.crs = ['EPSG:{0}'.format(item.code) for item in self.crs]
+                self.sortCrs()
             elif self.service in ('wms'):
-                crs = dataset_obj.crsOptions
-                crs = ['EPSG:{0}'.format(item.strip('urn:ogc:def:crs:EPSG::')) for item in crs]
+                if wms_crs:
+                    self.crs = wms_crs
+                else:
+                    self.crs = dataset_obj.crsOptions
+                    self.sortCrs()
+                    wms_crs = self.crs
+ 
             service_data.append([self.domain, type, self.service.upper(), id,
-                                 dataset_obj.title, dataset_obj.abstract, crs])
+                                 dataset_obj.title, dataset_obj.abstract, self.crs])
 
         self.info = service_data
+

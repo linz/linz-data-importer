@@ -1,9 +1,22 @@
-#TODO// header
-
+"""
+/***************************************************************************
+ LINZ Data Importer
+                                 A QGIS plugin
+ Import LINZ (and others) OGC Datasets into QGIS
+                              -------------------
+        begin                : 2018-04-07
+        git sha              : $Format:%H$
+        copyright            : (C) 2017 by Land Information New Zealand
+        email                : splanzer@linz.govt.nz
+ ***************************************************************************/
+/***************************************************************************
+ *   This program is released under the terms of the 3 clause BSD license. *
+ *   see the LICENSE file for more information                             *
+ ***************************************************************************/
+"""
 
 
 import os
-
 from PyQt5 import QtGui, QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
