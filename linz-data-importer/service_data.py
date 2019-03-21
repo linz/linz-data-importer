@@ -41,11 +41,6 @@ from urllib.error import URLError
 from qgis.PyQt.QtCore import QSettings
 
 
-#temp
-from qgis.core import QgsMessageLog
-
-
-
 class ApiKey(object):
     """
     Store API Keys for each domain. Required to 
