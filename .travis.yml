@@ -11,23 +11,14 @@ env:
   matrix:
   - QGIS_VERSION_TAG=master
 language: python
-cache:
-  directories:
-  - "$HOME/.cache/pip"
 python:
 - '3.6'
 branches:
   only:
   - master_qgis3
-addons:
-  apt:
-    packages:
-    - git
-    - python-software-properties
 before_install:
 - docker pull ${IMAGE}:${QGIS_VERSION_TAG}
 install:
-- pip install --upgrade pip
 - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory
   -e LDI_LINZ_KEY -e LDI_MFE_KEY -e LDI_NZDF_KEY -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
 - sleep 10

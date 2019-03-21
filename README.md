@@ -60,7 +60,7 @@ the plugin is started.
 The left hand panel allows users to filter by service / protocol types (either, All, WFS, WMS, WMTS).
 All column headers can be toggled to allow ascending or descending ordering of their data.
 Text can be entered in the "Filter Data Sets" search bar to filter the datasets by keyword. 
-## Source Code, Further Documentation and Feedback
+## Source Code and Feedback
 Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/) repository on GitHub.
 
 ## Dev Notes

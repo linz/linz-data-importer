@@ -14,7 +14,6 @@
  *   see the LICENSE file for more information                             *
  ***************************************************************************/
 """
-from __future__ import absolute_import
 
 # This program is released under the terms of the 3 clause BSD license. See the
 # LICENSE file for more information.
@@ -24,12 +23,12 @@ from builtins import object
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QRegExp, QSize, Qt 
 
 from qgis.PyQt.QtWidgets import QAction, QListWidgetItem, QHeaderView, QMenu, QToolButton
-from qgis.PyQt.QtGui import QIcon, QPixmap, QImage
+from qgis.PyQt.QtGui import QIcon, QPixmap, QImage, QStandardItemModel, QStandardItem
 from qgis.PyQt.QtCore import QSortFilterProxyModel
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsProject,
                        QgsCoordinateReferenceSystem, Qgis)
 from qgis.gui import QgsMessageBar
-from .tablemodel import TableModel, TableView
+from .tablemodel import TableModel
 from .service_data import ServiceData, Localstore, ApiKey
 
 import re
@@ -238,7 +237,9 @@ class LinzDataImporter(object):
         self.dlg.uListOptions.itemClicked.connect(self.showSelectedOption)
         self.dlg.uListOptions.itemClicked.emit(self.dlg.uListOptions.item(0))
         self.curr_list_wid_index=0
-
+                 
+        model = QStandardItemModel()
+        self.dlg.uCRSCombo.setModel(model)
         self.dlg.uCRSCombo.currentIndexChanged.connect(self.layerCrsSelected)
 
         self.dlg.uLabelWarning.setStyleSheet('color:red')
@@ -541,9 +542,17 @@ class LinzDataImporter(object):
                 self.dlg.uStackedWidget.setCurrentIndex(2)
 
     def layerCrsSelected(self):
-        self.selected_crs = str(self.dlg.uCRSCombo.currentText())
-        if self.selected_crs:
-            self.selected_crs_int = int(self.selected_crs.strip('EPSG:'))
+        """
+        Track the user selected crs. Check validity to 
+        ensure only well formed crs are provided.           
+        """
+        
+        valid = re.compile('^EPSG\:\d+')
+        crs_text = self.dlg.uCRSCombo.currentText()
+        if valid.match(crs_text):
+            self.selected_crs = str(self.dlg.uCRSCombo.currentText())
+            if self.selected_crs:
+                self.selected_crs_int = int(self.selected_crs.strip('EPSG:'))
 
     def getPreview(self, res, res_timeout):
         """
@@ -706,7 +715,7 @@ class LinzDataImporter(object):
         Import the selected dataset to QGIS
         """
 
-        if not self.layers_loaded:
+        if not self.layers_loaded and not self.data_type == 'table':
             self.setProjectSRID()
 
         if self.service == "WFS":

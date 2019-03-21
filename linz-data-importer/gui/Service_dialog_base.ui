@@ -132,6 +132,9 @@
             <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectRows</enum>
             </property>
@@ -146,7 +149,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QComboBox" name="uCRSCombo">
+             <widget class="ExtendedCombobox" name="uCRSCombo">
               <property name="maximumSize">
                <size>
                 <width>160</width>
@@ -819,9 +822,15 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ExtendedCombobox</class>
+   <extends>QComboBox</extends>
+   <header>tablemodel.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>uTextFilter</tabstop>
-  <tabstop>uCRSCombo</tabstop>
   <tabstop>uBtnImport</tabstop>
   <tabstop>uListOptions</tabstop>
   <tabstop>uTableView</tabstop>

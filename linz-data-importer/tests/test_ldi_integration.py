@@ -218,7 +218,7 @@ class UserWorkFlows(unittest.TestCase):
 
         # Get the test executors current key so that 
         # We can revert back to when tests are complete
-        cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
+        cls.testers_keys = QSettings().value('linz-data-importer/apikeys')
 
     @classmethod
     def tearDownClass(cls):
@@ -227,7 +227,7 @@ class UserWorkFlows(unittest.TestCase):
         """
 
         # Runs at TestCase teardown.
-        QSettings().setValue('linz_data_importer/apikey', cls.testers_keys)
+        QSettings().setValue('linz-data-importer/apikey', cls.testers_keys)
 
     def setUp(self):
         """
@@ -333,6 +333,17 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(sorted([u'WMS', u'WFS', u'WMTS']), 
                          sorted(list(data_types)))
 
+
+    def test_crs_combo_filter(self):
+        """
+        Test the importing of WMS layers into QGIS
+        """
+
+        #set text
+        self.ldi.dlg.uCRSCombo.lineEdit().setText('ESPG:2193')
+        #check that the lineEdit set the correct item in combobox
+        self.assertEqual('ESPG:2193', self.ldi.dlg.uCRSCombo.currentText())
+        
 # def suite():
 #     suite = unittest.TestSuite()
 #     suite.addTests(unittest.makeSuite(ApiKeyTest, 'test'))
