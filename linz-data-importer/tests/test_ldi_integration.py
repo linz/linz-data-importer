@@ -218,7 +218,7 @@ class UserWorkFlows(unittest.TestCase):
 
         # Get the test executors current key so that 
         # We can revert back to when tests are complete
-        cls.testers_keys = QSettings().value('linz-data-importer/apikeys')
+        cls.testers_keys = QSettings().value('linz_data_importer/apikeys')
 
     @classmethod
     def tearDownClass(cls):
@@ -227,7 +227,7 @@ class UserWorkFlows(unittest.TestCase):
         """
 
         # Runs at TestCase teardown.
-        QSettings().setValue('linz-data-importer/apikey', cls.testers_keys)
+        QSettings().setValue('linz_data_importer/apikeys', cls.testers_keys)
 
     def setUp(self):
         """
