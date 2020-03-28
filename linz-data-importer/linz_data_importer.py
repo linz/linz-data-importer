@@ -29,14 +29,14 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsProject,
                        QgsCoordinateReferenceSystem, Qgis)
 from qgis.gui import QgsMessageBar
 from .tablemodel import TableModel
-from .service_data import ServiceData, Localstore, ApiKey
+from .service_data import ServiceData, ApiKey
 
 import re
 import urllib.request
 import threading
 import time
 import os.path
-from owslib import wfs, wms, wmts
+from owslib import wfs, wmts
 
 # Initialize Qt resources from file resources.py
 from . import resources
@@ -54,12 +54,12 @@ SER=['',
     ]
 
 
-SER_TYPES=['wmts', 'wms', 'wfs']
+SER_TYPES=['wmts', 'wfs']
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
     def __init__(self, parent=None):
         super(CustomSortFilterProxyModel, self).__init__(parent)
-        self.data_type=('WMS', 'WMTS', 'WFS')
+        self.data_type=('WMTS', 'WFS')
 
     def setServiceType(self, service_type):
         self.data_type=service_type
@@ -89,8 +89,6 @@ class LinzDataImporter(object):
         self.iface=iface
         self.canvas=self.iface.mapCanvas()
         self.services_loaded=False
-        self.cache_updated=False
-        self.update_cache=True # Skip cache updates. Useful for testing.
 
         # initialise plugin directory
         self.plugin_dir=os.path.dirname(__file__)
@@ -126,12 +124,10 @@ class LinzDataImporter(object):
         self.selected_crs_int=None
         self.layers_loaded=False
         self.service_versions={'wfs': '2.0.0', 
-                        'wms': '1.1.1' , 
-                        'wmts': '1.0.0'}
+                               'wmts': '1.0.0'}
 
         # Instances 
         self.api_key_instance=ApiKey()
-        self.local_store=Localstore()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -252,11 +248,6 @@ class LinzDataImporter(object):
 
         item=QListWidgetItem("WFS")
         image_path=os.path.join(os.path.dirname(__file__), "icons", "wfs.png")
-        item.setIcon(QIcon(image_path))
-        self.dlg.uListOptions.addItem(item)
-
-        item=QListWidgetItem("WMS")
-        image_path=os.path.join(os.path.dirname(__file__), "icons", "wms.png")
         item.setIcon(QIcon(image_path))
         self.dlg.uListOptions.addItem(item)
 
@@ -431,27 +422,7 @@ class LinzDataImporter(object):
                 self.dlg.uLabelWarning.show()
             else:
                 self.loadUi()
-                if not self.cache_updated and self.update_cache:
-                    self.updateServiceDataCache()
         self.dlg.show()
-
-    def purgeCache(self):
-        """
-        Delete any cache files that are not the most current 
-        """
-
-        self.local_store.purgeCache()
-
-    def updateServiceDataCache(self):
-        """ 
-        Update the local cache by deleting the locally stored capability 
-        documents and then re-fetching from the associated web resource
-        """
-
-        self.services_loaded=False
-        t = threading.Thread(target=self.loadAllServices, args=(True,))
-        t.start()
-        self.cache_updated=True
 
     def loadUi(self):
         """ 
@@ -462,7 +433,6 @@ class LinzDataImporter(object):
         if load_data_err:
             self.dlg.uLabelWarning.setText(load_data_err)
             self.dlg.uLabelWarning.show()
-            self.update_cache=False
         else:
             self.dlg.uLabelWarning.hide()
 
@@ -476,22 +446,21 @@ class LinzDataImporter(object):
         self.dlg.uTableView.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.dlg.uTableView.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
        
-    def loadAllServices(self, update_cache=False):
+    def loadAllServices(self):
         """ 
-        Iterate over all domains and service types (WMS, WMTS, WFS). 
+        Iterate over all domains and service types (WMTS, WFS). 
         Request, process, store and format capability documents
         """
 
         all_data=[]
         for domain in self.api_key_instance.getApiKeys():
             for service in SER_TYPES:
-                # set service_data obj e.g self.linz_wms=service_data obj
-                data_feed='{0}_{1}'.format(domain, service) # eg linz_wms
+                # set service_data obj e.g self.linz_wmts=service_data obj
+                data_feed='{0}_{1}'.format(domain, service) # eg linz_wmts
                 setattr(self, data_feed, ServiceData(domain,
                                                      service, 
                                                      self.service_versions,
-                                                     self.api_key_instance,
-                                                     update_cache)) 
+                                                     self.api_key_instance)) 
                 service_data_instance=getattr(self, data_feed)
                 self.data_feeds[data_feed]=service_data_instance #keep record of ser data insts
                 service_data_instance.processServiceData()
@@ -504,14 +473,12 @@ class LinzDataImporter(object):
         self.setSectionSize()
         self.services_loaded=True
 
-        if update_cache:
-            self.purgeCache() 
         return None
 
     def showSelectedOption(self, item):
         """
         Connected to left pane QListWidget TOC. When items in the QListWidget 
-        are clicked, display the associated Tab. If 'WMS', 'WMTS', 
+        are clicked, display the associated Tab. If 'WMTS', 
         'WFS' or 'ALL' apply the filter to the tables proxy model
 
         :param item: The item in the QListWidget that was clicked
@@ -522,7 +489,7 @@ class LinzDataImporter(object):
             if item.text() == 'ALL':
                 self.dlg.uStackedWidget.setCurrentIndex(0)
                 self.curr_list_wid_index=self.dlg.uListOptions.findItems(item.text(), Qt.MatchExactly)[0]
-                self.proxy_model.setServiceType(('WMS', 'WMTS', 'WFS'))
+                self.proxy_model.setServiceType(('WMTS', 'WFS'))
             elif item.text() == 'WFS':
                 self.proxy_model.setServiceType((item.text()))
                 self.curr_list_wid_index=self.dlg.uListOptions.findItems(item.text(), Qt.MatchExactly)[0]
@@ -530,11 +497,6 @@ class LinzDataImporter(object):
             elif item.text() == 'WMTS':
                 self.proxy_model.setServiceType((item.text()))
                 self.curr_list_wid_index=self.dlg.uListOptions.findItems(item.text(), Qt.MatchExactly)[0]
-                self.dlg.uStackedWidget.setCurrentIndex(0)
-            elif item.text() == 'WMS':
-                self.curr_list_wid_index=0
-                self.curr_list_wid_index=self.dlg.uListOptions.findItems(item.text(), Qt.MatchExactly)[0]
-                self.proxy_model.setServiceType((item.text()))
                 self.dlg.uStackedWidget.setCurrentIndex(0)
             elif item.text() == 'Settings':
                 self.dlg.uStackedWidget.setCurrentIndex(1)
@@ -732,26 +694,7 @@ class LinzDataImporter(object):
                                                   self.id)
             layer=QgsVectorLayer(url,
                                   self.layer_title,
-                                  self.service.upper())  
-
-        elif self.service == "WMS":
-            uri=("crs={1}&"
-                   "dpiMode=7&"
-                   "format=image/png&"
-                   "layers={2}-{3}&"
-                   "styles=&"
-                   "url=https://{0}/services;"
-                   "key={4}/{5}/{2}-{3}?"
-                   "version={6}").format(self.domain,
-                                         self.selected_crs, 
-                                         self.data_type, 
-                                         self.id, 
-                                         self.api_key_instance.getApiKey(self.domain), 
-                                         self.service.lower(), 
-                                         self.service_versions[self.service.lower()])
-            layer=QgsRasterLayer(uri,
-                                   self.layer_title,
-                                   'wms') 
+                                  self.service.upper())
 
         elif 'WMTS':
             uri=("SmoothPixmapTransform=1"
