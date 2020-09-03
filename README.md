@@ -20,7 +20,7 @@ At the time of release this plugin supports the coupling of the below open data 
 * [geodata.nzdf.mil.nz](geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force)
 
 ## Selecting a Service / Protocol
-The LDS Plugin supports data served over WFS, WMS and WMTS protocols. 
+The LDS Plugin supports data served over WFS and WMTS protocols. 
 Please see the resource available on the 
 [LINZ website](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/which-web-service-should-i-use) for more on these protocols. 
 
@@ -50,14 +50,14 @@ When these changes occur the user will be informed via the QGIS message bar.
 
 ## Requests, Responses, Patience and Caching
 When saving a Domain and API key for the first time via the Setting menu, the plugin 
-will request the capabilities documents for each service / protocol type (WMS, WMTS, WFS). 
+will request the capabilities documents for each service / protocol type (WMTS, WFS). 
 The data portal's server can be slow to respond with these documents causing the 
 plugin to appear inactive. The good news is this is the only interaction with the 
 plugin where substantial patience may be required. Once the initial documents
 are fetched, they will be cached and updated in the background each time 
 the plugin is started.
 ## Filtering
-The left hand panel allows users to filter by service / protocol types (either, All, WFS, WMS, WMTS).
+The left hand panel allows users to filter by service / protocol types (either, All, WFS, WMTS).
 All column headers can be toggled to allow ascending or descending ordering of their data.
 Text can be entered in the "Filter Data Sets" search bar to filter the datasets by keyword. 
 ## Source Code and Feedback

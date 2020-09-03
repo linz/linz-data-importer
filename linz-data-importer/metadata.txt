@@ -25,7 +25,7 @@ changelog= v2.0.1-beta:
     - Upgrade to QGIS3 API    
 
 # Tags are comma separated with spaces allowed
-tags=wmts, wms, wfs, webservice, web, LINZ, LDS, MFE, Stats NZ, LRIS, NZDF
+tags=wmts, wfs, webservice, web, LINZ, LDS, MFE, Stats NZ, LRIS, NZDF
 
 homepage=https://github.com/linz/linz-data-importer/
 category=Web

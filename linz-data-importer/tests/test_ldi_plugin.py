@@ -68,7 +68,7 @@ class UnitLevel(unittest.TestCase):
         self.test_data_dir=os.path.join(self.test_dir, 'data')
         self.pl_settings_dir=os.path.join(QgsApplication.qgisSettingsDirPath(), "linz-data-importer")
         #delete all service xml files
-        search_str = '|'.join(['_{}.xml'.format(x) for x in ['wms','wfs','wmts']])
+        search_str = '|'.join(['_{}.xml'.format(x) for x in ['wfs','wmts']])
         for f in os.listdir(self.pl_settings_dir):
             if re.search(search_str, f):
                 os.remove(os.path.join(self.pl_settings_dir, f))
@@ -312,7 +312,7 @@ class UnitLevel(unittest.TestCase):
         cached_file_stats={}
 
         os.chdir(self.pl_settings_dir)
-        for service in ['wms','wfs','wmts']:
+        for service in ['wfs','wmts']:
             files=glob.glob('{0}_{1}*.xml'.format(self.domain1,service))
             file=files[-1]
             file_path=os.path.join(self.pl_settings_dir, file)
@@ -323,7 +323,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.updateServiceDataCache()
         QTest.qWait(15000)
 
-        for service in ['wms','wfs','wmts']:
+        for service in ['wfs','wmts']:
             files=glob.glob('{0}_{1}*.xml'.format(self.domain1,service))
             file=files[-1]
             file_path=os.path.join(self.pl_settings_dir, file)
@@ -447,25 +447,6 @@ class UnitLevel(unittest.TestCase):
         self.ldi.layer_title='test_wmts'
         self.ldi.selected_crs='EPSG:3857'
         self.ldi.selected_crs_int=3857
-        self.ldi.importDataset()
-        #test the layer has been imported
-        names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-        self.assertEqual(self.ldi.layer_title, names[0])
-
-    def test_importDataset_wms(self):
-        """
-        Test the importing of WMS layers into QGIS
-        """
-
-        # set plugin properties required for import
-        self.api_key_instance.setApiKeys({self.domain2:API_KEYS[self.domain2]})
-        self.ldi.domain=self.domain2 #linz
-        self.ldi.service='WMS'
-        self.ldi.data_type='layer'
-        self.ldi.selected_crs='EPSG:3857'
-        self.ldi.selected_crs_int=3857
-        self.ldi.id='51409'
-        self.ldi.layer_title='test_wms'
         self.ldi.importDataset()
         #test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]

@@ -147,17 +147,6 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
 
-    def test_listItem_wms_shows_widget_swTableView(self):
-        """ 
-        Check the stacked widget index and sinals
-        When 'WMS' is clicked - the stacked widgets current index
-        should now be == 0 
-        """
-
-        item = self.ldi.dlg.uListOptions.findItems('WMS', Qt.MatchFixedString)[0]
-        self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(UiTest, 'test'))

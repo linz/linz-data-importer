@@ -36,8 +36,7 @@ API_KEYS={'data.linz.govt.nz':os.getenv('LDI_LINZ_KEY', None),
           'data.mfe.govt.nz': os.getenv('LDI_MFE_KEY', None),
           'geodata.nzdf.mil.nz':os.getenv('LDI_NZDF_KEY', None)}
 
-TEST_CONF={'wms':'Chart NZ 252 Lake Wakatipu',
-           'wmts':'Chart NZ 632 Banks Peninsula',
+TEST_CONF={'wmts':'Chart NZ 632 Banks Peninsula',
            'wfs':'NZ Railway Centrelines (Topo, 1:250k)'
            }
 
@@ -95,9 +94,9 @@ class CorruptXml(unittest.TestCase):
 
         # Copy in /test/data service xml to save time if they exist. 
         # In most cases they dont as I can not make available with API Key
-        # via github. If these are not avilable wms and wfs will be fetch for data portal
+        # via github. If these are not avilable wfs will be fetch for data portal
         os.chdir(self.test_data_dir)
-        #test_files=['{0}_{1}.xml'.format(domain,x) for x in ['wms','wfs','wmts']]
+        #test_files=['{0}_{1}.xml'.format(domain,x) for x in ['wfs','wmts']]
         test_files=glob.glob('data.linz.govt.nz_*_[0-9]*.xml')
         for file in test_files:
             file=os.path.join(self.test_data_dir, file)
@@ -158,7 +157,7 @@ class CorruptXml(unittest.TestCase):
         data_types=set([self.ldi.proxy_model.index(row, 2).data() 
                        for row in range(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
-        self.assertEqual(sorted([u'WMS', u'WFS', u'WMTS']), 
+        self.assertEqual(sorted([u'WFS', u'WMTS']), 
                          sorted(list(data_types)))
 
 class cacheTest(unittest.TestCase):
@@ -268,13 +267,6 @@ class UserWorkFlows(unittest.TestCase):
  
         self.import_service('wfs')
 
-    def test_wms_import(self):
-        """
-        Test display, filtering, selection and importing of WFS data 
-        """
-
-        self.import_service('wms')
-
     def test_wmts_import(self):
         """
         Test display, filtering, selection and importing of WFS data 
@@ -330,13 +322,13 @@ class UserWorkFlows(unittest.TestCase):
         data_types=set([self.ldi.proxy_model.index(row, 2).data() 
                        for row in range(self.ldi.proxy_model.rowCount())])
         self.assertEqual(len(data_types),3)
-        self.assertEqual(sorted([u'WMS', u'WFS', u'WMTS']), 
+        self.assertEqual(sorted([u'WFS', u'WMTS']), 
                          sorted(list(data_types)))
 
 
     def test_crs_combo_filter(self):
         """
-        Test the importing of WMS layers into QGIS
+        Test the CRS based filtering
         """
 
         #set text
