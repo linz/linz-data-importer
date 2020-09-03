@@ -19,7 +19,6 @@ import re
 import time        
 import glob
 
-from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
 
 from owslib.wmts import WebMapTileService
@@ -97,7 +96,7 @@ class Localstore(object):
 
         :param domain: Service Domain (e.g. data.linz.govt.nz)
         :type domain: str
-        :param service: Service Type (WMS, WMTS, or WFS)
+        :param service: Service Type (WMTS or WFS)
         :type service: str
         :param file: file name 
         :type file: str
@@ -151,7 +150,7 @@ class Localstore(object):
                 file = os.path.join(dir, f)
                 self.delLocalSeviceXML(file)
 
-    def delAllLocalServiceXML(self, services=['wms','wfs','wmts']):
+    def delAllLocalServiceXML(self, services=['wfs', 'wmts']):
         """
         Find and delete all cached files
 
@@ -178,7 +177,7 @@ class Localstore(object):
 
         # Get cache metadata
         for f in cache_files:
-            file_data=re.search(r'(?P<domain>.*)(_)(?P<service>wms|wmts|wfs)(_)(?P<time>[0-9]+)\.xml', f)
+            file_data=re.search(r'(?P<domain>.*)(_)(?P<service>wmts|wfs)(_)(?P<time>[0-9]+)\.xml', f)
             domain=file_data.group('domain') 
             service=file_data.group('service') 
             timestamp=file_data.group('time') 
@@ -242,11 +241,11 @@ class ServiceData(Localstore):
         """
         Initialise Service Data instance 
 
-        :param service: Service Type (WMS, WMTS, or WFS)
+        :param service: Service Type (WMTS or WFS)
         :type service: str
         :param domain: Service Domain (e.g. data.linz.govt.nz)
         :type domain: str
-        :param service_version: {'wms': '1.1.1', 'wfs': '2.0.0', 'wmts': '1.0.0'}
+        :param service_version: {'wfs': '2.0.0', 'wmts': '1.0.0'}
         :type service_version: dict
         :param api_key_instance: API instance 
         :type api_key_instance: linz-data-importer.service_data.ApiKey
@@ -265,7 +264,7 @@ class ServiceData(Localstore):
     def isEnabled(self):
         """
         Test if the service is enable.
-        Some services (e.g wms) are disabled for specific domains. These 
+        Some services (e.g wmts) are disabled for specific domains. These
         return XML docs without headers. 
 
         @return: boolean. True == Service is diabled
@@ -336,9 +335,7 @@ class ServiceData(Localstore):
 
     def getServiceObj(self):
         try:
-            if self.service == 'wms':
-                self.obj = WebMapService(url=None, xml=self.xml, version=self.version)
-            elif self.service == 'wmts':
+            if self.service == 'wmts':
                 self.obj = WebMapTileService(url=None, xml=self.xml, version=self.version,)
             elif self.service == 'wfs':
                 self.obj = WebFeatureService(url=None, xml=self.xml, version=self.version,)
@@ -360,7 +357,7 @@ class ServiceData(Localstore):
                                                                              self.service.lower(),
                                                                              self.version))
 
-            elif self.service in ('wms', 'wfs'):
+            elif self.service in ('wfs'):
                 xml = urlopen('https://{0}/services;'
                               'key={1}/{2}?service={3}&version={4}'
                               '&request=GetCapabilities'.format(self.domain,
@@ -382,7 +379,7 @@ class ServiceData(Localstore):
                  self.err = 'Error: ({0}) {1}'.format(self.domain, e.reason)
     
     def sortCrs(self):
-        # wms returns some no valid crs values            
+        # wfs returns some no valid crs values
         valid = re.compile('^EPSG\:\d+')
         self.crs = [s for s in self.crs if valid.match(s)]
         # sort
@@ -393,7 +390,6 @@ class ServiceData(Localstore):
         Format the service data to display in the UI 
         """
         
-        wms_crs = []
         service_data = []
         cont = self.obj.contents
         for dataset_id, dataset_obj in cont.items():
@@ -409,13 +405,6 @@ class ServiceData(Localstore):
                 self.crs = dataset_obj.crsOptions
                 self.crs = ['EPSG:{0}'.format(item.code) for item in self.crs]
                 self.sortCrs()
-            elif self.service in ('wms'):
-                if wms_crs:
-                    self.crs = wms_crs
-                else:
-                    self.crs = dataset_obj.crsOptions
-                    self.sortCrs()
-                    wms_crs = self.crs
  
             service_data.append([self.domain, type, self.service.upper(), id,
                                  dataset_obj.title, dataset_obj.abstract, self.crs])

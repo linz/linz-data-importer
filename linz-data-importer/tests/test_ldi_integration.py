@@ -44,7 +44,6 @@ TEST_CONF = {
     "wfs": "NZ Railway Centrelines (Topo, 1:250k)",
 }
 
-
 class CorruptXml(unittest.TestCase):
     """
     Test methods for handling corrupt localstore
@@ -103,6 +102,7 @@ class CorruptXml(unittest.TestCase):
         # In most cases they dont as I can not make available with API Key
         # via github. If these are not avilable wfs will be fetch for data portal
         os.chdir(self.test_data_dir)
+
         test_files = glob.glob("data.linz.govt.nz_*_[0-9]*.xml")
         for file in test_files:
             file = os.path.join(self.test_data_dir, file)
@@ -170,7 +170,6 @@ class CorruptXml(unittest.TestCase):
         )
         self.assertEqual(len(data_types), 2)
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
-
 
 class cacheTest(unittest.TestCase):
     """

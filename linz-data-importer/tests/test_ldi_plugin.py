@@ -502,7 +502,6 @@ class UnitLevel(unittest.TestCase):
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(self.ldi.layer_title, names[0])
 
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(UnitLevel, "test"))
