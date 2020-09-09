@@ -50,11 +50,15 @@ SER=['',
     'data.mfe.govt.nz',
     'datafinder.stats.govt.nz',
     'lris.scinfo.org.nz',
+    'basemaps.linz.govt.nz',
     'OTHER'
     ]
 
 
 SER_TYPES=['wmts', 'wfs']
+SER_TYPES_SKIP = {
+  'basemaps.linz.govt.nz': ['wfs']
+}
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
     def __init__(self, parent=None):
@@ -479,8 +483,11 @@ class LinzDataImporter(object):
         all_data=[]
         for domain in self.api_key_instance.getApiKeys():
             for service in SER_TYPES:
-                # set service_data obj e.g self.linz_wmts=service_data obj
-                data_feed='{0}_{1}'.format(domain, service) # eg linz_wmts
+                if domain in SER_TYPES_SKIP:
+                    if service in SER_TYPES_SKIP[domain]:
+                        continue
+                # set service_data obj e.g self.linz_wms=service_data obj
+                data_feed='{0}_{1}'.format(domain, service) # eg linz_wms
                 setattr(self, data_feed, ServiceData(domain,
                                                      service, 
                                                      self.service_versions,
@@ -724,23 +731,39 @@ class LinzDataImporter(object):
                                   self.service.upper())  
 
         elif 'WMTS':
-            uri=("SmoothPixmapTransform=1"
-                 "&contextualWMSLegend=0"
-                 "&crs={1}&dpiMode=7&format=image/png"
-                 "&layers={2}-{3}&styles=style%3Dauto&tileMatrixSet={1}"
-                 "&url=https://{0}/services;"
-                 "key={4}/{5}/{6}/{2}/{3}/"
-                 "WMTSCapabilities.xml").format(self.domain,
-                                                self.selected_crs,
-                                                self.data_type, 
-                                                self.id, 
-                                                self.api_key_instance.getApiKey(self.domain), 
-                                                self.service.lower(), 
-                                                self.service_versions[self.service.lower()])
+            if self.domain == 'basemaps.linz.govt.nz':
+                uri=(
+                     "contextualWMSLegend=0"
+                     "&crs={1}" # EPSG:2193
+                     "&dpiMode=7&featureCount=10"
+                     "&format=image/png"
+                     "&layers={3}"
+                     "&styles=default"
+                     "&tileMatrixSet={1}" # EPSG:2193
+                     "&url=https://{0}/v1/tiles/aerial/WMTSCapabilities.xml?api={4}"
+                     ).format(self.domain,
+                              self.selected_crs,
+                              self.data_type,
+                              self.id,
+                              self.api_key_instance.getApiKey(self.domain))
+            else:
+                uri=("SmoothPixmapTransform=1"
+                     "&contextualWMSLegend=0"
+                     "&crs={1}&dpiMode=7&format=image/png"
+                     "&layers={2}-{3}&styles=style%3Dauto&tileMatrixSet={1}"
+                     "&url=https://{0}/services;"
+                     "key={4}/{5}/{6}/{2}/{3}/"
+                     "WMTSCapabilities.xml").format(self.domain,
+                                                    self.selected_crs,
+                                                    self.data_type,
+                                                    self.id,
+                                                    self.api_key_instance.getApiKey(self.domain),
+                                                    self.service.lower(),
+                                                    self.service_versions[self.service.lower()])
             layer=QgsRasterLayer(uri,
                                  self.layer_title,
                                 'wms')
-        else: pass # ERRORnot supported
+        else: pass # ERROR not supported
 
         QgsProject.instance().addMapLayer(layer)
         self.layers_loaded=True

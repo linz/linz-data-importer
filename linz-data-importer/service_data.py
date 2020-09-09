@@ -351,13 +351,19 @@ class ServiceData(Localstore):
 
         try:
             if self.service == 'wmts':
-                xml =  urlopen('https://{0}/services;'
-                               'key={1}/{2}/{3}/WMTSCapabilities.xml'.format(self.domain,
-                                                                             self.api_key_int.getApiKey(self.domain), 
-                                                                             self.service.lower(),
-                                                                             self.version))
+                if self.domain == 'basemaps.linz.govt.nz':
+                    xml =  urlopen('https://{0}/v1/tiles/aerial/'
+                                   'WMTSCapabilities.xml?api={1}'.format(self.domain,
+                                                                         self.api_key_int.getApiKey(self.domain)))
+                else:
+                    xml =  urlopen('https://{0}/services;'
+                                   'key={1}/{2}/{3}/WMTSCapabilities.xml'.format(self.domain,
+                                                                                 self.api_key_int.getApiKey(self.domain), 
+                                                                                 self.service.lower(),
+                                                                                 self.version))
 
-            elif self.service in ('wfs'):
+
+            elif self.service in ('wfs') and self.domain != 'basemaps.linz.govt.nz':
                 xml = urlopen('https://{0}/services;'
                               'key={1}/{2}?service={3}&version={4}'
                               '&request=GetCapabilities'.format(self.domain,
@@ -394,9 +400,13 @@ class ServiceData(Localstore):
         cont = self.obj.contents
         for dataset_id, dataset_obj in cont.items():
             self.crs=[]
-            full_id = re.search(r'([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)', dataset_obj.id)
-            type = full_id.group('type')
-            id = full_id.group('id')
+            if self.domain == 'basemaps.linz.govt.nz':
+              id = dataset_obj.id
+              type = 'layer'
+            else:
+              full_id = re.search(r'([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)', dataset_obj.id)
+              type = full_id.group('type')
+              id = full_id.group('id')
             # Get and standarise espg codes
             if self.service == 'wmts':
                 self.crs = dataset_obj.tilematrixsets
