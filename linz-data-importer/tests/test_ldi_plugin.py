@@ -56,9 +56,9 @@ class UnitLevel(unittest.TestCase):
 
     def copyTestData(self):
         """
-        Copy test data from ./test/data to plugin settings dir. 
+        Copy test data from ./test/data to plugin settings dir.
         This makes tests run much faster than having to fetch the resources
-        from the internet repeatability 
+        from the internet repeatability
 
         Not available with CI (due to API Keys in file)
         """
@@ -73,7 +73,7 @@ class UnitLevel(unittest.TestCase):
             QgsApplication.qgisSettingsDirPath(), "linz-data-importer"
         )
         # delete all service xml files
-        search_str = "|".join(["_{}.xml".format(x) for x in ["wms", "wfs", "wmts"]])
+        search_str = "|".join(["_{}.xml".format(x) for x in ["wfs", "wmts"]])
         for f in os.listdir(self.pl_settings_dir):
             if re.search(search_str, f):
                 os.remove(os.path.join(self.pl_settings_dir, f))
@@ -215,7 +215,7 @@ class UnitLevel(unittest.TestCase):
 
     def test_saveDomain_remove(self):
         """
-        Test the removal of a settings record. 
+        Test the removal of a settings record.
         """
 
         # confirm pre test state is as expected
@@ -232,7 +232,7 @@ class UnitLevel(unittest.TestCase):
 
     def test_addNewDomain(self):
         """
-        Test UI functionality for adding new settings details 
+        Test UI functionality for adding new settings details
         """
 
         idx = self.ldi.dlg.uComboBoxDomain.findText(self.domain2)
@@ -270,7 +270,7 @@ class UnitLevel(unittest.TestCase):
 
     def test_addNewDomain_lessthan_max_entires(self):
         """
-        Test no warnings are shown when not exceeding max settings entries 
+        Test no warnings are shown when not exceeding max settings entries
         """
 
         self.api_key_instance.setApiKeys(
@@ -298,7 +298,7 @@ class UnitLevel(unittest.TestCase):
 
     def test_addNewDomain_greaterthan_max_entires(self):
         """
-        Test warning is shown when exceeding max number of settings entries 
+        Test warning is shown when exceeding max number of settings entries
         """
 
         self.api_key_instance.setApiKeys(
@@ -338,14 +338,14 @@ class UnitLevel(unittest.TestCase):
 
     def test_run(self):
         """
-        Test via int tests 
+        Test via int tests
         """
 
         pass
 
     def test_run_warning(self):
         """
-        Test via int tests 
+        Test via int tests
         """
 
         pass
@@ -362,8 +362,8 @@ class UnitLevel(unittest.TestCase):
         cached_file_stats = {}
 
         os.chdir(self.pl_settings_dir)
-        for service in ["wms", "wfs", "wmts"]:
-            files = glob.glob("{0}_{1}*.xml".format(self.domain1, service))
+        for service in ["wfs", "wmts"]:
+            files = glob.glob("{0}_{1}*.xml".format(self.domain2, service))
             file = files[-1]
             file_path = os.path.join(self.pl_settings_dir, file)
             insitu_file_stats[file] = os.stat(file_path).st_mtime
@@ -373,7 +373,7 @@ class UnitLevel(unittest.TestCase):
         self.ldi.updateServiceDataCache()
         QTest.qWait(15000)
 
-        for service in ["wms", "wfs", "wmts"]:
+        for service in ["wfs", "wmts"]:
             files = glob.glob("{0}_{1}*.xml".format(self.domain1, service))
             file = files[-1]
             file_path = os.path.join(self.pl_settings_dir, file)
@@ -381,26 +381,26 @@ class UnitLevel(unittest.TestCase):
         self.assertNotEqual(cached_file_stats, insitu_file_stats)
 
     def test_loadUi(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
     def test_loadAllServices(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
     def test_dataToTable(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
     def test_showSelectedOption(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
@@ -421,31 +421,31 @@ class UnitLevel(unittest.TestCase):
         test_img_match = QImage(test_image1)  # should match
         test_img_mismatch = QImage(test_image2)  # shouldn't match
 
-        # Is the downloaded image the as the stored?
+        # Is the downloaded image the same as the stored?
         self.assertEqual(test_img_match, preview_img)
         self.assertNotEqual(test_img_mismatch, preview_img)
 
     def test_updDescription(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
     def test_updPreview(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
     def test_filterTable(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
     def test_mapCrs(self):
-        """ 
-        Test via int tests 
+        """
+        Test via int tests
         """
         pass
 
@@ -497,25 +497,6 @@ class UnitLevel(unittest.TestCase):
         self.ldi.layer_title = "test_wmts"
         self.ldi.selected_crs = "EPSG:3857"
         self.ldi.selected_crs_int = 3857
-        self.ldi.importDataset()
-        # test the layer has been imported
-        names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-        self.assertEqual(self.ldi.layer_title, names[0])
-
-    def test_importDataset_wms(self):
-        """
-        Test the importing of WMS layers into QGIS
-        """
-
-        # set plugin properties required for import
-        self.api_key_instance.setApiKeys({self.domain2: API_KEYS[self.domain2]})
-        self.ldi.domain = self.domain2  # linz
-        self.ldi.service = "WMS"
-        self.ldi.data_type = "layer"
-        self.ldi.selected_crs = "EPSG:3857"
-        self.ldi.selected_crs_int = 3857
-        self.ldi.id = "51409"
-        self.ldi.layer_title = "test_wms"
         self.ldi.importDataset()
         # test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]

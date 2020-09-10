@@ -38,6 +38,7 @@ API_KEYS = {
     "geodata.nzdf.mil.nz": os.getenv("LDI_NZDF_KEY", None),
 }
 
+
 TEST_CONF = {
     "wms": "Chart NZ 252 Lake Wakatipu",
     "wmts": "Chart NZ 632 Banks Peninsula",
@@ -169,8 +170,8 @@ class CorruptXml(unittest.TestCase):
                 for row in range(self.ldi.proxy_model.rowCount())
             ]
         )
-        self.assertEqual(len(data_types), 3)
-        self.assertEqual(sorted([u"WMS", u"WFS", u"WMTS"]), sorted(list(data_types)))
+        self.assertEqual(len(data_types), 2)
+        self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
 
 class cacheTest(unittest.TestCase):
@@ -284,13 +285,6 @@ class UserWorkFlows(unittest.TestCase):
 
         self.import_service("wfs")
 
-    def test_wms_import(self):
-        """
-        Test display, filtering, selection and importing of WFS data
-        """
-
-        self.import_service("wms")
-
     def test_wmts_import(self):
         """
         Test display, filtering, selection and importing of WFS data
@@ -355,8 +349,8 @@ class UserWorkFlows(unittest.TestCase):
                 for row in range(self.ldi.proxy_model.rowCount())
             ]
         )
-        self.assertEqual(len(data_types), 3)
-        self.assertEqual(sorted([u"WMS", u"WFS", u"WMTS"]), sorted(list(data_types)))
+        self.assertEqual(len(data_types), 2)
+        self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
     def test_crs_combo_filter(self):
         """
