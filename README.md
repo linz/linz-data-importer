@@ -1,7 +1,7 @@
 # LDS Data Importer [![Build Status](https://travis-ci.com/linz/linz-data-importer.svg?branch=master_qgis2)](https://travis-ci.com/linz/linz-data-importer)
 The intent of this QGIS Plugin is to allow the easy importing of 
 [LINZ Data Service](data.govt.linz.nz) data (as well as other data services - 
-see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)) 
+see [Other Supported Services](https://github.com/linz/linz-data-importer/#Other-Supported-Services))
  into QGIS. 
 
 ![](https://github.com/linz/linz-data-importer/blob/master_qgis2/images/import_example.gif)
@@ -9,14 +9,13 @@ see [Changing Scope](https://github.com/linz/linz-data-importer/#changing-Scope)
 ## Supported Versions
 Currently this plugin only supports those versions >QGIS2.8 and <QGIS2.18
 
-Support for QGIS3 is not far off. 
+**NOTE**: WFS issue (#44) affecting WFS importing for QGIS2 versions >2.18.20 
 
-## Changing Scope
-The initial scope of this plugin was to couple the LDS and QGIS. However 
-as other New Zealand agencies also make use of the same technology their data 
-can also be imported.
+## Other Supported Services
+Other New Zealand agencies that make use of the same technology platform to publish and their data 
+can also be imported using this plugin.
  
-At the time of release this plugin supports the coupling of the below open data portals with QGIS:
+This plugin supports the below open data portals:
 * [data.linz.govt.nz](data.linz.govt.nz) (Toitū Te Whenua - Land Information New Zealand)
 * [data.mfe.govt.nz](data.mfe.govt.nz) (Manatū Mō Te Taiao - Ministry for the Environment)
 * [datafinder.stats.govt.nz](datafinder.stats.govt.nz) (Tatauranga Aotearoa - Statistics New Zealand)
