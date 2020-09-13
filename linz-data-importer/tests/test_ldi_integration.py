@@ -40,7 +40,6 @@ API_KEYS = {
 
 
 TEST_CONF = {
-    "wms": "Chart NZ 252 Lake Wakatipu",
     "wmts": "Chart NZ 632 Banks Peninsula",
     "wfs": "NZ Railway Centrelines (Topo, 1:250k)",
 }
@@ -102,9 +101,8 @@ class CorruptXml(unittest.TestCase):
 
         # Copy in /test/data service xml to save time if they exist.
         # In most cases they dont as I can not make available with API Key
-        # via github. If these are not avilable wms and wfs will be fetch for data portal
+        # via github. If these are not avilable wfs will be fetch for data portal
         os.chdir(self.test_data_dir)
-        # test_files=['{0}_{1}.xml'.format(domain,x) for x in ['wms','wfs','wmts']]
         test_files = glob.glob("data.linz.govt.nz_*_[0-9]*.xml")
         for file in test_files:
             file = os.path.join(self.test_data_dir, file)

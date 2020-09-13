@@ -68,9 +68,9 @@ class UiTest(unittest.TestCase):
         self.assertTrue(self.ldi.dlg.isVisible())
 
     def test_elements_exist(self):
-        """ 
+        """
         Test all ui elements exist
-        and are of the expected types  
+        and are of the expected types
         """
 
         # StackWidget - TableView
@@ -102,9 +102,9 @@ class UiTest(unittest.TestCase):
             )
 
     def test_sw_tableview_is_default(self):
-        """ 
+        """
         The table view should be the first
-        stack widget shown when plugin opened 
+        stack widget shown when plugin opened
         """
 
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
@@ -113,7 +113,7 @@ class UiTest(unittest.TestCase):
         """
         Check the stacked widget index and siGnals
         When 'Settings' is clicked - the stacked widgets current index
-        should now be == 1 
+        should now be == 1
         """
 
         item = self.ldi.dlg.uListOptions.findItems("Settings", Qt.MatchFixedString)[0]
@@ -121,10 +121,10 @@ class UiTest(unittest.TestCase):
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 1)
 
     def test_listItem_all_shows_widget_swTableView(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'All' is clicked - the stacked widgets current index
-        should now be == 0 
+        should now be == 0
         """
 
         item = self.ldi.dlg.uListOptions.findItems("ALL", Qt.MatchFixedString)[0]
@@ -132,10 +132,10 @@ class UiTest(unittest.TestCase):
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
     def test_listItem_about_shows_widget_swAbout(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'All' is clicked - the stacked widgets current index
-        should now be == 2 
+        should now be == 2
         """
 
         item = self.ldi.dlg.uListOptions.findItems("About", Qt.MatchFixedString)[0]
@@ -143,34 +143,23 @@ class UiTest(unittest.TestCase):
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 2)
 
     def test_listItem_wmts_shows_widget_swTableView(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'WMTS' is clicked - the stacked widgets current index
-        should now be == 0 
+        should now be == 0
         """
         item = self.ldi.dlg.uListOptions.findItems("WMTS", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
     def test_listItem_wfs_shows_widget_swTableView(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'WFS' is clicked - the stacked widgets current index
-        should now be == 0 
+        should now be == 0
         """
 
         item = self.ldi.dlg.uListOptions.findItems("WFS", Qt.MatchFixedString)[0]
-        self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
-
-    def test_listItem_wms_shows_widget_swTableView(self):
-        """ 
-        Check the stacked widget index and sinals
-        When 'WMS' is clicked - the stacked widgets current index
-        should now be == 0 
-        """
-
-        item = self.ldi.dlg.uListOptions.findItems("WMS", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
