@@ -20,12 +20,19 @@ import time
 
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import (QListWidget, QTableView, QLabel, QTextEdit,
-                                 QLineEdit, QPushButton)
+from qgis.PyQt.QtWidgets import (
+    QListWidget,
+    QTableView,
+    QLabel,
+    QTextEdit,
+    QLineEdit,
+    QPushButton,
+)
 from qgis.utils import plugins
 from qgis.PyQt.Qt import QComboBox
 
-WAIT=1000
+WAIT = 1000
+
 
 class UiTest(unittest.TestCase):
     """
@@ -37,7 +44,7 @@ class UiTest(unittest.TestCase):
         Runs before each test.
         """
 
-        self.ldi=plugins.get('linz-data-importer')
+        self.ldi = plugins.get("linz-data-importer")
         self.ldi.actions[0].trigger()
 
     def tearDown(self):
@@ -45,14 +52,14 @@ class UiTest(unittest.TestCase):
         Runs after each test
         """
 
-        QTest.qWait(WAIT) # Just because I want to watch it open a close
+        QTest.qWait(WAIT)  # Just because I want to watch it open a close
         self.ldi.dlg.close()
-        self.services_loaded=False
+        self.services_loaded = False
 
-        # Remove filter set tab back to "ALL" 
-        item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        # Remove filter set tab back to "ALL"
+        item = self.ldi.dlg.uListOptions.findItems("ALL", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
     def test_service_dialog_is_active(self):
         """
@@ -61,12 +68,12 @@ class UiTest(unittest.TestCase):
         self.assertTrue(self.ldi.dlg.isVisible())
 
     def test_elements_exist(self):
-        """ 
+        """
         Test all ui elements exist
-        and are of the expected types  
+        and are of the expected types
         """
 
-        #StackWidget - TableView
+        # StackWidget - TableView
         self.assertEqual(type(self.ldi.dlg.uListOptions), QListWidget)
         self.assertEqual(type(self.ldi.dlg.uTableView), QTableView)
         self.assertEqual(type(self.ldi.dlg.uBtnImport), QPushButton)
@@ -74,94 +81,94 @@ class UiTest(unittest.TestCase):
         self.assertEqual(type(self.ldi.dlg.uTextDescription), QTextEdit)
         self.assertEqual(type(self.ldi.dlg.uLabelImgPreview), QLabel)
         self.assertEqual(type(self.ldi.dlg.uLabelWarning), QLabel)
-        #StackWidget - Settings
-        item = self.ldi.dlg.uListOptions.findItems('About', Qt.MatchFixedString)[0]
+        # StackWidget - Settings
+        item = self.ldi.dlg.uListOptions.findItems("About", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(type(self.ldi.dlg.uComboBoxDomain), QComboBox)
         self.assertEqual(type(self.ldi.dlg.uBtnAddDomain), QPushButton)
-        for n in range(1,11):
-            self.assertEqual(type(getattr(self.ldi.dlg, 'uTextAPIKey{0}'.format(n))), QLineEdit)
-            self.assertEqual(type(getattr(self.ldi.dlg, 'uTextAPIKey{0}'.format(n))), QLineEdit)
-            self.assertEqual(type(getattr(self.ldi.dlg, 'uBtnRemoveDomain{0}'.format(n))), QPushButton)
-            self.assertEqual(type(getattr(self.ldi.dlg, 'uBtnSaveDomain{0}'.format(n))), QPushButton)
+        for n in range(1, 11):
+            self.assertEqual(
+                type(getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n))), QLineEdit
+            )
+            self.assertEqual(
+                type(getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n))), QLineEdit
+            )
+            self.assertEqual(
+                type(getattr(self.ldi.dlg, "uBtnRemoveDomain{0}".format(n))),
+                QPushButton,
+            )
+            self.assertEqual(
+                type(getattr(self.ldi.dlg, "uBtnSaveDomain{0}".format(n))), QPushButton
+            )
 
     def test_sw_tableview_is_default(self):
-        """ 
+        """
         The table view should be the first
-        stack widget shown when plugin opened 
+        stack widget shown when plugin opened
         """
 
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
     def test_listItem_about_shows_widget_swSettings(self):
         """
         Check the stacked widget index and siGnals
         When 'Settings' is clicked - the stacked widgets current index
-        should now be == 1 
+        should now be == 1
         """
 
-        item = self.ldi.dlg.uListOptions.findItems('Settings', Qt.MatchFixedString)[0]
+        item = self.ldi.dlg.uListOptions.findItems("Settings", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),1)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 1)
 
     def test_listItem_all_shows_widget_swTableView(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'All' is clicked - the stacked widgets current index
-        should now be == 0 
+        should now be == 0
         """
 
-        item = self.ldi.dlg.uListOptions.findItems('ALL', Qt.MatchFixedString)[0]
+        item = self.ldi.dlg.uListOptions.findItems("ALL", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
     def test_listItem_about_shows_widget_swAbout(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'All' is clicked - the stacked widgets current index
-        should now be == 2 
+        should now be == 2
         """
 
-        item = self.ldi.dlg.uListOptions.findItems('About', Qt.MatchFixedString)[0]
+        item = self.ldi.dlg.uListOptions.findItems("About", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),2)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 2)
 
     def test_listItem_wmts_shows_widget_swTableView(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'WMTS' is clicked - the stacked widgets current index
-        should now be == 0 
+        should now be == 0
         """
-        item = self.ldi.dlg.uListOptions.findItems('WMTS', Qt.MatchFixedString)[0]
+        item = self.ldi.dlg.uListOptions.findItems("WMTS", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
     def test_listItem_wfs_shows_widget_swTableView(self):
-        """ 
+        """
         Check the stacked widget index and sinals
         When 'WFS' is clicked - the stacked widgets current index
-        should now be == 0 
+        should now be == 0
         """
 
-        item = self.ldi.dlg.uListOptions.findItems('WFS', Qt.MatchFixedString)[0]
+        item = self.ldi.dlg.uListOptions.findItems("WFS", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
-    def test_listItem_wms_shows_widget_swTableView(self):
-        """ 
-        Check the stacked widget index and sinals
-        When 'WMS' is clicked - the stacked widgets current index
-        should now be == 0 
-        """
-
-        item = self.ldi.dlg.uListOptions.findItems('WMS', Qt.MatchFixedString)[0]
-        self.ldi.dlg.uListOptions.itemClicked.emit(item)
-        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(),0)
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(UiTest, 'test'))
+    suite.addTests(unittest.makeSuite(UiTest, "test"))
     return suite
- 
+
+
 def run_tests():
     unittest.TextTestRunner(verbosity=3).run(suite())
