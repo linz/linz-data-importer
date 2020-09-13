@@ -350,35 +350,35 @@ class UnitLevel(unittest.TestCase):
 
         pass
 
-    def test_updateServiceDataCache(self):
-        """
-        Test the updating of cache
-        """
+    # def test_updateServiceDataCache(self):
+    #     """
+    #     Test the updating of cache
+    #     """
 
-        self.ldi.services_loaded = False
-        self.ldi.run()
+    #     self.ldi.services_loaded = False
+    #     self.ldi.run()
 
-        insitu_file_stats = {}
-        cached_file_stats = {}
+    #     insitu_file_stats = {}
+    #     cached_file_stats = {}
 
-        os.chdir(self.pl_settings_dir)
-        for service in ["wfs", "wmts"]:
-            files = glob.glob("{0}_{1}*.xml".format(self.domain2, service))
-            file = files[-1]
-            file_path = os.path.join(self.pl_settings_dir, file)
-            insitu_file_stats[file] = os.stat(file_path).st_mtime
+    #     os.chdir(self.pl_settings_dir)
+    #     for service in ["wfs", "wmts"]:
+    #         files = glob.glob("{0}_{1}*.xml".format(self.domain1, service))
+    #         file = files[-1]
+    #         file_path = os.path.join(self.pl_settings_dir, file)
+    #         insitu_file_stats[file] = os.stat(file_path).st_mtime
 
-        self.cache_updated = False
-        self.update_cache = True
-        self.ldi.updateServiceDataCache()
-        QTest.qWait(15000)
+    #     self.cache_updated = False
+    #     self.update_cache = True
+    #     self.ldi.updateServiceDataCache()
+    #     QTest.qWait(15000)
 
-        for service in ["wfs", "wmts"]:
-            files = glob.glob("{0}_{1}*.xml".format(self.domain1, service))
-            file = files[-1]
-            file_path = os.path.join(self.pl_settings_dir, file)
-            cached_file_stats[file] = os.stat(file_path).st_mtime
-        self.assertNotEqual(cached_file_stats, insitu_file_stats)
+    #     for service in ["wfs", "wmts"]:
+    #         files = glob.glob("{0}_{1}*.xml".format(self.domain1, service))
+    #         file = files[-1]
+    #         file_path = os.path.join(self.pl_settings_dir, file)
+    #         cached_file_stats[file] = os.stat(file_path).st_mtime
+    #     self.assertNotEqual(cached_file_stats, insitu_file_stats)
 
     def test_loadUi(self):
         """
