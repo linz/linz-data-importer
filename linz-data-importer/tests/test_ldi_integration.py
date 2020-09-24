@@ -30,18 +30,24 @@ import xml.etree.ElementTree as ET
 
 WAIT = 1000
 
-# Using 3 env vars as issue with travis
-# when the 3 are supplied as json obj
+# Using 4 env vars as issue with travis
+# when the 4 are supplied as json obj
 API_KEYS = {
     "data.linz.govt.nz": os.getenv("LDI_LINZ_KEY", None),
     "data.mfe.govt.nz": os.getenv("LDI_MFE_KEY", None),
     "geodata.nzdf.mil.nz": os.getenv("LDI_NZDF_KEY", None),
+    "basemaps.linz.govt.nz": os.getenv("LDI_BASEMAPS_KEY", None),
 }
 
 
 TEST_CONF = {
-    "wmts": "Chart NZ 632 Banks Peninsula",
-    "wfs": "NZ Railway Centrelines (Topo, 1:250k)",
+    "wmts": [
+      "Chart NZ 632 Banks Peninsula",
+      "aerial Whanganui urban 2017-18 0.075m",
+    ],
+    "wfs": [
+      "NZ Railway Centrelines (Topo, 1:250k)",
+    ]
 }
 
 class CorruptXml(unittest.TestCase):
@@ -256,6 +262,10 @@ class UserWorkFlows(unittest.TestCase):
         self.api_key_instance = self.ldi.api_key_instance
         self.api_key_instance.setApiKeys({domain: API_KEYS[domain]})
 
+        domain = "basemaps.linz.govt.nz"
+        self.api_key_instance = self.ldi.api_key_instance
+        self.api_key_instance.setApiKeys({domain: API_KEYS[domain]})
+
         self.ldi.selected_crs = "ESPG:2193"
         self.ldi.selected_crs_int = 2193
 
@@ -316,17 +326,26 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(len(data_types), 1)
         self.assertEqual(service.upper(), list(data_types)[0])
 
-        # Filter
-        self.ldi.dlg.uTextFilter.setText(TEST_CONF[service])
-        QTest.qWait(WAIT)
+        for i in range(len(TEST_CONF[service])):
 
-        # Import the first row
-        self.ldi.dlg.uTableView.selectRow(0)
-        self.ldi.dlg.uBtnImport.clicked.emit(True)
+          layerName = TEST_CONF[service][i]
 
-        # Test the LayerRegistry to ensure the layer has been imported
-        names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-        self.assertEqual(TEST_CONF[service], names[0])
+          # Filter
+          self.ldi.dlg.uTextFilter.setText(layerName)
+          QTest.qWait(WAIT)
+
+          # Import the first row
+          self.ldi.dlg.uTableView.selectRow(0)
+          self.ldi.dlg.uBtnImport.clicked.emit(True)
+
+
+        # Test the LayerRegistry to ensure the layers have been imported
+        for i in range(len(TEST_CONF[service])):
+
+          layerName = TEST_CONF[service][i]
+
+          names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
+          self.assertEqual(layerName, names[i])
 
     def test_all_services(self):
         """
