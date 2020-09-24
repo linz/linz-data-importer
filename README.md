@@ -17,6 +17,7 @@ This plugin supports the below open data portals:
 * [datafinder.stats.govt.nz](datafinder.stats.govt.nz) (Tatauranga Aotearoa - Statistics New Zealand)
 * [lris.scinfo.org.nz](lris.scinfo.org.nz) (Manaaki Whenua - Landcare Research)
 * [geodata.nzdf.mil.nz](geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force)
+* [basemaps.linz.govt.nz](basemaps.linz.govt.nz) (LINZ Basemaps)
 
 ## Selecting a Service / Protocol
 The LDS Plugin supports data served over WFS and WMTS protocols.
