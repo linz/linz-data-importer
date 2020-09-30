@@ -258,13 +258,11 @@ class UserWorkFlows(unittest.TestCase):
         self.ldi.update_cache = False
         self.ldi.services_loaded = False
 
-        domain = "data.linz.govt.nz"
         self.api_key_instance = self.ldi.api_key_instance
-        self.api_key_instance.setApiKeys({domain: API_KEYS[domain]})
+        keys = {key: API_KEYS[key] for key in API_KEYS.keys() 
+                               & {'data.linz.govt.nz', 'basemaps.linz.govt.nz'}}
+        self.api_key_instance.setApiKeys(keys)
 
-        domain = "basemaps.linz.govt.nz"
-        self.api_key_instance = self.ldi.api_key_instance
-        self.api_key_instance.setApiKeys({domain: API_KEYS[domain]})
 
         self.ldi.selected_crs = "ESPG:2193"
         self.ldi.selected_crs_int = 2193
