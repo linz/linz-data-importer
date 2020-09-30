@@ -1,6 +1,7 @@
 sudo: false
 services:
 - docker
+
 env:
   global:
   - PLUGIN_NAME=linz-data-importer
