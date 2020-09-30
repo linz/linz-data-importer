@@ -326,7 +326,8 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(len(data_types), 1)
         self.assertEqual(service.upper(), list(data_types)[0])
 
-        for i in range(len(TEST_CONF[service])):
+        nconfs = len(TEST_CONF[service])
+        for i in range(nconfs):
 
           layerName = TEST_CONF[service][i]
 
@@ -338,13 +339,14 @@ class UserWorkFlows(unittest.TestCase):
           self.ldi.dlg.uTableView.selectRow(0)
           self.ldi.dlg.uBtnImport.clicked.emit(True)
 
+        names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
+        self.assertEqual(len(names), nconfs)
 
         # Test the LayerRegistry to ensure the layers have been imported
-        for i in range(len(TEST_CONF[service])):
+        for i in range(nconfs):
 
           layerName = TEST_CONF[service][i]
 
-          names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
           self.assertEqual(layerName, names[i])
 
     def test_all_services(self):
