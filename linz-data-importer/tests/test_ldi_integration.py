@@ -340,12 +340,8 @@ class UserWorkFlows(unittest.TestCase):
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(len(names), nconfs)
 
-        # Test the LayerRegistry to ensure the layers have been imported
-        for i in range(nconfs):
-
-          layerName = TEST_CONF[service][i]
-
-          self.assertEqual(layerName, names[i])
+        # Test the LayerRegistry to ensure all the layers have been imported
+        self.assertEqual(set(names), set(TEST_CONF[service]))
 
     def test_all_services(self):
         """
