@@ -314,6 +314,9 @@ class UserWorkFlows(unittest.TestCase):
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
 
+        # Test there is no error
+        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), '')
+
         # Ensure all records are of the selected type
         data_types = set(
             [
