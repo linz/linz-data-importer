@@ -17,6 +17,7 @@ This plugin supports the below open data portals:
 * [datafinder.stats.govt.nz](datafinder.stats.govt.nz) (Tatauranga Aotearoa - Statistics New Zealand)
 * [lris.scinfo.org.nz](lris.scinfo.org.nz) (Manaaki Whenua - Landcare Research)
 * [geodata.nzdf.mil.nz](geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force)
+* [basemaps.linz.govt.nz](basemaps.linz.govt.nz) (LINZ Basemaps)
 
 ## Selecting a Service / Protocol
 The LDS Plugin supports data served over WFS and WMTS protocols.
@@ -27,6 +28,9 @@ Please see the resource available on the
 Prior to using the plugin, a domain and related API Key must be stored via the "Settings" menu.
 When saving your API key this will trigger the plugin to request all of the domain's dataset information. This may take some time.
 For more on API keys please see the [LDS user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key). 
+
+For instructions about obtaining basemaps API keys please see
+https://basemaps.linz.govt.nz/.
 
 
 ![Example of Domains configured via the settings menu](https://github.com/linz/linz-data-importer/blob/master_qgis3/images/settings_example.png)
