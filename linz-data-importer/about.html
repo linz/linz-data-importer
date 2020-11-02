@@ -1,61 +1,78 @@
 <h2>LDS Data Importer</h2>
-<p>The intent of this QGIS Plugin is to allow the easy importing of 
-<a href="data.govt.linz.nz">LINZ Data Service</a> data (as well as other data services 
-- see Changing Scope) into QGIS.</p>
+<p>The intent of this QGIS Plugin is to allow the easy importing of
+    <a href="data.govt.linz.nz">LINZ Data Service</a> data (as well as other data services
+    - see Changing Scope) into QGIS.</p>
 
 <h2>Changing Scope</h2>
-<p>The initial scope of this plugin was to couple the LDS and QGIS. However as 
-other New Zealand agencies also make use of the same technology their data can 
-also be imported.
+<p>The initial scope of this plugin was to couple the LDS and QGIS. However as
+    other New Zealand agencies also make use of the same technology their data can
+    also be imported.
 
-<p>At the time of release this plugin supports the coupling of the below open 
-data portals with QGIS:</p>
+<p>At the time of release this plugin supports the coupling of the below open
+    data portals with QGIS:</p>
 <ul>
-<li>&nbsp;<a href="data.linz.govt.nz">data.linz.govt.nz</a>&nbsp;(Toitū Te Whenua - Land Information New Zealand)</li>
-<li>&nbsp;<a href="data.mfe.govt.nz">data.mfe.govt.nz</a>&nbsp; (Manatū Mō Te Taiao - Ministry for the Environment)</li>
-<li>&nbsp;<a href="datafinder.stats.govt.nz">datafinder.stats.govt.nz</a>&nbsp;(Tatauranga Aotearoa - Statistics New Zealand)</li>
-<li>&nbsp;<a href="lris.scinfo.org.nz">lris.scinfo.org.nz</a>&nbsp; (Manaaki Whenua - Landcare Research)</li>
-<li>&nbsp;<a href="geodata.nzdf.mil.nz">geodata.nzdf.mil.nz</a>&nbsp;(Te Ope Kātua o Aotearoa - New Zealand Defence Force)</li>
+    <li>&nbsp;<a href="data.linz.govt.nz">data.linz.govt.nz</a>&nbsp;(Toitū Te Whenua - Land Information New Zealand)
+    </li>
+    <li>&nbsp;<a href="data.mfe.govt.nz">data.mfe.govt.nz</a>&nbsp; (Manatū Mō Te Taiao - Ministry for the Environment)
+    </li>
+    <li>&nbsp;<a href="datafinder.stats.govt.nz">datafinder.stats.govt.nz</a>&nbsp;(Tatauranga Aotearoa - Statistics New
+        Zealand)</li>
+    <li>&nbsp;<a href="lris.scinfo.org.nz">lris.scinfo.org.nz</a>&nbsp; (Manaaki Whenua - Landcare Research)</li>
+    <li>&nbsp;<a href="geodata.nzdf.mil.nz">geodata.nzdf.mil.nz</a>&nbsp;(Te Ope Kātua o Aotearoa - New Zealand Defence
+        Force)</li>
 </ul>
 
 <h2>Selecting a Service / Protocol</h2>
-<p>The LDS Plugin supports data served over WFS and WMTS protocols. 
-Please see the resource available on the 
-<a href="(http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/which-web-service-should-i-use">LINZ website</a>
-for more on these protocols.</p>
+<p>The LDS Plugin supports data served over WFS and WMTS protocols.
+    Please see the resource available on the
+    <a href="(http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/which-web-service-should-i-use">LINZ
+        website</a>
+    for more on these protocols.</p>
 
 <h2>API Keys</h2>
-<p>Prior to using the plugin, a domain and related API Key must be stored via the 
-"Settings" menu.&nbsp;When saving your API key this will trigger the plugin to 
-request all of the domain's dataset information. This may take some time.&nbsp;For 
-more on API keys please see 
-the <a href="(http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key">LDS user resources</a>.</p>
-
+<p>Prior to using the plugin, a domain and related API Key must be stored via the "Settings" menu.&nbsp;When saving your
+    API key this will trigger the plugin to request all of the domain's dataset information. This may take some
+    time.&nbsp;For more on API keys please see the <a
+        href="(http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key">LDS user
+        resources</a>.</p>
+<h3>Obtaining a LINZ Basemaps API key</h3>
+<div>
+    <div>To configure LINZ basemaps please visit <a
+            href="https://basemaps.linz.govt.nz/">https://basemaps.linz.govt.nz/</a> to obtain an API Key.</div>
+    <br />
+    <div>When at <a href="https://basemaps.linz.govt.nz/:">https://basemaps.linz.govt.nz/:</a></div>
+    <ul>
+        <li>Open the menu on the right</li>
+        <li>Extract the API key from the url in this menu</li>
+    </ul>
+    <p>* Note; these keys are rotated every 90 days and will need to be update accordingly</p>
+</div>
 <h2>Coordinate Reference System (CRS)</h2>
-<p>The available CRS options for each layer are shown next to the import button (in&nbsp;terms of EPSG code). 
-If the data source is stored in multiple CRSs the user&nbsp;can select which CRS the dataset 
-is to be requested in from the server.&nbsp;</p>
-<p>* Note; if the QGIS project's CRS and the imported dataset's CRS do not&nbsp;match, 
-QGIS will reproject the imported data to the project's CRS.&nbsp;<strong>Beware</strong>: 
-reprojecting data can degrade spatial accuracies and relationships.</p>
-<p>When importing the first dataset via the plugin for a QGIS session, the plugin 
-will change the QGIS project's CRS to match the imported data. When these changes 
-occur the user will be informed via the QGIS message bar.</p>
+<p>The available CRS options for each layer are shown next to the import button (in&nbsp;terms of EPSG code).
+    If the data source is stored in multiple CRSs the user&nbsp;can select which CRS the dataset
+    is to be requested in from the server.&nbsp;</p>
+<p>* Note; if the QGIS project's CRS and the imported dataset's CRS do not&nbsp;match,
+    QGIS will reproject the imported data to the project's CRS.&nbsp;<strong>Beware</strong>:
+    reprojecting data can degrade spatial accuracies and relationships.</p>
+<p>When importing the first dataset via the plugin for a QGIS session, the plugin
+    will change the QGIS project's CRS to match the imported data. When these changes
+    occur the user will be informed via the QGIS message bar.</p>
 
 <h2>Requests, Responses, Patience and Caching</h2>
-<p>When saving a Domain and API key for the first time via the Setting menu, 
-the plugin will request the capabilities documents for each service / protocol 
-type (WMTS, WFS).&nbsp;&nbsp;The data portal's server can be slow to respond
-with these documents causing the plugin to appear inactive. The good news is this 
-is the only interaction with the plugin where substantial patience may be required. 
-Once the initial documents&nbsp;are fetched, they will be cached and updated in 
-the background each time the plugin is started.</p>
+<p>When saving a Domain and API key for the first time via the Setting menu,
+    the plugin will request the capabilities documents for each service / protocol
+    type (WMTS, WFS).&nbsp;&nbsp;The data portal's server can be slow to respond
+    with these documents causing the plugin to appear inactive. The good news is this
+    is the only interaction with the plugin where substantial patience may be required.
+    Once the initial documents&nbsp;are fetched, they will be cached and updated in
+    the background each time the plugin is started.</p>
 
 <h2>Filtering</h2>
-<p>The left hand panel allows users to filter by service / protocol types (either, 
-All, WFS, WMTS).&nbsp;All column headers can be toggled to allow ascending or
-descending ordering of their data.&nbsp;Text can be entered in the "Filter Data Sets" 
-search bar to filter the datasets by keyword.</p>
+<p>The left hand panel allows users to filter by service / protocol types (either,
+    All, WFS, WMTS).&nbsp;All column headers can be toggled to allow ascending or
+    descending ordering of their data.&nbsp;Text can be entered in the "Filter Data Sets"
+    search bar to filter the datasets by keyword.</p>
 
 <h2>Source Code, Further Documentation and Feedback</h2>
-<p>Please see the <a href="https://github.com/linz/linz-data-importer/">LINZ-Data-Importer&nbsp;</a>repository on GitHub.</p>
+<p>Please see the <a href="https://github.com/linz/linz-data-importer/">LINZ-Data-Importer&nbsp;</a>repository on
+    GitHub.</p>
