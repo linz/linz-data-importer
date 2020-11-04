@@ -5,7 +5,7 @@ name=LINZ Data Importer
 qgisMinimumVersion=3.0.0
 qgisMaximumVersion=3.99.0
 description=Import LDS OGC Datasets into QGIS
-version=2.0.1
+version=2.1.0
 author=Land Information New Zealand
 email=splanzer@linz.govt.nz
 
@@ -22,7 +22,7 @@ changelog= v2.0.1-beta:
     - #48 mac osx text encoding
     - #47 crs filtering
 <p>v2.0.0-beta:
-    - Upgrade to QGIS3 API    
+    - Upgrade to QGIS3 API
 
 # Tags are comma separated with spaces allowed
 tags=wmts, wfs, webservice, web, LINZ, LDS, MFE, Stats NZ, LRIS, NZDF
