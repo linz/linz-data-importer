@@ -54,3 +54,45 @@ jobs:
       run: |
         docker exec -t qgis-testing-environment \
           sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests.run_test_modules"
+
+
+  deploy:
+    name: deploy
+    if: startswith(github.ref, 'refs/tags/v')
+    needs: [linter, test_schema, test_docker]
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2-beta
+        with:
+          ref: ${{ github.ref }}
+     - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            ${{ github.ref }}]
+          draft: true
+          prerelease: true
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./linz-data-importer.zip
+          asset_name: linz-data-importer.zip
+          asset_content_type: application/zip
+      - name: Upload To LINZ DEV QGIS Plugin Repository in AWS
+        if: endswith(github.ref, 'UAT')
+        run: |
+          curl -X POST -H 'Content-Type: application/octet-stream' -H "authorization: bearer ${{ secrets.DEV_PLUGIN_REPO_AUTH }}" --data-binary @linz-data-importer.zip https://plugins.qgis.linz.govt.nz/v1/plugin/linz-data-importer?stage=dev
+      - name: Upload To LINZ PRD QGIS Plugin Repository in AWS
+        if: false ==  endswith(github.ref, 'UAT')
+        run: |
+          curl -X POST -H 'Content-Type: application/octet-stream' -H "authorization: bearer ${{ secrets.PRD_PLUGIN_REPO_AUTH }}" --data-binary @linz-data-importer.zip https://plugins.qgis.linz.govt.nz/v1/plugin/linz-data-importer
