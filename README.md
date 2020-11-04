@@ -1,15 +1,13 @@
 # LDS Data Importer [![Build Status](https://api.travis-ci.com/linz/linz-data-importer.svg?token=4YGqrWWw1nJqpi344cuy&branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer)
 
-The intent of this QGIS Plugin is to allow the easy importing of
-[LINZ Data Service](data.govt.linz.nz) data (as well as other data services -
-see [Other Supported Services](https://github.com/linz/linz-data-importer/#Other-Supported-Services))
- into QGIS.
+The intent of this QGIS Plugin is to allow the easy discovery and import of
+[LINZ Data Service](data.govt.linz.nz) data into QGIS.
 
 ![](https://github.com/linz/linz-data-importer/blob/master_qgis3/images/import_example.gif)
 
-## Other Supported Services
-Other New Zealand agencies that make use of the same technology platform to publish their data can
-can also be imported using this plugin.
+## Supported Services
+As well as the LINZ Data Service, the plugin can be configured to allow the discovery and importing of data
+from other New Zealand agencies that make use of the same technology platform to publish their data.
 
 This plugin supports the below open data portals:
 * [data.linz.govt.nz](data.linz.govt.nz) (Toitū Te Whenua - Land Information New Zealand)
@@ -20,16 +18,23 @@ This plugin supports the below open data portals:
 * [basemaps.linz.govt.nz](basemaps.linz.govt.nz) (LINZ Basemaps)
 
 ## Selecting a Service / Protocol
-The LDS Plugin supports data served over WFS and WMTS protocols.
-Please see the resource available on the
+The LINZ Data Service Plugin supports data served over WFS and WMTS protocols.
+Please see the resources available on the
 [LINZ website](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/which-web-service-should-i-use) for more on these protocols.
 
 ## API Keys
-Prior to using the plugin, a domain and related API Key must be stored via the "Settings" menu.
-When saving your API key this will trigger the plugin to request all of the domain's dataset information. This may take some time.
-For more on API keys please see the [LDS user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key).
+Prior to using the plugin, an API Key for each domain that data is to be loaded from must be must be configured via the "Settings" menu.
+Configuring each domain and API key will trigger the plugin to request all of the domain's dataset information, allowing a user to view
+and import the domain's data in QGIS.
 
-### Obtaining a LINZ Basemaps API key
+### Obtaining Data Portal API Keys
+An API key for each of the supported services can be allocated from each of the service's websites
+(see [Supported Services](https://github.com/linz/linz-data-importer/#supported-services)
+for a link to each services website were the API Keys can be got).
+
+For detailed instructions on getting an API key, please see the [LINZ Data Services user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key).
+
+### Obtaining LINZ Basemap API Keys
 To configure LINZ basemaps please visit https://basemaps.linz.govt.nz/ to obtain an API Key.
 
 When at https://basemaps.linz.govt.nz/:
@@ -62,15 +67,17 @@ When these changes occur the user will be informed via the QGIS message bar.
 ## Requests, Responses, Patience and Caching
 When saving a Domain and API key for the first time via the Setting menu, the plugin
 will request the capabilities documents for each service / protocol type (WMTS, WFS).
-The data portal's server can be slow to respond with these documents causing the
+The Data Portal's server can be slow to respond with these documents causing the
 plugin to appear inactive. The good news is this is the only interaction with the
 plugin where substantial patience may be required. Once the initial documents
 are fetched, they will be cached and updated in the background each time
 the plugin is started.
+
 ## Filtering
 The left hand panel allows users to filter by service / protocol types (either, All, WFS, WMTS).
 All column headers can be toggled to allow ascending or descending ordering of their data.
 Text can be entered in the "Filter Data Sets" search bar to filter the datasets by keyword.
+
 ## Source Code and Feedback
 Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/) repository on GitHub.
 
@@ -78,11 +85,10 @@ Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/)
 
 ### Tests
 [Tests](https://github.com/linz/linz-data-importer/tree/master_qgis3/linz-data-importer/tests)
- are executed via [Travis](https://travis-ci.com/linz/linz-data-importer)
-for branches listed in the `.travis.yml` file. These Travis tests are against
-an instance of QGIS within a Docker container as made possible by the
-[Boundless Docker container](https://hub.docker.com/r/boundlessgeo/qgis-testing-environment/).
-
+are executed via [GitHub Actions](https://github.com/linz/linz-data-importer/actions)
+for branches listed in the [`.ci.yml`](https://github.com/linz/linz-data-importer/blob/master_qgis3/.github/workflows/ci.yml)
+file. These tests are against an instance of QGIS within a Docker container as made possible by the
+[elpaso's Docker container](https://hub.docker.com/r/elpaso/qgis-testing-environment).
 
 ### Thanks
 Thanks to all those at LINZ who have provided input and feedback.
