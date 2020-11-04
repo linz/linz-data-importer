@@ -12,9 +12,8 @@ on:
       - '*'
 
 jobs:
-
   test:
-
+    name: test
     runs-on: ubuntu-18.04
     strategy:
         matrix:
@@ -59,14 +58,14 @@ jobs:
   deploy:
     name: deploy
     if: startswith(github.ref, 'refs/tags/v')
-    needs: [linter, test_schema, test_docker]
+    needs: [test]
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2-beta
         with:
           ref: ${{ github.ref }}
-     - name: Create Release
+      - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.0
         env:
