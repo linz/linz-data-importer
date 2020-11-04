@@ -28,9 +28,9 @@ Configuring each domain and API key will trigger the plugin to request all of th
 and import the domain's data in QGIS.
 
 ### Obtaining Data Portal API Keys
-An API key for each of the Data Portal services can be allocated from each of the Data Portal's associated
-websites (see [Supported Services](https://github.com/linz/linz-data-importer/#supported-services)
-for a link to each Data Portal's website were the API gets are got)
+An API key for each of the supported services can be allocated from each of the service's websites
+(see [Supported Services](https://github.com/linz/linz-data-importer/#supported-services)
+for a link to each services website were the API Keys can be got).
 
 For detailed instructions on getting an API key, please see the [LINZ Data Services user resources](http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key).
 
