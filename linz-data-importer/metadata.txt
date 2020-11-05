@@ -18,11 +18,10 @@ repository=https://github.com/linz/linz-data-importer
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog= v2.0.1-beta:
-    - #48 mac osx text encoding
-    - #47 crs filtering
-<p>v2.0.0-beta:
-    - Upgrade to QGIS3 API
+changelog= v2.1.0-beta:
+    - WMS removed (WMS is no-longer supported)
+    - Configurable for LINZ Basemaps
+    * More Details in repo
 
 # Tags are comma separated with spaces allowed
 tags=wmts, wfs, webservice, web, LINZ, LDS, MFE, Stats NZ, LRIS, NZDF
