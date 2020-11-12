@@ -10,12 +10,12 @@ As well as the LINZ Data Service, the plugin can be configured to allow the disc
 from other New Zealand agencies that make use of the same technology platform to publish their data.
 
 This plugin supports the below open data portals:
-* [data.linz.govt.nz](data.linz.govt.nz) (Toitū Te Whenua - Land Information New Zealand)
-* [data.mfe.govt.nz](data.mfe.govt.nz) (Manatū Mō Te Taiao - Ministry for the Environment)
-* [datafinder.stats.govt.nz](datafinder.stats.govt.nz) (Tatauranga Aotearoa - Statistics New Zealand)
-* [lris.scinfo.org.nz](lris.scinfo.org.nz) (Manaaki Whenua - Landcare Research)
-* [geodata.nzdf.mil.nz](geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force)
-* [basemaps.linz.govt.nz](basemaps.linz.govt.nz) (LINZ Basemaps)
+* [data.linz.govt.nz](http://data.linz.govt.nz) (Toitū Te Whenua - Land Information New Zealand)
+* [data.mfe.govt.nz](http://data.mfe.govt.nz) (Manatū Mō Te Taiao - Ministry for the Environment)
+* [datafinder.stats.govt.nz](http://datafinder.stats.govt.nz) (Tatauranga Aotearoa - Statistics New Zealand)
+* [lris.scinfo.org.nz](http://lris.scinfo.org.nz) (Manaaki Whenua - Landcare Research)
+* [geodata.nzdf.mil.nz](http://geodata.nzdf.mil.nz) (Te Ope Kātua o Aotearoa - New Zealand Defence Force)
+* [basemaps.linz.govt.nz](http://basemaps.linz.govt.nz) (LINZ Basemaps)
 
 ## Selecting a Service / Protocol
 The LINZ Data Service Plugin supports data served over WFS and WMTS protocols.
