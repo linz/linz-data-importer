@@ -5,7 +5,7 @@ name=LINZ Data Importer
 qgisMinimumVersion=3.0.0
 qgisMaximumVersion=3.99.0
 description=Import LDS OGC Datasets into QGIS
-version=2.1.0
+version=2.2.0
 author=Land Information New Zealand
 email=splanzer@linz.govt.nz
 
@@ -18,13 +18,12 @@ repository=https://github.com/linz/linz-data-importer
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog= v2.1.0-beta:
-    - WMS removed (WMS is no-longer supported)
-    - Configurable for LINZ Basemaps
+changelog= v2.2.0-beta:
+    - Improved filter to search all columns
     * More Details in repo
 
 # Tags are comma separated with spaces allowed
-tags=wmts, wfs, webservice, web, LINZ, LDS, MFE, Stats NZ, LRIS, NZDF
+tags=basemaps, wmts, wfs, webservice, web, LINZ, LDS, MFE, Stats NZ, LRIS, NZDF
 
 homepage=https://github.com/linz/linz-data-importer/
 category=Web
