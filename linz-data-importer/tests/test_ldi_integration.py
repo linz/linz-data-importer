@@ -24,11 +24,12 @@ import glob
 
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtCore import Qt, QSettings
-from qgis.utils import plugins
-from qgis.core import QgsProject, QgsApplication
+from qgis.utils import plugins, iface
+from qgis.core import QgsProject, QgsApplication, QgsRectangle
 import xml.etree.ElementTree as ET
 
 WAIT = 1000
+MAP_REFRESH_WAIT = 2000
 
 # Using 4 env vars as issue with travis
 # when the 4 are supplied as json obj
@@ -230,6 +231,8 @@ class UserWorkFlows(unittest.TestCase):
     Test user work flows to import data via the plugin
     """
 
+    refreshed = False
+
     @classmethod
     def setUpClass(cls):
         """
@@ -310,6 +313,13 @@ class UserWorkFlows(unittest.TestCase):
         """
 
         self.filter_domain("data.linz.govt.nz")
+    
+    def test_should_filter_wfs_by_map_bbox(self):
+        """
+        Test wfs filter by bounding box of map window
+        """
+
+        self.filter_data("NZ Primary Parcels")
 
     def filter_domain(self, domain):
         """
@@ -434,6 +444,75 @@ class UserWorkFlows(unittest.TestCase):
         )
         self.assertEqual(len(data_types), 2)
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
+
+    def filter_data(self, layer_name):
+        """
+        Filter data by the map window bounding box
+        """
+
+        # Select WFS table view
+        item = self.ldi.dlg.uListOptions.findItems("WFS", Qt.MatchFixedString)[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
+
+        # Test the tableview widget is current stackedWidget
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
+
+        # Test there is data
+        self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
+
+        # Test there is no error
+        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), '')
+
+        # Filter
+        self.ldi.dlg.uTextFilter.setText(layer_name)
+        QTest.qWait(WAIT)
+
+        # Check we have a single row in the view, upon filtering
+        self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
+
+        # Import the first row
+        self.ldi.dlg.uTableView.selectRow(0)
+        self.ldi.dlg.uBtnImport.clicked.emit(True)
+        
+        # Connect to map refreshed signal
+        canvas = iface.mapCanvas()
+        canvas.mapCanvasRefreshed.connect(lambda: self.map_refreshed())
+
+        # Zoom to small area
+        self.zoom_to_test_area(
+            176.288040,
+            -38.141301,
+            176.292429,
+            -38.144193
+            )
+
+        # Wait for map to refresh
+        QTest.qWait(MAP_REFRESH_WAIT)
+        self.assertTrue(self.refreshed)
+
+        # Disconnect signal
+        canvas.mapCanvasRefreshed.disconnect()
+        self.refreshed = False
+
+
+    def map_refreshed(self):
+        """
+        Slot for map canvas refreshed signal
+        """
+        UserWorkFlows.refreshed = True
+        
+    
+    def zoom_to_test_area(self, x_min, y_min, x_max, y_max):
+        """
+        Zoom to the area the test is being execute.
+        This is useful for ensure coordinate rounding position
+        when coord are got by mouse click
+        """
+
+        canvas = iface.mapCanvas()
+        zoom_rectangle = QgsRectangle(x_min, y_min, x_max, y_max)
+        canvas.setExtent(zoom_rectangle)
+        canvas.refresh()
 
 
 # def suite():
