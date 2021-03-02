@@ -297,6 +297,71 @@ class UserWorkFlows(unittest.TestCase):
 
         self.import_service("wmts")
 
+    def test_basemaps_filter(self):
+        """
+        Test filtering by LINZ Basemaps domain
+        """
+
+        self.filter_domain("basemaps.linz.govt.nz")
+
+    def test_lds_filter(self):
+        """
+        Test filtering by LINZ Data Service domain
+        """
+
+        self.filter_domain("data.linz.govt.nz")
+
+    def filter_domain(self, domain):
+        """
+        Executes tests for filtering by domain
+        """
+
+        # Select 'ALL' table view
+        item = self.ldi.dlg.uListOptions.findItems(
+            'ALL', Qt.MatchFixedString
+        )[0]
+        self.ldi.dlg.uListOptions.itemClicked.emit(item)
+
+        # Test the tableview widget is current stackedWidget
+        self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
+
+        # Test there is data
+        all_rows = self.ldi.table_model.rowCount(None)
+        self.assertNotEqual(all_rows, 0)
+
+        # Test there is no error
+        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), '')
+
+        # Ensure the domain exists in the table
+        domains = set(
+            [
+                self.ldi.proxy_model.index(row, 0).data()
+                for row in range(self.ldi.proxy_model.rowCount())
+            ]
+        )
+        self.assertGreater(len(domains), 0)
+        self.assertIn(domain.lower(), list(domains))
+
+        # Filter
+        self.ldi.dlg.uTextFilter.setText(domain)
+        QTest.qWait(WAIT)
+
+        # Check we have more than 0 rows
+        self.assertGreater(self.ldi.proxy_model.rowCount(), 0)
+
+        # Check that we have less rows than before we applied the filter
+        self.assertLess(self.ldi.proxy_model.rowCount(), all_rows)
+
+        # Check that there is only one domain and it matches the filtered domain
+        domains = set(
+            [
+                self.ldi.proxy_model.index(row, 0).data()
+                for row in range(self.ldi.proxy_model.rowCount())
+            ]
+        )
+        self.assertEqual(len(domains), 1)
+        self.assertEqual(domain.lower(), list(domains)[0])
+        
     def import_service(self, service):
         """
         Executes tests for all "test_w<x>s_import" methods

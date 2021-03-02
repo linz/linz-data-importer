@@ -71,10 +71,13 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
 
     def filterAcceptsRow(self, sourceRow, sourceParent):
         index2=self.sourceModel().index(sourceRow, 2, sourceParent) # SERVICE TYPE
-        index3=self.sourceModel().index(sourceRow, 4, sourceParent)
+        index3=self.sourceModel().index(sourceRow, 4, sourceParent) # LAYER NAME
+        index4=self.sourceModel().index(sourceRow, 0, sourceParent) # DOMAIN
 
-        return  (self.sourceModel().data(index2, Qt.DisplayRole) in self.data_type
-            and self.filterRegExp().indexIn(self.sourceModel().data(index3, Qt.DisplayRole)) >= 0) 
+        return  (self.sourceModel().data(index2, Qt.DisplayRole) in self.data_type and (
+            self.filterRegExp().indexIn(self.sourceModel().data(index3, Qt.DisplayRole)) >= 0
+            or self.filterRegExp().indexIn(self.sourceModel().data(index4, Qt.DisplayRole)) >= 0
+            ))
 
 class LinzDataImporter(object):
     """
