@@ -25,7 +25,7 @@ import glob
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.utils import plugins, iface
-from qgis.core import QgsProject, QgsApplication, QgsRectangle
+from qgis.core import QgsProject, QgsApplication, QgsRectangle, QgsCoordinateReferenceSystem
 import xml.etree.ElementTree as ET
 
 WAIT = 1000
@@ -225,7 +225,6 @@ class cacheTest(unittest.TestCase):
             post_purge_test_files, ["data.govt.test.nz_wfs_999999999999999.xml"]
         )
 
-
 class UserWorkFlows(unittest.TestCase):
     """
     Test user work flows to import data via the plugin
@@ -319,7 +318,7 @@ class UserWorkFlows(unittest.TestCase):
         Test wfs filter by bounding box of map window
         """
 
-        self.filter_data("NZ Primary Parcels")
+        self.filter_data_by_map("NZ Primary Parcels")
 
     def filter_domain(self, domain):
         """
@@ -445,14 +444,10 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(len(data_types), 2)
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
-    def filter_data(self, layer_name):
+    def filter_data_by_map(self, layer_name):
         """
         Filter data by the map window bounding box
         """
-
-        # Select WFS table view
-        item = self.ldi.dlg.uListOptions.findItems("WFS", Qt.MatchFixedString)[0]
-        self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
         # Test the tableview widget is current stackedWidget
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
@@ -470,50 +465,41 @@ class UserWorkFlows(unittest.TestCase):
         # Check we have a single row in the view, upon filtering
         self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
 
+        # Set the map extent for testing
+        canvas = iface.mapCanvas()
+        test_area = QgsRectangle(176.288040, -38.144193, 176.292429,  -38.141301)
+        canvas.setExtent(test_area)
+
+        # Connect to map refreshed signal
+        canvas.mapCanvasRefreshed.connect(lambda: self.map_refreshed())
+
         # Import the first row
         self.ldi.dlg.uTableView.selectRow(0)
         self.ldi.dlg.uBtnImport.clicked.emit(True)
-        
-        # Connect to map refreshed signal
-        canvas = iface.mapCanvas()
-        canvas.mapCanvasRefreshed.connect(lambda: self.map_refreshed())
+        QTest.qWait(WAIT)
 
-        # Zoom to small area
-        self.zoom_to_test_area(
-            176.288040,
-            -38.141301,
-            176.292429,
-            -38.144193
-            )
+        # Turn on the layer 
+        layer = QgsProject.instance().mapLayersByName(layer_name)[0]
+        QgsProject.instance().layerTreeRoot().findLayer(layer.id()).setItemVisibilityChecked(True)
+        QTest.qWait(WAIT)
 
-        # Wait for map to refresh
+        # Refresh the map
+        UserWorkFlows.refreshed = False
+        canvas.refreshAllLayers()
         QTest.qWait(MAP_REFRESH_WAIT)
-        self.assertTrue(self.refreshed)
 
         # Disconnect signal
         canvas.mapCanvasRefreshed.disconnect()
-        self.refreshed = False
 
+        # Assert if map has refreshed
+        self.assertTrue(UserWorkFlows.refreshed)
 
     def map_refreshed(self):
         """
         Slot for map canvas refreshed signal
         """
+
         UserWorkFlows.refreshed = True
-        
-    
-    def zoom_to_test_area(self, x_min, y_min, x_max, y_max):
-        """
-        Zoom to the area the test is being execute.
-        This is useful for ensure coordinate rounding position
-        when coord are got by mouse click
-        """
-
-        canvas = iface.mapCanvas()
-        zoom_rectangle = QgsRectangle(x_min, y_min, x_max, y_max)
-        canvas.setExtent(zoom_rectangle)
-        canvas.refresh()
-
 
 # def suite():
 #     suite = unittest.TestSuite()
