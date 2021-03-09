@@ -769,6 +769,7 @@ class LinzDataImporter(object):
         else: pass # ERROR not supported
 
         QgsProject.instance().addMapLayer(layer)
+        QgsProject.instance().layerTreeRoot().findLayer(layer.id()).setItemVisibilityChecked(False)
         self.layers_loaded=True
         self.dlg.close()
    
