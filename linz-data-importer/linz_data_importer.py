@@ -723,7 +723,9 @@ class LinzDataImporter(object):
                    "SERVICE={2}&"
                    "VERSION={3}&"
                    "REQUEST=GetFeature&"
-                   "TYPENAME={0}:{4}-{5}").format(self.domain,
+                   "TYPENAME={0}:{4}-{5}&"
+                   "bbox=1&"
+                   "pagingEnabled='true'").format(self.domain,
                                                   self.api_key_instance.getApiKey(self.domain), 
                                                   self.service.lower(), 
                                                   self.service_versions[self.service.lower()], 
