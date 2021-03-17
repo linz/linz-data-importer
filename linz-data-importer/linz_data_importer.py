@@ -718,22 +718,26 @@ class LinzDataImporter(object):
             self.setProjectSRID()
 
         if self.service == "WFS":
-            url=("https://{0}/services;"
-                   "key={1}/{2}?"
-                   "SERVICE={2}&"
-                   "VERSION={3}&"
-                   "REQUEST=GetFeature&"
-                   "TYPENAME={0}:{4}-{5}&"
-                   "bbox=1&"
-                   "pagingEnabled='true'").format(self.domain,
-                                                  self.api_key_instance.getApiKey(self.domain), 
-                                                  self.service.lower(), 
-                                                  self.service_versions[self.service.lower()], 
-                                                  self.data_type, 
-                                                  self.id)
-            layer=QgsVectorLayer(url,
-                                  self.layer_title,
-                                  self.service.upper())  
+            uri = (
+                "pagingEnabled='true' "
+                "preferCoordinatesForWfsT11='false' "
+                "restrictToRequestBBOX='1' "
+                "srsname='EPSG:4167' "
+                "typename='{0}:{4}-{5}' "
+                "url='https://{0}/services;key={1}/{2}/{4}-{5}' "
+                "version='{3}'"
+                ).format(
+                    self.domain,
+                    self.api_key_instance.getApiKey(self.domain),
+                    self.service.lower(),
+                    self.service_versions[self.service.lower()],
+                    self.data_type,
+                    self.id)
+
+            layer=QgsVectorLayer(
+                uri,
+                self.layer_title,
+                self.service.upper())
 
         elif 'WMTS':
             if self.domain == 'basemaps.linz.govt.nz':
