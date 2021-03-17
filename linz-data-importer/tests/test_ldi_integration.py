@@ -478,8 +478,12 @@ class UserWorkFlows(unittest.TestCase):
         self.ldi.dlg.uBtnImport.clicked.emit(True)
         QTest.qWait(WAIT)
 
-        # Turn on the layer 
+        # Test the layer was added and has some features
         layer = QgsProject.instance().mapLayersByName(layer_name)[0]
+        self.assertIsNotNone(layer)
+        self.assertEqual(layer.hasFeatures(),1)
+
+        # Turn on the layer
         QgsProject.instance().layerTreeRoot().findLayer(layer.id()).setItemVisibilityChecked(True)
         QTest.qWait(WAIT)
 
