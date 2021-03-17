@@ -294,7 +294,7 @@ class UserWorkFlows(unittest.TestCase):
 
     def test_wmts_import(self):
         """
-        Test display, filtering, selection and importing of WFS data
+        Test display, filtering, selection and importing of WMTS data
         """
 
         self.import_service("wmts")
@@ -465,6 +465,16 @@ class UserWorkFlows(unittest.TestCase):
         # Check we have a single row in the view, upon filtering
         self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
 
+        # Import the first row
+        self.ldi.dlg.uTableView.selectRow(0)
+        self.ldi.dlg.uBtnImport.clicked.emit(True)
+        QTest.qWait(WAIT)
+
+        # Turn layer off
+        layer = QgsProject.instance().mapLayersByName(layer_name)[0]
+        QgsProject.instance().layerTreeRoot().findLayer(layer.id()).setItemVisibilityChecked(False)
+        QTest.qWait(WAIT)
+
         # Set the map extent for testing
         canvas = iface.mapCanvas()
         test_area = QgsRectangle(176.288040, -38.144193, 176.292429,  -38.141301)
@@ -473,14 +483,7 @@ class UserWorkFlows(unittest.TestCase):
         # Connect to map refreshed signal
         canvas.mapCanvasRefreshed.connect(lambda: self.map_refreshed())
 
-        # Import the first row
-        self.ldi.dlg.uTableView.selectRow(0)
-        self.ldi.dlg.uBtnImport.clicked.emit(True)
-        QTest.qWait(WAIT)
-
-        # Test the layer was added and has some features
-        layer = QgsProject.instance().mapLayersByName(layer_name)[0]
-        self.assertIsNotNone(layer)
+        # Test the layer has some features
         self.assertEqual(layer.hasFeatures(),1)
 
         # Turn on the layer

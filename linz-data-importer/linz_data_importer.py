@@ -722,7 +722,6 @@ class LinzDataImporter(object):
                 "pagingEnabled='true' "
                 "preferCoordinatesForWfsT11='false' "
                 "restrictToRequestBBOX='1' "
-                "srsname='EPSG:4167' "
                 "typename='{0}:{4}-{5}' "
                 "url='https://{0}/services;key={1}/{2}/{4}-{5}' "
                 "version='{3}'"
@@ -775,7 +774,6 @@ class LinzDataImporter(object):
         else: pass # ERROR not supported
 
         QgsProject.instance().addMapLayer(layer)
-        QgsProject.instance().layerTreeRoot().findLayer(layer.id()).setItemVisibilityChecked(False)
         self.layers_loaded=True
         self.dlg.close()
    
