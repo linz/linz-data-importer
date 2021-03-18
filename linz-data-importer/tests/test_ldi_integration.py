@@ -29,7 +29,7 @@ from qgis.core import QgsProject, QgsApplication, QgsRectangle, QgsCoordinateRef
 import xml.etree.ElementTree as ET
 
 WAIT = 1000
-MAP_REFRESH_WAIT = 2000
+MAP_REFRESH_WAIT = 4000
 
 # Using 4 env vars as issue with travis
 # when the 4 are supplied as json obj
