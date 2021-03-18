@@ -409,7 +409,7 @@ class UnitLevel(unittest.TestCase):
         Test the getting of a preview image
         """
 
-        match_layer_id = 51571
+        match_layer_id = 50769
         mismatch_layer_id = 53158
         self.ldi.id = match_layer_id
         self.ldi.getPreview("300x200", 10)
