@@ -7,7 +7,7 @@ qgisMaximumVersion=3.99.0
 description=Import LDS OGC Datasets into QGIS
 version=2.2.0
 author=Land Information New Zealand
-email=splanzer@linz.govt.nz
+email=linzdataservice@linz.govt.nz
 
 about=Import LINZ (and others) OGC Datasets into QGIS
 
