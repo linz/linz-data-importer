@@ -82,7 +82,7 @@ class UiTest(unittest.TestCase):
         self.assertEqual(type(self.ldi.dlg.uLabelImgPreview), QLabel)
         self.assertEqual(type(self.ldi.dlg.uLabelWarning), QLabel)
         # StackWidget - Settings
-        item = self.ldi.dlg.uListOptions.findItems("About", Qt.MatchFixedString)[0]
+        item = self.ldi.dlg.uListOptions.findItems("Help", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(type(self.ldi.dlg.uComboBoxDomain), QComboBox)
         self.assertEqual(type(self.ldi.dlg.uBtnAddDomain), QPushButton)
@@ -131,14 +131,14 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
-    def test_listItem_about_shows_widget_swAbout(self):
+    def test_listItem_about_shows_widget_swHelp(self):
         """
         Check the stacked widget index and sinals
         When 'All' is clicked - the stacked widgets current index
         should now be == 2
         """
 
-        item = self.ldi.dlg.uListOptions.findItems("About", Qt.MatchFixedString)[0]
+        item = self.ldi.dlg.uListOptions.findItems("Help", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 2)
 

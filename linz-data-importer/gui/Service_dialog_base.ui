@@ -805,10 +805,10 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="swAbout">
+        <widget class="QWidget" name="swHelp">
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QTextBrowser" name="hAboutHtml"/>
+           <widget class="QTextBrowser" name="hHelpHtml"/>
           </item>
          </layout>
         </widget>
@@ -877,7 +877,7 @@
   <tabstop>uBtnRemoveDomain8</tabstop>
   <tabstop>uBtnRemoveDomain9</tabstop>
   <tabstop>uBtnRemoveDomain10</tabstop>
-  <tabstop>hAboutHtml</tabstop>
+  <tabstop>hHelpHtml</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -50,7 +50,7 @@ class ServiceDialog(QtWidgets.QDialog, FORM_CLASS):
         #self.uTextDescription.setStyleSheet("background-color:palette(Window);")
 
         # add grey back ground to html view
-#         self.hAboutHtml.setStyleSheet(
+#         self.hHelpHtml.setStyleSheet(
 #             """ QTextEdit {
 #                     background-color:rgb(245,245,245);
 #                     outline: 0;
