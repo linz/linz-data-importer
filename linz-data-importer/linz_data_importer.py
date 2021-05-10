@@ -44,13 +44,12 @@ from . import resources
 from .gui.Service_dialog import ServiceDialog
 
 # Hardcoded service .see #20 for enhancement
-SER=['',
-    'geodata.nzdf.mil.nz',
+SER=['basemaps.linz.govt.nz',
     'data.linz.govt.nz',
     'data.mfe.govt.nz',
     'datafinder.stats.govt.nz',
+    'geodata.nzdf.mil.nz',
     'lris.scinfo.org.nz',
-    'basemaps.linz.govt.nz',
     'OTHER'
     ]
 
