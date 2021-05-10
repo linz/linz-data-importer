@@ -791,7 +791,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>* When saving the domain details for the first time the UI may appear to &quot;freeze&quot; while obtaining domain data. Please be patient, this will be cached and updated in the background thereafter.</string>
+                  <string>See "Help" for information on how to get an API key</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
