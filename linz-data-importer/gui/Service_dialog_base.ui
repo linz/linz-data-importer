@@ -791,7 +791,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>* When saving the domain details for the first time the UI may appear to &quot;freeze&quot; while obtaining domain data. Please be patient, this will be cached and updated in the background thereafter.</string>
+                  <string>See "Help" for information on how to get an API key</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -805,10 +805,10 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="swAbout">
+        <widget class="QWidget" name="swHelp">
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QTextBrowser" name="hAboutHtml"/>
+           <widget class="QTextBrowser" name="hHelpHtml"/>
           </item>
          </layout>
         </widget>
@@ -877,7 +877,7 @@
   <tabstop>uBtnRemoveDomain8</tabstop>
   <tabstop>uBtnRemoveDomain9</tabstop>
   <tabstop>uBtnRemoveDomain10</tabstop>
-  <tabstop>hAboutHtml</tabstop>
+  <tabstop>hHelpHtml</tabstop>
  </tabstops>
  <resources/>
  <connections/>

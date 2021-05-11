@@ -44,13 +44,12 @@ from . import resources
 from .gui.Service_dialog import ServiceDialog
 
 # Hardcoded service .see #20 for enhancement
-SER=['',
-    'geodata.nzdf.mil.nz',
+SER=['basemaps.linz.govt.nz',
     'data.linz.govt.nz',
     'data.mfe.govt.nz',
     'datafinder.stats.govt.nz',
+    'geodata.nzdf.mil.nz',
     'lris.scinfo.org.nz',
-    'basemaps.linz.govt.nz',
     'OTHER'
     ]
 
@@ -271,22 +270,22 @@ class LinzDataImporter(object):
         item.setIcon(QIcon(image_path))
         self.dlg.uListOptions.addItem(item)
 
-        item=QListWidgetItem("About")
-        image_path=os.path.join(os.path.dirname(__file__), "icons", "about.png")
+        item=QListWidgetItem("Help")
+        image_path=os.path.join(os.path.dirname(__file__), "icons", "help.png")
         item.setIcon(QIcon(image_path))
         self.dlg.uListOptions.addItem(item)
 
         #set table model
         self.setTableModelView()
 
-        #set about html
-        self.dlg.hAboutHtml.setOpenExternalLinks(True)
-        about_file=os.path.join(self.plugin_dir, 'about.html')
+        #set help html
+        self.dlg.hHelpHtml.setOpenExternalLinks(True)
+        help_file=os.path.join(self.plugin_dir, 'help.html')
         icon_path=os.path.join(self.plugin_dir, 'icons')
-        with open(about_file, "r", encoding="utf-8") as file:
-            about_html=file.read()
-            about_html.format(self.plugin_dir)
-        self.dlg.hAboutHtml.setHtml(about_html.format(icon_path))
+        with open(help_file, "r", encoding="utf-8") as file:
+            help_html=file.read()
+            help_html.format(self.plugin_dir)
+        self.dlg.hHelpHtml.setHtml(help_html.format(icon_path))
 
         # populate settings
         # default data services to combo
@@ -428,7 +427,7 @@ class LinzDataImporter(object):
 
         if not self.services_loaded:
             if not self.api_key_instance.getApiKeys():
-                self.dlg.uLabelWarning.setText('ERROR: No API Details Provided - see settings')
+                self.dlg.uLabelWarning.setText('To access data, add your API key in "Settings". See "Help" for more information.')
                 self.dlg.uLabelWarning.show()
             else:
                 self.loadUi()
@@ -537,7 +536,7 @@ class LinzDataImporter(object):
                 self.dlg.uStackedWidget.setCurrentIndex(0)
             elif item.text() == 'Settings':
                 self.dlg.uStackedWidget.setCurrentIndex(1)
-            elif item.text() == 'About':
+            elif item.text() == 'Help':
                 self.dlg.uStackedWidget.setCurrentIndex(2)
 
     def layerCrsSelected(self):
