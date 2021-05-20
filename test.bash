@@ -53,17 +53,17 @@ cleanup() {
 trap cleanup EXIT
 
 docker run \
-  --detach \
-  --name="$container_name" \
-  --volume="${PWD}:/tests_directory" \
-  --env=LDI_LINZ_KEY \
-  --env=LDI_MFE_KEY \
-  --env=LDI_NZDF_KEY \
-  --env=LDI_BASEMAPS_KEY \
-  --env=DISPLAY=:99 \
-  --pull=always \
-  --rm \
-  "$image_name"
+    --detach \
+    --name="$container_name" \
+    --volume="${PWD}:/tests_directory" \
+    --env=LDI_LINZ_KEY \
+    --env=LDI_MFE_KEY \
+    --env=LDI_NZDF_KEY \
+    --env=LDI_BASEMAPS_KEY \
+    --env=DISPLAY=:99 \
+    --pull=always \
+    --rm \
+    "$image_name"
 sleep 10
 docker exec "$container_name" sh -c "qgis_setup.sh ${plugin_name}"
 docker exec "$container_name" sh -c "ln -s /tests_directory /root/.local/share/QGIS/QGIS3/profiles/default/${plugin_name}"
