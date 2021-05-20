@@ -19,8 +19,6 @@ jobs:
         matrix:
             qgis: [ 'master' ]
     env:
-      # Make apt non-interactive by default, and not showing progress
-      APT: "apt-get -o Dpkg::Progress=0 -o Dpkg::Use-Pty=0"
       IMAGE: 'elpaso/qgis-testing-environment'
       QGIS_VERSION_TAG: ${{ matrix.qgis }}
       PLUGIN_NAME: "linz-data-importer"
