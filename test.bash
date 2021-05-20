@@ -52,13 +52,15 @@ cleanup() {
 }
 trap cleanup EXIT
 
-docker run -d --name "$container_name" \
-  -v "${PWD}:/tests_directory" \
-  -e LDI_LINZ_KEY \
-  -e LDI_MFE_KEY \
-  -e LDI_NZDF_KEY \
-  -e LDI_BASEMAPS_KEY \
-  -e DISPLAY=:99 \
+docker run \
+  --detach \
+  --name="$container_name" \
+  --volume="${PWD}:/tests_directory" \
+  --env=LDI_LINZ_KEY \
+  --env=LDI_MFE_KEY \
+  --env=LDI_NZDF_KEY \
+  --env=LDI_BASEMAPS_KEY \
+  --env=DISPLAY=:99 \
   --pull=always \
   --rm \
   "$image_name"
