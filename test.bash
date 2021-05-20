@@ -44,6 +44,7 @@ LDI_BASEMAPS_KEY="$4"
 image='elpaso/qgis-testing-environment'
 qgis_version_tag='master'
 plugin_name='linz-data-importer'
+image_name="${image}:${qgis_version_tag}"
 
 container_name='qgis-testing-environment'
 
@@ -52,7 +53,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-docker pull "${image}:${qgis_version_tag}"
+docker pull "$image_name"
 
 docker run -d --name "$container_name" \
   -v "${PWD}:/tests_directory" \
@@ -61,7 +62,7 @@ docker run -d --name "$container_name" \
   -e LDI_NZDF_KEY \
   -e LDI_BASEMAPS_KEY \
   -e DISPLAY=:99 \
-  "${image}:${qgis_version_tag}"
+  "$image_name"
 sleep 10
 docker exec "$container_name" sh -c "qgis_setup.sh ${plugin_name}"
 docker exec "$container_name" sh -c "ln -s /tests_directory /root/.local/share/QGIS/QGIS3/profiles/default/${plugin_name}"
