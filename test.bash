@@ -47,6 +47,11 @@ plugin_name='linz-data-importer'
 
 container_name='qgis-testing-environment'
 
+cleanup() {
+    docker stop "$container_name"
+}
+trap cleanup EXIT
+
 docker pull "${image}:${qgis_version_tag}"
 
 docker run -d --name "$container_name" \
