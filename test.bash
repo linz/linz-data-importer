@@ -52,8 +52,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-docker pull "$image_name"
-
 docker run -d --name "$container_name" \
   -v "${PWD}:/tests_directory" \
   -e LDI_LINZ_KEY \
@@ -61,6 +59,7 @@ docker run -d --name "$container_name" \
   -e LDI_NZDF_KEY \
   -e LDI_BASEMAPS_KEY \
   -e DISPLAY=:99 \
+  --pull=always \
   "$image_name"
 sleep 10
 docker exec "$container_name" sh -c "qgis_setup.sh ${plugin_name}"
