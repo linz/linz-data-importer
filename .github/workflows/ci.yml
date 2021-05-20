@@ -15,41 +15,15 @@ jobs:
   test:
     name: test
     runs-on: ubuntu-18.04
-    strategy:
-        matrix:
-            qgis: [ 'master' ]
     env:
-      IMAGE: 'elpaso/qgis-testing-environment'
-      QGIS_VERSION_TAG: ${{ matrix.qgis }}
-      PLUGIN_NAME: "linz-data-importer"
       LDI_LINZ_KEY: ${{ secrets.LDI_LINZ_KEY }}
       LDI_MFE_KEY: ${{ secrets.LDI_MFE_KEY }}
       LDI_NZDF_KEY: ${{ secrets.LDI_NZDF_KEY }}
       LDI_BASEMAPS_KEY: ${{ secrets.LDI_BASEMAPS_KEY }}
     steps:
     - uses: actions/checkout@v2
-    - name: Pull docker image
-      run: |
-        docker pull ${IMAGE}:${QGIS_VERSION_TAG}
-    - name: Setup docker container
-      run: |
-        docker run -d --name qgis-testing-environment \
-          -v ${PWD}:/tests_directory \
-          -e LDI_LINZ_KEY \
-          -e LDI_MFE_KEY \
-          -e LDI_NZDF_KEY \
-          -e LDI_BASEMAPS_KEY \
-          -e DISPLAY=:99 \
-          ${IMAGE}:${QGIS_VERSION_TAG}
-        sleep 10
-        docker exec qgis-testing-environment \
-          sh -c "qgis_setup.sh ${PLUGIN_NAME}"
-        docker exec qgis-testing-environment \
-          sh -c "ln -s /tests_directory /root/.local/share/QGIS/QGIS3/profiles/default/${PLUGIN_NAME}"
-    - name: Run test in container
-      run: |
-        docker exec -t qgis-testing-environment \
-          sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.run_tests.run_test_modules"
+    - name: Run test script
+      run: ./test.bash "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
 
 
   deploy:

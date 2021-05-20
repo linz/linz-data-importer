@@ -90,6 +90,8 @@ for branches listed in the [`.ci.yml`](https://github.com/linz/linz-data-importe
 file. These tests are against an instance of QGIS within a Docker container as made possible by the
 [elpaso's Docker container](https://hub.docker.com/r/elpaso/qgis-testing-environment).
 
+You can run the tests using the test.bash script.
+
 ### Thanks
 Thanks to all those at LINZ who have provided input and feedback.
 And thanks to Pete King for the icons.
