@@ -86,11 +86,16 @@ Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/)
 ### Tests
 [Tests](https://github.com/linz/linz-data-importer/tree/master_qgis3/linz-data-importer/tests)
 are executed via [GitHub Actions](https://github.com/linz/linz-data-importer/actions)
-for branches listed in the [`.ci.yml`](https://github.com/linz/linz-data-importer/blob/master_qgis3/.github/workflows/ci.yml)
+for branches listed in the [`ci.yml`](https://github.com/linz/linz-data-importer/blob/master_qgis3/.github/workflows/ci.yml)
 file. These tests are against an instance of QGIS within a Docker container as made possible by the
 [elpaso's Docker container](https://hub.docker.com/r/elpaso/qgis-testing-environment).
 
-You can run the tests using the test.bash script.
+You can run the tests using the test.bash script: `./test.bash LDI_LINZ_KEY LDI_MFE_KEY LDI_NZDF_KEY LDI_BASEMAPS_KEY`. You can request the keys in these places:
+
+- [LDI_LINZ_KEY](https://data.linz.govt.nz/my/api/)
+- [LDI_MFE_KEY](https://data.mfe.govt.nz/my/api/)
+- [LDI_NZDF_KEY](https://koordinates.com/my/api/)
+- [LDI_BASEMAPS_KEY](https://basemaps.linz.govt.nz/)
 
 ### Thanks
 Thanks to all those at LINZ who have provided input and feedback.
