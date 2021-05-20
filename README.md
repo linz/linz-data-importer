@@ -86,7 +86,7 @@ Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/)
 ### Tests
 [Tests](https://github.com/linz/linz-data-importer/tree/master_qgis3/linz-data-importer/tests)
 are executed via [GitHub Actions](https://github.com/linz/linz-data-importer/actions)
-for branches listed in the [`.ci.yml`](https://github.com/linz/linz-data-importer/blob/master_qgis3/.github/workflows/ci.yml)
+for branches listed in the [`ci.yml`](https://github.com/linz/linz-data-importer/blob/master_qgis3/.github/workflows/ci.yml)
 file. These tests are against an instance of QGIS within a Docker container as made possible by the
 [elpaso's Docker container](https://hub.docker.com/r/elpaso/qgis-testing-environment).
 
