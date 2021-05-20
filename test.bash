@@ -60,6 +60,7 @@ docker run -d --name "$container_name" \
   -e LDI_BASEMAPS_KEY \
   -e DISPLAY=:99 \
   --pull=always \
+  --rm \
   "$image_name"
 sleep 10
 docker exec "$container_name" sh -c "qgis_setup.sh ${plugin_name}"
