@@ -45,8 +45,7 @@ image='elpaso/qgis-testing-environment'
 qgis_version_tag='master'
 plugin_name='linz-data-importer'
 image_name="${image}:${qgis_version_tag}"
-
-container_name='qgis-testing-environment'
+container_name="${image/\//-}-${qgis_version_tag}"
 
 cleanup() {
     docker stop "$container_name"
