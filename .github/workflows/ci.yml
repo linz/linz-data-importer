@@ -14,7 +14,7 @@ on:
 jobs:
   test:
     name: test
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       LDI_LINZ_KEY: ${{ secrets.LDI_LINZ_KEY }}
       LDI_MFE_KEY: ${{ secrets.LDI_MFE_KEY }}
@@ -30,7 +30,7 @@ jobs:
     name: deploy
     if: startswith(github.ref, 'refs/tags/v')
     needs: [test]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2-beta
