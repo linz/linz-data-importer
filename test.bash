@@ -66,6 +66,5 @@ docker run \
     "$image_name"
 sleep 10
 docker exec "$container_name" qgis_setup.sh "$plugin_name"
-docker exec "$container_name" ln -s /tests_directory "/root/.local/share/QGIS/QGIS3/profiles/default/${plugin_name}"
 
 docker exec -t "$container_name" qgis_testrunner.sh "${plugin_name}.tests.run_tests.run_test_modules"
