@@ -4,8 +4,10 @@ set -o errexit -o nounset
 
 usage() {
     cat >&2 << 'EOF'
-Synopsis: ./test.bash "$ldi_linz_key" "$ldi_mfe_key" "$ldi_nzdf_key" "$ldi_basemaps_key"
-Example: ./test.bash a1 b2 c3 d4
+Synopsis: ./test.bash "$qgis_version" "$ldi_linz_key" "$ldi_mfe_key" "$ldi_nzdf_key" "$ldi_basemaps_key"
+Example: ./test.bash latest a1 b2 c3 d4
+
+The QGIS version has to be one of the official QGIS Docker image tags <https://hub.docker.com/r/qgis/qgis/tags>.
 EOF
 }
 
@@ -31,19 +33,19 @@ do
     esac
 done
 
-if [[ $# -ne 4 ]]
+if [[ $# -ne 5 ]]
 then
     usage
     exit 2
 fi
 
-export LDI_LINZ_KEY="$1"
-export LDI_MFE_KEY="$2"
-export LDI_NZDF_KEY="$3"
-export LDI_BASEMAPS_KEY="$4"
+qgis_version_tag="$1"
+export LDI_LINZ_KEY="$2"
+export LDI_MFE_KEY="$3"
+export LDI_NZDF_KEY="$4"
+export LDI_BASEMAPS_KEY="$5"
 
 image='qgis/qgis'
-qgis_version_tag='latest'
 plugin_name='linz-data-importer'
 image_name="${image}:${qgis_version_tag}"
 container_name="${image/\//-}-${qgis_version_tag}"

@@ -15,6 +15,13 @@ jobs:
   test:
     name: test
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        qgis:
+          - latest
+          - release-3_16
+          - release-3_10
+          - release-3_4
     env:
       LDI_LINZ_KEY: ${{ secrets.LDI_LINZ_KEY }}
       LDI_MFE_KEY: ${{ secrets.LDI_MFE_KEY }}
@@ -23,7 +30,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run test script
-      run: ./test.bash "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
+      run: |
+        ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
 
 
   deploy:
