@@ -4,7 +4,8 @@ set -o errexit -o nounset
 
 usage() {
     cat >&2 << 'EOF'
-./test.bash "$ldi_linz_key" "$ldi_mfe_key" "$ldi_nzdf_key" "$ldi_basemaps_key"
+Synopsis: ./test.bash "$ldi_linz_key" "$ldi_mfe_key" "$ldi_nzdf_key" "$ldi_basemaps_key"
+Example: ./test.bash a1 b2 c3 d4
 EOF
 }
 
