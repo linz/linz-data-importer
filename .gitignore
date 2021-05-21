@@ -1,3 +1,6 @@
+basemaps.linz.govt.nz_*
+data.linz.govt.nz_*
+data.mfe.govt.nz_*
 .idea/
 __pycache__/
 symbology-style.db

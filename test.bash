@@ -36,10 +36,10 @@ then
     exit 2
 fi
 
-LDI_LINZ_KEY="$1"
-LDI_MFE_KEY="$2"
-LDI_NZDF_KEY="$3"
-LDI_BASEMAPS_KEY="$4"
+export LDI_LINZ_KEY="$1"
+export LDI_MFE_KEY="$2"
+export LDI_NZDF_KEY="$3"
+export LDI_BASEMAPS_KEY="$4"
 
 image='qgis/qgis'
 qgis_version_tag='latest'
