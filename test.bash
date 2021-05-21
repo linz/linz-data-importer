@@ -41,8 +41,8 @@ LDI_MFE_KEY="$2"
 LDI_NZDF_KEY="$3"
 LDI_BASEMAPS_KEY="$4"
 
-image='elpaso/qgis-testing-environment'
-qgis_version_tag='master'
+image='qgis/qgis'
+qgis_version_tag='latest'
 plugin_name='linz-data-importer'
 image_name="${image}:${qgis_version_tag}"
 container_name="${image/\//-}-${qgis_version_tag}"
