@@ -21,6 +21,7 @@
 
 import sys
 from os.path import dirname, abspath
+
 sys.path.append(dirname(abspath(__file__)))
 
 
@@ -33,4 +34,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     """
     #
     from .linz_data_importer import LinzDataImporter
+
     return LinzDataImporter(iface)
