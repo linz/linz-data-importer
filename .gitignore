@@ -4,3 +4,4 @@ data.mfe.govt.nz_*
 .idea/
 __pycache__/
 symbology-style.db
+.venv/

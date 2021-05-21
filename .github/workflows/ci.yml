@@ -35,6 +35,21 @@ jobs:
         ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
 
 
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.8
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install --requirement=requirements-dev.txt
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files
+
+
   deploy:
     name: deploy
     if: startswith(github.ref, 'refs/tags/v')
