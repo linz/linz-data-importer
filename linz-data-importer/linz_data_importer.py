@@ -638,11 +638,11 @@ class LinzDataImporter(object):
 
         if self.getPreview("300x200", 0.5):
             return
-        elif self.getPreview("150x100", 5):
+        if self.getPreview("150x100", 5):
             return
-        else:
-            self.dlg.uLabelImgPreview.clear()
-            self.dlg.uLabelImgPreview.setText("No preview available")
+
+        self.dlg.uLabelImgPreview.clear()
+        self.dlg.uLabelImgPreview.setText("No preview available")
 
     def currSelection(self):
         """

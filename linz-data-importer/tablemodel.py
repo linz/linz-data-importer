@@ -110,7 +110,7 @@ class TableModel(QAbstractTableModel):
 
         if not index.isValid():
             return None
-        elif role != Qt.DisplayRole:
+        if role != Qt.DisplayRole:
             return None
         return str(self.arraydata[index.row()][index.column()])
 
