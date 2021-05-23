@@ -18,51 +18,48 @@
 # This program is released under the terms of the 3 clause BSD license. See the
 # LICENSE file for more information.
 
-from builtins import range
-from builtins import object
+import os.path
+import re
+import threading
+import time
+import urllib.request
+from builtins import object, range
+
+from owslib import wfs, wmts
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsRasterLayer,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QRegExp,
     QSettings,
+    QSize,
+    QSortFilterProxyModel,
+    Qt,
     QTranslator,
     qVersion,
-    QCoreApplication,
-    Qt,
-    QRegExp,
-    QSize,
-    Qt,
 )
-
+from qgis.PyQt.QtGui import QIcon, QImage, QPixmap, QStandardItem, QStandardItemModel
 from qgis.PyQt.QtWidgets import (
     QAction,
-    QListWidgetItem,
     QHeaderView,
+    QListWidgetItem,
     QMenu,
     QToolButton,
 )
-from qgis.PyQt.QtGui import QIcon, QPixmap, QImage, QStandardItemModel, QStandardItem
-from qgis.PyQt.QtCore import QSortFilterProxyModel
-from qgis.core import (
-    QgsRasterLayer,
-    QgsVectorLayer,
-    QgsProject,
-    QgsCoordinateReferenceSystem,
-    Qgis,
-)
-from qgis.gui import QgsMessageBar
-from .tablemodel import TableModel
-from .service_data import ServiceData, Localstore, ApiKey
-
-import re
-import urllib.request
-import threading
-import time
-import os.path
-from owslib import wfs, wmts
 
 # Initialize Qt resources from file resources.py
 from . import resources
 
 # Import the code for the dialog
 from .gui.Service_dialog import ServiceDialog
+from .service_data import ApiKey, Localstore, ServiceData
+from .tablemodel import TableModel
 
 # Hardcoded service .see #20 for enhancement
 SER = [

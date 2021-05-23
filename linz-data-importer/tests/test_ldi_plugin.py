@@ -15,18 +15,18 @@
  ***************************************************************************/
 """
 
-import unittest
-import os
-import shutil
-import re
-import io
 import glob
+import io
+import os
+import re
+import shutil
+import unittest
 
-from qgis.PyQt.QtTest import QTest
-from qgis.PyQt.QtCore import Qt, QSettings, QBuffer
+from qgis.core import QgsApplication, QgsProject
+from qgis.PyQt.QtCore import QBuffer, QSettings, Qt
 from qgis.PyQt.QtGui import QImage
+from qgis.PyQt.QtTest import QTest
 from qgis.utils import plugins
-from qgis.core import QgsProject, QgsApplication
 
 WAIT = 1000
 

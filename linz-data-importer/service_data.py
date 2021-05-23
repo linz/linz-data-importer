@@ -15,17 +15,15 @@
  ***************************************************************************/
 """
 
+import glob
+import os.path
 import re
 import time
-import glob
 
-from owslib.wfs import WebFeatureService
-
-from owslib.wmts import WebMapTileService
 from owslib.util import ServiceException
+from owslib.wfs import WebFeatureService
+from owslib.wmts import WebMapTileService
 from qgis.core import QgsApplication
-
-import os.path
 
 try:
     from lxml import etree
@@ -34,8 +32,8 @@ except ImportError:
     from xml import etree
     from xml.etree.ElementTree import ParseError as XMLSyntaxError
 
-from urllib.request import urlopen
 from urllib.error import URLError
+from urllib.request import urlopen
 
 from qgis.PyQt.QtCore import QSettings
 

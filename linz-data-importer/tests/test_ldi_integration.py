@@ -15,23 +15,23 @@
  ***************************************************************************/
 """
 
-import unittest
 import ast
-import os
-import shutil
-import re
 import glob
-
-from qgis.PyQt.QtTest import QTest
-from qgis.PyQt.QtCore import Qt, QSettings
-from qgis.utils import plugins, iface
-from qgis.core import (
-    QgsProject,
-    QgsApplication,
-    QgsRectangle,
-    QgsCoordinateReferenceSystem,
-)
+import os
+import re
+import shutil
+import unittest
 import xml.etree.ElementTree as ET
+
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsRectangle,
+)
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtTest import QTest
+from qgis.utils import iface, plugins
 
 WAIT = 1000
 MAP_REFRESH_WAIT = 4000
