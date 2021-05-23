@@ -763,7 +763,6 @@ class LinzDataImporter(object):
         """zoom to newly imported"""
         # Will seek user feedback. QGIS will
         # Pan to first layer loaded
-        pass
 
     def importDataset(self):
         """

@@ -333,21 +333,15 @@ class UnitLevel(unittest.TestCase):
         """
         # Run unload check icon has been removed
 
-        pass
-
     def test_run(self):
         """
         Test via int tests
         """
 
-        pass
-
     def test_run_warning(self):
         """
         Test via int tests
         """
-
-        pass
 
     def test_updateServiceDataCache(self):
         """
@@ -383,25 +377,21 @@ class UnitLevel(unittest.TestCase):
         """
         Test via int tests
         """
-        pass
 
     def test_loadAllServices(self):
         """
         Test via int tests
         """
-        pass
 
     def test_dataToTable(self):
         """
         Test via int tests
         """
-        pass
 
     def test_showSelectedOption(self):
         """
         Test via int tests
         """
-        pass
 
     def test_getPreview(self):
         """
@@ -428,25 +418,21 @@ class UnitLevel(unittest.TestCase):
         """
         Test via int tests
         """
-        pass
 
     def test_updPreview(self):
         """
         Test via int tests
         """
-        pass
 
     def test_filterTable(self):
         """
         Test via int tests
         """
-        pass
 
     def test_mapCrs(self):
         """
         Test via int tests
         """
-        pass
 
     def test_setProjectSRID(self):
         """
