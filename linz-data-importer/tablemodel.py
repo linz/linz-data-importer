@@ -15,12 +15,10 @@
  ***************************************************************************/
 """
 
-import sys
 from builtins import str
 
 from qgis.PyQt.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
-from qgis.PyQt.QtGui import QStandardItem
-from qgis.PyQt.QtWidgets import QApplication, QComboBox, QCompleter
+from qgis.PyQt.QtWidgets import QComboBox, QCompleter
 
 ## Below model not currently in-use
 # class TableView(QTableView):

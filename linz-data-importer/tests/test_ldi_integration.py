@@ -15,20 +15,13 @@
  ***************************************************************************/
 """
 
-import ast
 import glob
 import os
-import re
 import shutil
 import unittest
 import xml.etree.ElementTree as ET
 
-from qgis.core import (
-    QgsApplication,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
-    QgsRectangle,
-)
+from qgis.core import QgsApplication, QgsProject, QgsRectangle
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.utils import iface, plugins

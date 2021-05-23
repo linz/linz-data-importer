@@ -20,16 +20,13 @@ import os.path
 import re
 import time
 
-from owslib.util import ServiceException
 from owslib.wfs import WebFeatureService
 from owslib.wmts import WebMapTileService
 from qgis.core import QgsApplication
 
 try:
-    from lxml import etree
     from lxml.etree import XMLSyntaxError
 except ImportError:
-    from xml import etree
     from xml.etree.ElementTree import ParseError as XMLSyntaxError
 
 from urllib.error import URLError

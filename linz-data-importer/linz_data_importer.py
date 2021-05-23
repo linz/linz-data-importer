@@ -21,11 +21,9 @@
 import os.path
 import re
 import threading
-import time
 import urllib.request
 from builtins import object, range
 
-from owslib import wfs, wmts
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -33,28 +31,16 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QRegExp,
     QSettings,
-    QSize,
     QSortFilterProxyModel,
     Qt,
     QTranslator,
     qVersion,
 )
-from qgis.PyQt.QtGui import QIcon, QImage, QPixmap, QStandardItem, QStandardItemModel
-from qgis.PyQt.QtWidgets import (
-    QAction,
-    QHeaderView,
-    QListWidgetItem,
-    QMenu,
-    QToolButton,
-)
-
-# Initialize Qt resources from file resources.py
-from . import resources
+from qgis.PyQt.QtGui import QIcon, QImage, QPixmap, QStandardItemModel
+from qgis.PyQt.QtWidgets import QAction, QHeaderView, QListWidgetItem, QToolButton
 
 # Import the code for the dialog
 from .gui.Service_dialog import ServiceDialog
