@@ -180,6 +180,7 @@ class UnitLevel(unittest.TestCase):
         # is the apikey QSettings update.
 
         # confirm pre test state is as expected
+        # pylint:disable=unreachable
         self.assertEqual(
             {self.domain1: API_KEYS[self.domain1]}, self.api_key_instance.getApiKeys()
         )
