@@ -20,7 +20,7 @@
 """
 
 import sys
-from os.path import dirname, abspath
+from os.path import abspath, dirname
 
 sys.path.append(dirname(abspath(__file__)))
 

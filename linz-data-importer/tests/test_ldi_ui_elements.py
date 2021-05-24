@@ -15,21 +15,21 @@
  ***************************************************************************/
 """
 
-import unittest
 import time
+import unittest
 
-from qgis.PyQt.QtTest import QTest
+from qgis.PyQt.Qt import QComboBox
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import (
-    QListWidget,
-    QTableView,
     QLabel,
-    QTextEdit,
     QLineEdit,
+    QListWidget,
     QPushButton,
+    QTableView,
+    QTextEdit,
 )
 from qgis.utils import plugins
-from qgis.PyQt.Qt import QComboBox
 
 WAIT = 1000
 
