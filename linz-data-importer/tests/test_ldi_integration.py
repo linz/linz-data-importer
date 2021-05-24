@@ -362,7 +362,7 @@ class UserWorkFlows(unittest.TestCase):
         canvas.setExtent(test_area)
 
         # Connect to map refreshed signal
-        canvas.mapCanvasRefreshed.connect(lambda: self.map_refreshed())
+        canvas.mapCanvasRefreshed.connect(self.map_refreshed)
 
         # Test the layer has some features
         self.assertEqual(layer.hasFeatures(), 1)
