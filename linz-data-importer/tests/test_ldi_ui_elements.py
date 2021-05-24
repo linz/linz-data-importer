@@ -85,19 +85,20 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(type(self.ldi.dlg.uComboBoxDomain), QComboBox)
         self.assertEqual(type(self.ldi.dlg.uBtnAddDomain), QPushButton)
-        for n in range(1, 11):
+        for entry in range(1, 11):
             self.assertEqual(
-                type(getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n))), QLineEdit
+                type(getattr(self.ldi.dlg, "uTextAPIKey{0}".format(entry))), QLineEdit
             )
             self.assertEqual(
-                type(getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n))), QLineEdit
+                type(getattr(self.ldi.dlg, "uTextAPIKey{0}".format(entry))), QLineEdit
             )
             self.assertEqual(
-                type(getattr(self.ldi.dlg, "uBtnRemoveDomain{0}".format(n))),
+                type(getattr(self.ldi.dlg, "uBtnRemoveDomain{0}".format(entry))),
                 QPushButton,
             )
             self.assertEqual(
-                type(getattr(self.ldi.dlg, "uBtnSaveDomain{0}".format(n))), QPushButton
+                type(getattr(self.ldi.dlg, "uBtnSaveDomain{0}".format(entry))),
+                QPushButton,
             )
 
     def test_sw_tableview_is_default(self):
@@ -108,7 +109,7 @@ class UiTest(unittest.TestCase):
 
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
-    def test_listItem_about_shows_widget_swSettings(self):
+    def test_list_item_about_shows_widget_sw_settings(self):
         """
         Check the stacked widget index and siGnals
         When 'Settings' is clicked - the stacked widgets current index
@@ -119,7 +120,7 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 1)
 
-    def test_listItem_all_shows_widget_swTableView(self):
+    def test_list_item_all_shows_widget_sw_table_view(self):
         """
         Check the stacked widget index and sinals
         When 'All' is clicked - the stacked widgets current index
@@ -130,7 +131,7 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
-    def test_listItem_about_shows_widget_swHelp(self):
+    def test_list_item_about_shows_widget_sw_help(self):
         """
         Check the stacked widget index and sinals
         When 'All' is clicked - the stacked widgets current index
@@ -141,7 +142,7 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 2)
 
-    def test_listItem_wmts_shows_widget_swTableView(self):
+    def test_list_item_wmts_shows_widget_sw_table_view(self):
         """
         Check the stacked widget index and sinals
         When 'WMTS' is clicked - the stacked widgets current index
@@ -151,7 +152,7 @@ class UiTest(unittest.TestCase):
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
         self.assertEqual(self.ldi.dlg.uStackedWidget.currentIndex(), 0)
 
-    def test_listItem_wfs_shows_widget_swTableView(self):
+    def test_list_item_wfs_shows_widget_sw_table_view(self):
         """
         Check the stacked widget index and sinals
         When 'WFS' is clicked - the stacked widgets current index

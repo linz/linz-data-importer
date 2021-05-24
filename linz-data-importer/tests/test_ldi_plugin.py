@@ -53,7 +53,7 @@ class UnitLevel(unittest.TestCase):
         # Runs at TestCase teardown.
         QSettings().setValue("linz_data_importer/apikeys", cls.testers_keys)
 
-    def copyTestData(self):
+    def copy_test_data(self):
         """
         Copy test data from ./test/data to plugin settings dir.
         This makes tests run much faster than having to fetch the resources
@@ -73,14 +73,14 @@ class UnitLevel(unittest.TestCase):
         )
         # delete all service xml files
         search_str = "|".join(["_{}.xml".format(x) for x in ["wfs", "wmts"]])
-        for f in os.listdir(self.pl_settings_dir):
-            if re.search(search_str, f):
-                os.remove(os.path.join(self.pl_settings_dir, f))
+        for settings_filename in os.listdir(self.pl_settings_dir):
+            if re.search(search_str, settings_filename):
+                os.remove(os.path.join(self.pl_settings_dir, settings_filename))
 
         # Copy in /test/data service xml to save time.
-        for f in os.listdir(self.test_data_dir):
-            if re.search(search_str, f):
-                file = os.path.join(self.test_data_dir, f)
+        for data_filename in os.listdir(self.test_data_dir):
+            if re.search(search_str, data_filename):
+                file = os.path.join(self.test_data_dir, data_filename)
                 shutil.copy(file, self.pl_settings_dir)
 
     def setUp(self):
@@ -90,13 +90,13 @@ class UnitLevel(unittest.TestCase):
 
         self.domain1 = "data.mfe.govt.nz"
         self.domain2 = "data.linz.govt.nz"
-        self.copyTestData()
+        self.copy_test_data()
 
         self.ldi = plugins.get("linz-data-importer")
-        self.ldi.selectionModel.blockSignals(True)
+        self.ldi.selection_model.blockSignals(True)
         self.api_key_instance = self.ldi.api_key_instance
-        self.api_key_instance.setApiKeys({self.domain1: API_KEYS[self.domain1]})
-        self.ldi.loadSettings()
+        self.api_key_instance.set_api_keys({self.domain1: API_KEYS[self.domain1]})
+        self.ldi.load_settings()
         self.ldi.update_cache = False
         self.ldi.services_loaded = True
         # Run
@@ -111,67 +111,67 @@ class UnitLevel(unittest.TestCase):
         self.ldi.dlg.uTextFilter.setText("")
         self.ldi.dlg.close()
         QgsProject.instance().removeAllMapLayers()
-        self.ldi.clearSettings()
+        self.ldi.clear_settings()
         self.ldi.wmts_epsg = "EPSG:3857"
-        self.ldi.selectionModel.blockSignals(False)
+        self.ldi.selection_model.blockSignals(False)
 
-    def test_clearSettings(self):
+    def test_clear_settings(self):
         """
         Test the text is cleared from the setting tab QLineEdits
         """
 
         # Unit test setup
         # And text to settings qLineEdits
-        for n in range(1, 3):
-            getattr(self.ldi.dlg, "uTextDomain{0}".format(n)).setText(
-                "test{0}".format(n)
+        for entry in range(1, 3):
+            getattr(self.ldi.dlg, "uTextDomain{0}".format(entry)).setText(
+                "test{0}".format(entry)
             )
-            getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n)).setText(
-                "test{0}".format(n)
+            getattr(self.ldi.dlg, "uTextAPIKey{0}".format(entry)).setText(
+                "test{0}".format(entry)
             )
         # Check the text is there
-        for n in range(1, 3):
+        for entry in range(1, 3):
             self.assertEqual(
-                getattr(self.ldi.dlg, "uTextDomain{0}".format(n)).text(),
-                "test{0}".format(n),
+                getattr(self.ldi.dlg, "uTextDomain{0}".format(entry)).text(),
+                "test{0}".format(entry),
             )
             self.assertEqual(
-                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n)).text(),
-                "test{0}".format(n),
+                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(entry)).text(),
+                "test{0}".format(entry),
             )
         # Run the method we are testing
-        self.ldi.clearSettings()
+        self.ldi.clear_settings()
         # did it work?
-        for n in range(1, 3):
+        for entry in range(1, 3):
             self.assertEqual(
-                getattr(self.ldi.dlg, "uTextDomain{0}".format(n)).text(), ""
+                getattr(self.ldi.dlg, "uTextDomain{0}".format(entry)).text(), ""
             )
             self.assertEqual(
-                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n)).text(), ""
+                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(entry)).text(), ""
             )
 
-    def test_loadSettings(self):
+    def test_load_settings(self):
         """
         Test Settings are loaded to the Settings Tab QLineEdits
         """
 
         # setup is loading settings so...
-        self.ldi.clearSettings()
+        self.ldi.clear_settings()
         # confirm pre test state is as expected
-        for n in range(1, 11):
+        for entry in range(1, 11):
             self.assertEqual(
-                getattr(self.ldi.dlg, "uTextDomain{0}".format(n)).text(), ""
+                getattr(self.ldi.dlg, "uTextDomain{0}".format(entry)).text(), ""
             )
             self.assertEqual(
-                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n)).text(), ""
+                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(entry)).text(), ""
             )
         # Run the method we are testing
-        self.ldi.loadSettings()
+        self.ldi.load_settings()
         # The api keys and domain set in setup should be present in the ui
         self.assertEqual(self.ldi.dlg.uTextDomain1.text(), self.domain1)
         self.assertEqual(self.ldi.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
 
-    def test_saveDomain_save(self):
+    def test_save_domain_save(self):
         """
         Test the entering and saving of settings
         """
@@ -182,9 +182,9 @@ class UnitLevel(unittest.TestCase):
         # confirm pre test state is as expected
         # pylint:disable=unreachable
         self.assertEqual(
-            {self.domain1: API_KEYS[self.domain1]}, self.api_key_instance.getApiKeys()
+            {self.domain1: API_KEYS[self.domain1]}, self.api_key_instance.get_api_keys()
         )
-        self.ldi.loadSettings()
+        self.ldi.load_settings()
         self.assertEqual(self.ldi.dlg.uTextDomain1.text(), self.domain1)
         self.assertEqual(self.ldi.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
 
@@ -199,7 +199,7 @@ class UnitLevel(unittest.TestCase):
             self.domain1: API_KEYS[self.domain1],
             self.domain2: API_KEYS[self.domain2],
         }
-        self.assertEqual(api_keys, self.api_key_instance.getApiKeys())
+        self.assertEqual(api_keys, self.api_key_instance.get_api_keys())
         curr_keys = {
             self.ldi.dlg.uTextDomain1.text(): self.ldi.dlg.uTextAPIKey1.text(),
             self.ldi.dlg.uTextDomain2.text(): self.ldi.dlg.uTextAPIKey2.text(),
@@ -213,24 +213,24 @@ class UnitLevel(unittest.TestCase):
             },
         )
 
-    def test_saveDomain_remove(self):
+    def test_save_domain_remove(self):
         """
         Test the removal of a settings record.
         """
 
         # confirm pre test state is as expected
         self.assertEqual(
-            {self.domain1: API_KEYS[self.domain1]}, self.api_key_instance.getApiKeys()
+            {self.domain1: API_KEYS[self.domain1]}, self.api_key_instance.get_api_keys()
         )
-        self.ldi.loadSettings()
+        self.ldi.load_settings()
         self.assertEqual(self.ldi.dlg.uTextDomain1.text(), self.domain1)
         self.assertEqual(self.ldi.dlg.uTextAPIKey1.text(), API_KEYS[self.domain1])
         # Run the method we are testing - must be called from btn clicked
         self.ldi.dlg.uBtnRemoveDomain1.clicked.emit(True)
         # Check the record has been removed from the api settings property
-        self.assertEqual({}, self.api_key_instance.getApiKeys())
+        self.assertEqual({}, self.api_key_instance.get_api_keys())
 
-    def test_addNewDomain(self):
+    def test_add_new_domain(self):
         """
         Test UI functionality for adding new settings details
         """
@@ -243,15 +243,15 @@ class UnitLevel(unittest.TestCase):
         QTest.qWait(2000)
         self.assertEqual(self.ldi.dlg.uTextDomain2.text(), self.domain2)
         # Other rows should be hidden
-        for n in range(3, 11):
+        for entry in range(3, 11):
             self.assertFalse(
-                getattr(self.ldi.dlg, "uTextDomain{0}".format(n)).isVisible()
+                getattr(self.ldi.dlg, "uTextDomain{0}".format(entry)).isVisible()
             )
             self.assertFalse(
-                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(n)).isVisible()
+                getattr(self.ldi.dlg, "uTextAPIKey{0}".format(entry)).isVisible()
             )
 
-    def test_addNewDomain_duplicate(self):
+    def test_add_new_domain_duplicate(self):
         """
         Test case where by the user tries to add duplicate domain details
         """
@@ -268,12 +268,12 @@ class UnitLevel(unittest.TestCase):
             "Warning: Domains must be unique. " "Please edit the domain below",
         )
 
-    def test_addNewDomain_lessthan_max_entires(self):
+    def test_add_new_domain_lessthan_max_entires(self):
         """
         Test no warnings are shown when not exceeding max settings entries
         """
 
-        self.api_key_instance.setApiKeys(
+        self.api_key_instance.set_api_keys(
             {
                 "1": "1",
                 "2": "2",
@@ -286,7 +286,7 @@ class UnitLevel(unittest.TestCase):
                 "9": "9",
             }
         )
-        self.ldi.loadSettings()
+        self.ldi.load_settings()
         idx = self.ldi.dlg.uComboBoxDomain.findText(self.domain1)
         self.ldi.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
@@ -296,12 +296,12 @@ class UnitLevel(unittest.TestCase):
         #         self.assertTrue(self.ldi.dlg.uWarningSettings.isVisible())
         self.assertTrue(self.ldi.dlg.uWarningSettings.text(), "")
 
-    def test_addNewDomain_greaterthan_max_entires(self):
+    def test_add_new_domain_greaterthan_max_entires(self):
         """
         Test warning is shown when exceeding max number of settings entries
         """
 
-        self.api_key_instance.setApiKeys(
+        self.api_key_instance.set_api_keys(
             {
                 "1": "1",
                 "2": "2",
@@ -315,7 +315,7 @@ class UnitLevel(unittest.TestCase):
                 "10": "10",
             }
         )
-        self.ldi.loadSettings()
+        self.ldi.load_settings()
         idx = self.ldi.dlg.uComboBoxDomain.findText(self.domain1)
         self.ldi.dlg.uComboBoxDomain.setCurrentIndex(idx)
         # Test the method
@@ -344,7 +344,7 @@ class UnitLevel(unittest.TestCase):
         Test via int tests
         """
 
-    def test_updateServiceDataCache(self):
+    def test_update_service_data_cache(self):
         """
         Test the updating of cache
         """
@@ -364,7 +364,7 @@ class UnitLevel(unittest.TestCase):
 
         self.ldi.cache_updated = False
         self.ldi.update_cache = True
-        self.ldi.updateServiceDataCache()
+        self.ldi.update_service_data_cache()
         QTest.qWait(15000)
 
         for service in ["wfs", "wmts"]:
@@ -374,35 +374,35 @@ class UnitLevel(unittest.TestCase):
             cached_file_stats[file] = os.stat(file_path).st_mtime
         self.assertNotEqual(cached_file_stats, insitu_file_stats)
 
-    def test_loadUi(self):
+    def test_load_ui(self):
         """
         Test via int tests
         """
 
-    def test_loadAllServices(self):
+    def test_load_all_services(self):
         """
         Test via int tests
         """
 
-    def test_dataToTable(self):
+    def test_data_to_table(self):
         """
         Test via int tests
         """
 
-    def test_showSelectedOption(self):
+    def test_show_selected_option(self):
         """
         Test via int tests
         """
 
-    def test_getPreview(self):
+    def test_get_preview(self):
         """
         Test the getting of a preview image
         """
 
         match_layer_id = 50769
         mismatch_layer_id = 53158
-        self.ldi.id = match_layer_id
-        self.ldi.getPreview("300x200", 10)
+        self.ldi.object_id = match_layer_id
+        self.ldi.get_preview("300x200", 10)
         test_image1 = os.path.join(self.test_data_dir, str(match_layer_id) + ".png")
         test_image2 = os.path.join(self.test_data_dir, str(mismatch_layer_id) + ".png")
 
@@ -415,27 +415,27 @@ class UnitLevel(unittest.TestCase):
         self.assertEqual(test_img_match, preview_img)
         self.assertNotEqual(test_img_mismatch, preview_img)
 
-    def test_updDescription(self):
+    def test_upd_description(self):
         """
         Test via int tests
         """
 
-    def test_updPreview(self):
+    def test_upd_preview(self):
         """
         Test via int tests
         """
 
-    def test_filterTable(self):
+    def test_filter_table(self):
         """
         Test via int tests
         """
 
-    def test_mapCrs(self):
+    def test_map_crs(self):
         """
         Test via int tests
         """
 
-    def test_setProjectSRID(self):
+    def test_set_project_srid(self):
         """
         Test the setting of the projects crs
         """
@@ -443,18 +443,18 @@ class UnitLevel(unittest.TestCase):
         # Get plugins default srs
         test_srid_int = 3793
         # Test current state
-        self.assertNotEqual(self.ldi.mapCrs(), test_srid_int)
+        self.assertNotEqual(self.ldi.map_crs(), test_srid_int)
 
         # Change srid via method
         self.ldi.selected_crs_int = test_srid_int
-        self.ldi.setProjectSRID()
+        self.ldi.set_project_srid()
         # Test method
-        self.assertEqual(self.ldi.mapCrs().lstrip("EPSG:"), str(test_srid_int))
+        self.assertEqual(self.ldi.map_crs().lstrip("EPSG:"), str(test_srid_int))
 
     @unittest.skip(
         "Intermittent 'IndexError: list index out of range' when running `names[0]`"
     )
-    def test_importDataset_wfs(self):
+    def test_import_dataset_wfs(self):
         """
         Test the importing of WFS layers into QGIS
         """
@@ -463,30 +463,30 @@ class UnitLevel(unittest.TestCase):
         self.ldi.domain = self.domain1  # mfe
         self.ldi.service = "WFS"
         self.ldi.data_type = "layer"
-        self.ldi.id = "53318"
+        self.ldi.object_id = "53318"
         self.ldi.layer_title = "test_wfs"
         self.ldi.selected_crs = "ESPG:2193"
         self.ldi.selected_crs_int = 2193
-        self.ldi.importDataset()
+        self.ldi.import_dataset()
         # test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(self.ldi.layer_title, names[0])
 
-    def test_importDataset_wmts(self):
+    def test_import_dataset_wmts(self):
         """
         Test the importing of WMTS layers into QGIS
         """
 
         # set plugin properties required for import
-        self.api_key_instance.setApiKeys({self.domain2: API_KEYS[self.domain2]})
+        self.api_key_instance.set_api_keys({self.domain2: API_KEYS[self.domain2]})
         self.ldi.domain = self.domain2  # linz
         self.ldi.service = "WMTS"
         self.ldi.data_type = "layer"
-        self.ldi.id = "51320"
+        self.ldi.object_id = "51320"
         self.ldi.layer_title = "test_wmts"
         self.ldi.selected_crs = "EPSG:3857"
         self.ldi.selected_crs_int = 3857
-        self.ldi.importDataset()
+        self.ldi.import_dataset()
         # test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(self.ldi.layer_title, names[0])
