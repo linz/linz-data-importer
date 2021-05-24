@@ -151,13 +151,15 @@ class Localstore(object):
                 file = os.path.join(dir, f)
                 self.delLocalSeviceXML(file)
 
-    def delAllLocalServiceXML(self, services=["wfs", "wmts"]):
+    def delAllLocalServiceXML(self, services=None):
         """
         Find and delete all cached files
 
         :param domain: list services
         :type domain: list
         """
+        if services is None:
+            services = ["wfs", "wmts"]
 
         search_str = "|".join(["_{}.xml".format(x) for x in services])
 

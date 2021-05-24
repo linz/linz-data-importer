@@ -53,7 +53,7 @@ class TableModel(QAbstractTableModel):
     models that represent table data data as a two-dimensional array of items
     """
 
-    def __init__(self, data=[[]], headers=[], parent=None):
+    def __init__(self, data, headers, parent=None):
         """
         Initialise  TableModel
 
