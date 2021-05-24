@@ -19,8 +19,9 @@
 import os
 from PyQt5 import QtGui, QtWidgets, uic
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'Service_dialog_base.ui'))
+FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(os.path.dirname(__file__), "Service_dialog_base.ui")
+)
 
 
 class ServiceDialog(QtWidgets.QDialog, FORM_CLASS):
@@ -47,14 +48,15 @@ class ServiceDialog(QtWidgets.QDialog, FORM_CLASS):
             """
         )
         # Decided to go with white
-        #self.uTextDescription.setStyleSheet("background-color:palette(Window);")
+        # self.uTextDescription.setStyleSheet("background-color:palette(Window);")
 
         # add grey back ground to html view
+
+
 #         self.hHelpHtml.setStyleSheet(
 #             """ QTextEdit {
 #                     background-color:rgb(245,245,245);
 #                     outline: 0;
 #                 }
-#             """ 
+#             """
 #            )
-             

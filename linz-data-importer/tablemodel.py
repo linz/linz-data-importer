@@ -18,42 +18,44 @@
 from builtins import str
 from qgis.PyQt.QtCore import QAbstractTableModel, Qt, QSortFilterProxyModel
 from qgis.PyQt.QtWidgets import QComboBox, QApplication, QCompleter
-from qgis.PyQt.QtGui import QStandardItem 
+from qgis.PyQt.QtGui import QStandardItem
 import sys
 
-## Below model not currently in-use 
+## Below model not currently in-use
 # class TableView(QTableView):
-# 
-#     """    
+#
+#     """
 #     :param QTableView: Inherits from QtGui.QWidget
 #     :param QTableView: QtGui.QTableView()
 #     """
-# 
+#
 #     def __init__( self, parent=None ):
-#         """ 
+#         """
 #         Initialise  View for AIMS Queues
-# 
+#
 #         :param parent: QModelIndex
 #         :param parent: PyQt4.QtCore.QModelIndex
 #         """
-# 
+#
 #         QTableView.__init__( self, parent )
 #         # Change default settings
 #         self.setSelectionBehavior(QAbstractItemView.SelectRows)
 #         self.horizontalHeader().setStretchLastSection(True)
 #         self.horizontalHeader().setHighlightSections(False)
-# 
+#
 #         self.verticalHeader().setVisible(False)
 #         self.verticalHeader().setDefaultSectionSize(17)
 #         self.setSortingEnabled(True)
 #         self.setEditTriggers(QAbstractItemView.AllEditTriggers)
 
+
 class TableModel(QAbstractTableModel):
     """
-     models that represent table data data as a two-dimensional array of items
+    models that represent table data data as a two-dimensional array of items
     """
-    def __init__(self, data = [[]], headers = [], parent=None):
-        """ 
+
+    def __init__(self, data=[[]], headers=[], parent=None):
+        """
         Initialise  TableModel
 
         :param data: table data
@@ -91,7 +93,7 @@ class TableModel(QAbstractTableModel):
         """
 
         try:
-            return len(self.arraydata[0])-2 # hiding description
+            return len(self.arraydata[0]) - 2  # hiding description
         except:
             return 0
 
@@ -103,7 +105,7 @@ class TableModel(QAbstractTableModel):
         :param parent: PyQt4.QtCore.QModelIndex
         :param role: DisplayRole
         :param role: int
-        :return: Data related to index 
+        :return: Data related to index
         :rtype: str
         """
 
@@ -127,7 +129,7 @@ class TableModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
     def selectedRow(self, row):
-        """ 
+        """
         Return data for row selected by user
 
         :param row: Selected Row Number
@@ -139,7 +141,7 @@ class TableModel(QAbstractTableModel):
         return self.arraydata[row]
 
     def headerData(self, col, orientation, role):
-        """"
+        """ "
         Returns the data for the given role and section in the header
         with the specified orientation.
 
@@ -162,33 +164,34 @@ class TableModel(QAbstractTableModel):
         Returns the item flags for the given index.
 
         :param index: QModelIndex
-        :type index: PyQt4.QtCore.QModelIndex  
+        :type index: PyQt4.QtCore.QModelIndex
         :return: ItemFlags
         :rtype: PyQt4.QtCore.ItemFlags
         """
 
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
-class ExtendedCombobox( QComboBox ):
+
+class ExtendedCombobox(QComboBox):
     """
     Overwrite combobox to provide text filtering of
-    combobox list. 
+    combobox list.
     """
-    
-    def __init__(self,  parent):
+
+    def __init__(self, parent):
         """
         Initialise  ExtendedCombobox
-        
+
         :param parent: Parent of combobox
         :type parent: PyQt5.QtWidgets.QWidget
         """
-        
+
         super(ExtendedCombobox, self).__init__(parent)
- 
+
         self.setFocusPolicy(Qt.StrongFocus)
         self.setEditable(True)
         self.completer = QCompleter(self)
- 
+
         # always show all completions
         self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
         self.pFilterModel = QSortFilterProxyModel(self)
@@ -197,7 +200,7 @@ class ExtendedCombobox( QComboBox ):
         self.setCompleter(self.completer)
         self.lineEdit().textEdited.connect(self.pFilterModel.setFilterFixedString)
         self.completer.activated.connect(self.setTextIfCompleterIsClicked)
- 
+
     def setModel(self, model):
         """
         Set the model to use the Filter model
@@ -205,53 +208,50 @@ class ExtendedCombobox( QComboBox ):
         :param model: The model to be used by the combobox
         :type model: PyQt5.QtGui.QStandardItemModel
         """
-        
+
         super(ExtendedCombobox, self).setModel(model)
         self.pFilterModel.setSourceModel(model)
         self.completer.setModel(self.pFilterModel)
- 
+
     def setModelColumn(self, column):
         """
         :param model: The model to be used by the combobox
         :type model: PyQt5.QtGui.QStandardItemModel
         """
-        
+
         self.completer.setCompletionColumn(column)
         self.pFilterModel.setFilterKeyColumn(column)
         super(ExtendedCombobox, self).setModelColumn(column)
-  
+
     def view(self):
         """
         A QListView of items stored in the model
-        
+
         :return: items stored in the model
         :rtype: PyQt5.QtWidgets.QListView
         """
 
-
         return self.completer.popup()
- 
+
     def index(self):
         """
         Index of the current item in the combobox.
-        
+
         :return: index of the current item
         :rtype: int
         """
-        
+
         return self.currentIndex()
- 
+
     def setTextIfCompleterIsClicked(self, text):
         """
         :param text: The current text of the qlineedit
         :type text: str
-        
+
         If the combobx lineedit is clicked, set the lineedits
-        current item as the combobox's current item 
+        current item as the combobox's current item
         """
-    
+
         if text:
             index = self.findText(text)
             self.setCurrentIndex(index)
- 
-

@@ -1,4 +1,4 @@
-# LDS Data Importer [![Build Status](https://api.travis-ci.com/linz/linz-data-importer.svg?token=4YGqrWWw1nJqpi344cuy&branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer)
+# LDS Data Importer [![Build Status](https://api.travis-ci.com/linz/linz-data-importer.svg?token=4YGqrWWw1nJqpi344cuy&branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 The intent of this QGIS Plugin is to allow the easy discovery and import of
 [LINZ Data Service](data.linz.govt.nz) and [LINZ Basemaps](basemaps.linz.govt.nz) data into QGIS.
@@ -82,6 +82,18 @@ Text can be entered in the "Filter Data Sets" search bar to filter the datasets 
 Please see the [LINZ-Data-Importer](https://github.com/linz/linz-data-importer/) repository on GitHub.
 
 ## Dev Notes
+
+### Setup
+
+To set up hooks to automatically format the code before committing:
+
+```shell
+python -m venv .venv
+. .venv/bin/activate
+pip install --upgrade pip
+pip install --requirement=requirements-dev.txt
+pre-commit install --hook-type=pre-commit --overwrite
+```
 
 ### Tests
 [Tests](https://github.com/linz/linz-data-importer/tree/master_qgis3/linz-data-importer/tests)

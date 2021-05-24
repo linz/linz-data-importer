@@ -25,7 +25,12 @@ import glob
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.utils import plugins, iface
-from qgis.core import QgsProject, QgsApplication, QgsRectangle, QgsCoordinateReferenceSystem
+from qgis.core import (
+    QgsProject,
+    QgsApplication,
+    QgsRectangle,
+    QgsCoordinateReferenceSystem,
+)
 import xml.etree.ElementTree as ET
 
 WAIT = 1000
@@ -43,13 +48,14 @@ API_KEYS = {
 
 TEST_CONF = {
     "wmts": [
-      "Chart NZ 632 Banks Peninsula",
-      "aerial Whanganui urban 2017-18 0.075m",
+        "Chart NZ 632 Banks Peninsula",
+        "aerial Whanganui urban 2017-18 0.075m",
     ],
     "wfs": [
-      "NZ Railway Centrelines (Topo, 1:250k)",
-    ]
+        "NZ Railway Centrelines (Topo, 1:250k)",
+    ],
 }
+
 
 class CorruptXml(unittest.TestCase):
     """
@@ -178,6 +184,7 @@ class CorruptXml(unittest.TestCase):
         self.assertEqual(len(data_types), 2)
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
+
 class cacheTest(unittest.TestCase):
     """
     Test method for clearing old files from cache
@@ -225,6 +232,7 @@ class cacheTest(unittest.TestCase):
             post_purge_test_files, ["data.govt.test.nz_wfs_999999999999999.xml"]
         )
 
+
 class UserWorkFlows(unittest.TestCase):
     """
     Test user work flows to import data via the plugin
@@ -261,10 +269,11 @@ class UserWorkFlows(unittest.TestCase):
         self.ldi.services_loaded = False
 
         self.api_key_instance = self.ldi.api_key_instance
-        keys = {key: API_KEYS[key] for key in API_KEYS.keys() 
-                               & {'data.linz.govt.nz', 'basemaps.linz.govt.nz'}}
+        keys = {
+            key: API_KEYS[key]
+            for key in API_KEYS.keys() & {"data.linz.govt.nz", "basemaps.linz.govt.nz"}
+        }
         self.api_key_instance.setApiKeys(keys)
-
 
         self.ldi.selected_crs = "ESPG:2193"
         self.ldi.selected_crs_int = 2193
@@ -312,7 +321,7 @@ class UserWorkFlows(unittest.TestCase):
         """
 
         self.filter_domain("data.linz.govt.nz")
-    
+
     def test_should_filter_wfs_by_map_bbox(self):
         """
         Test wfs filter by bounding box of map window
@@ -326,9 +335,7 @@ class UserWorkFlows(unittest.TestCase):
         """
 
         # Select 'ALL' table view
-        item = self.ldi.dlg.uListOptions.findItems(
-            'ALL', Qt.MatchFixedString
-        )[0]
+        item = self.ldi.dlg.uListOptions.findItems("ALL", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
         # Test the tableview widget is current stackedWidget
@@ -339,7 +346,7 @@ class UserWorkFlows(unittest.TestCase):
         self.assertNotEqual(all_rows, 0)
 
         # Test there is no error
-        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), '')
+        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), "")
 
         # Ensure the domain exists in the table
         domains = set(
@@ -370,7 +377,7 @@ class UserWorkFlows(unittest.TestCase):
         )
         self.assertEqual(len(domains), 1)
         self.assertEqual(domain.lower(), list(domains)[0])
-        
+
     def import_service(self, service):
         """
         Executes tests for all "test_w<x>s_import" methods
@@ -389,7 +396,7 @@ class UserWorkFlows(unittest.TestCase):
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
 
         # Test there is no error
-        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), '')
+        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), "")
 
         # Ensure all records are of the selected type
         data_types = set(
@@ -404,18 +411,18 @@ class UserWorkFlows(unittest.TestCase):
         nconfs = len(TEST_CONF[service])
         for i in range(nconfs):
 
-          layerName = TEST_CONF[service][i]
+            layerName = TEST_CONF[service][i]
 
-          # Filter
-          self.ldi.dlg.uTextFilter.setText(layerName)
-          QTest.qWait(WAIT)
+            # Filter
+            self.ldi.dlg.uTextFilter.setText(layerName)
+            QTest.qWait(WAIT)
 
-          # Check we have a single row in the view, upon filtering
-          self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
+            # Check we have a single row in the view, upon filtering
+            self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
 
-          # Import the first row
-          self.ldi.dlg.uTableView.selectRow(0)
-          self.ldi.dlg.uBtnImport.clicked.emit(True)
+            # Import the first row
+            self.ldi.dlg.uTableView.selectRow(0)
+            self.ldi.dlg.uBtnImport.clicked.emit(True)
 
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(len(names), nconfs)
@@ -456,7 +463,7 @@ class UserWorkFlows(unittest.TestCase):
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
 
         # Test there is no error
-        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), '')
+        self.assertEqual(self.ldi.dlg.uLabelWarning.text(), "")
 
         # Filter
         self.ldi.dlg.uTextFilter.setText(layer_name)
@@ -472,22 +479,26 @@ class UserWorkFlows(unittest.TestCase):
 
         # Turn layer off
         layer = QgsProject.instance().mapLayersByName(layer_name)[0]
-        QgsProject.instance().layerTreeRoot().findLayer(layer.id()).setItemVisibilityChecked(False)
+        QgsProject.instance().layerTreeRoot().findLayer(
+            layer.id()
+        ).setItemVisibilityChecked(False)
         QTest.qWait(WAIT)
 
         # Set the map extent for testing
         canvas = iface.mapCanvas()
-        test_area = QgsRectangle(176.288040, -38.144193, 176.292429,  -38.141301)
+        test_area = QgsRectangle(176.288040, -38.144193, 176.292429, -38.141301)
         canvas.setExtent(test_area)
 
         # Connect to map refreshed signal
         canvas.mapCanvasRefreshed.connect(lambda: self.map_refreshed())
 
         # Test the layer has some features
-        self.assertEqual(layer.hasFeatures(),1)
+        self.assertEqual(layer.hasFeatures(), 1)
 
         # Turn on the layer
-        QgsProject.instance().layerTreeRoot().findLayer(layer.id()).setItemVisibilityChecked(True)
+        QgsProject.instance().layerTreeRoot().findLayer(
+            layer.id()
+        ).setItemVisibilityChecked(True)
         QTest.qWait(WAIT)
 
         # Refresh the map
@@ -507,6 +518,7 @@ class UserWorkFlows(unittest.TestCase):
         """
 
         UserWorkFlows.refreshed = True
+
 
 # def suite():
 #     suite = unittest.TestSuite()

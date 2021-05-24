@@ -39,8 +39,8 @@ API_KEYS = {
 
 
 class UnitLevel(unittest.TestCase):
-    """ Testing smallest units  against
-    live QGIS instance rather than mocking """
+    """Testing smallest units  against
+    live QGIS instance rather than mocking"""
 
     @classmethod
     def setUpClass(cls):
@@ -501,6 +501,7 @@ class UnitLevel(unittest.TestCase):
         # test the layer has been imported
         names = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
         self.assertEqual(self.ldi.layer_title, names[0])
+
 
 def suite():
     suite = unittest.TestSuite()
