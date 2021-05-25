@@ -69,7 +69,7 @@ class TableModel(QAbstractTableModel):
         self.arraydata = data
         self.header = headers
 
-    def rowCount(self, parent):
+    def rowCount(self, parent):  # pylint:disable=invalid-name,unused-argument
         """
         Returns the number of rows under the given parent
 
@@ -81,7 +81,7 @@ class TableModel(QAbstractTableModel):
 
         return len(self.arraydata)
 
-    def columnCount(self, parent):
+    def columnCount(self, parent):  # pylint:disable=invalid-name,unused-argument
         """
         Returns the number of columns for the children of the given parent
 
@@ -158,7 +158,7 @@ class TableModel(QAbstractTableModel):
             return self.header[col]
         return None
 
-    def flags(self, index):  # pylint:disable=no-self-use
+    def flags(self, index):  # pylint:disable=no-self-use,unused-argument
         """
         Returns the item flags for the given index.
 
