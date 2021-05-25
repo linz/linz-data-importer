@@ -15,8 +15,6 @@
  ***************************************************************************/
 """
 
-from builtins import str
-
 from qgis.PyQt.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
 from qgis.PyQt.QtWidgets import QComboBox, QCompleter
 

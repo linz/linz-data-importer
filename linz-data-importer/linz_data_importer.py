@@ -22,7 +22,6 @@ import os.path
 import re
 import threading
 import urllib.request
-from builtins import object, range
 from typing import Optional
 
 from qgis.core import (
