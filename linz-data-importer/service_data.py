@@ -370,14 +370,14 @@ class ServiceData(Localstore):
         try:
             if self.service == "wmts":
                 if self.domain == "basemaps.linz.govt.nz":
-                    xml = urlopen(
+                    url = (
                         "https://{0}/v1/tiles/aerial/"
                         "WMTSCapabilities.xml?api={1}".format(
                             self.domain, self.api_key_int.getApiKey(self.domain)
                         )
                     )
                 else:
-                    xml = urlopen(
+                    url = (
                         "https://{0}/services;"
                         "key={1}/{2}/{3}/WMTSCapabilities.xml".format(
                             self.domain,
@@ -388,7 +388,7 @@ class ServiceData(Localstore):
                     )
 
             elif self.service == "wfs" and self.domain != "basemaps.linz.govt.nz":
-                xml = urlopen(
+                url = (
                     "https://{0}/services;"
                     "key={1}/{2}?service={3}&version={4}"
                     "&request=GetCapabilities".format(
@@ -399,7 +399,8 @@ class ServiceData(Localstore):
                         self.version,
                     )
                 )
-            self.xml = xml.read()
+            with urlopen(url) as xml:
+                self.xml = xml.read()
 
             # write to cache
             with open(self.file, "wb") as f:
