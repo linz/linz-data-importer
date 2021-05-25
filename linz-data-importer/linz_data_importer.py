@@ -87,7 +87,7 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         )
 
 
-class LinzDataImporter(object):
+class LinzDataImporter:
     """
     QGIS Plugin Implementation.
     """

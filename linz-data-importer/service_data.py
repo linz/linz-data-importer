@@ -35,7 +35,7 @@ from urllib.request import urlopen
 from qgis.PyQt.QtCore import QSettings
 
 
-class ApiKey(object):
+class ApiKey:
     """
     Store API Keys for each domain. Required to
     fetch service data
@@ -82,7 +82,7 @@ class ApiKey(object):
         self.api_keys = self.getApiKeys()
 
 
-class Localstore(object):
+class Localstore:
     """
     Caching of capability documents
     """
