@@ -147,7 +147,7 @@ class CorruptXml(unittest.TestCase):
         QTest.qWait(WAIT)
         self.ldi.dlg.uTextFilter.setText("")
         self.ldi.dlg.close()
-        self.services_loaded = False
+        self.ldi.services_loaded = False
 
     def test_handle_corrupt_xml(self):
         """
@@ -290,7 +290,7 @@ class UserWorkFlows(unittest.TestCase):
         self.ldi.dlg.uTextFilter.setText("")
         self.ldi.dlg.close()
         QgsProject.instance().removeAllMapLayers()
-        self.services_loaded = False
+        self.ldi.services_loaded = False
         item = self.ldi.dlg.uListOptions.findItems("ALL", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
 

@@ -54,7 +54,7 @@ class UiTest(unittest.TestCase):
 
         QTest.qWait(WAIT)  # Just because I want to watch it open a close
         self.ldi.dlg.close()
-        self.services_loaded = False
+        self.ldi.services_loaded = False
 
         # Remove filter set tab back to "ALL"
         item = self.ldi.dlg.uListOptions.findItems("ALL", Qt.MatchFixedString)[0]

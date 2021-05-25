@@ -368,8 +368,8 @@ class UnitLevel(unittest.TestCase):
             file_path = os.path.join(self.pl_settings_dir, file)
             insitu_file_stats[file] = os.stat(file_path).st_mtime
 
-        self.cache_updated = False
-        self.update_cache = True
+        self.ldi.cache_updated = False
+        self.ldi.update_cache = True
         self.ldi.updateServiceDataCache()
         QTest.qWait(15000)
 
