@@ -660,12 +660,12 @@ class LinzDataImporter:
         self.object_id = self.row[3]
         self.service = self.row[2]
         self.layer_title = self.row[4]
-        self.crs_options = self.row[6]
+        crs_options = self.row[6]
         self.dlg.uCRSCombo.clear()
         if self.data_type != "table":
-            self.dlg.uCRSCombo.addItems(self.crs_options)
+            self.dlg.uCRSCombo.addItems(crs_options)
             curr_crs = self.map_crs()
-            if curr_crs in self.crs_options:
+            if curr_crs in crs_options:
                 idx = self.dlg.uCRSCombo.findText(curr_crs)
                 self.dlg.uCRSCombo.setCurrentIndex(idx)
         self.dlg.uTextDescription.setText(abstract)
