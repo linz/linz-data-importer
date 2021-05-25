@@ -387,7 +387,7 @@ class ServiceData(Localstore):
                         )
                     )
 
-            elif self.service in ("wfs") and self.domain != "basemaps.linz.govt.nz":
+            elif self.service == "wfs" and self.domain != "basemaps.linz.govt.nz":
                 xml = urlopen(
                     "https://{0}/services;"
                     "key={1}/{2}?service={3}&version={4}"
@@ -442,7 +442,7 @@ class ServiceData(Localstore):
             if self.service == "wmts":
                 self.crs = dataset_obj.tilematrixsets
                 self.sortCrs()
-            elif self.service in ("wfs"):
+            elif self.service == "wfs":
                 self.crs = dataset_obj.crsOptions
                 self.crs = ["EPSG:{0}".format(item.code) for item in self.crs]
                 self.sortCrs()
