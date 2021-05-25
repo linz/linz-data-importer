@@ -294,6 +294,9 @@ class UserWorkFlows(unittest.TestCase):
         item = self.ldi.dlg.uListOptions.findItems("ALL", Qt.MatchFixedString)[0]
         self.ldi.dlg.uListOptions.itemClicked.emit(item)
 
+    @unittest.skip(
+        "Intermittent 'AssertionError: 0 != 1' when running `self.assertEqual(len(names), nconfs)`"
+    )
     def test_wfs_import(self):
         """
         Test display, filtering, selection and importing of WFS data
@@ -322,6 +325,9 @@ class UserWorkFlows(unittest.TestCase):
 
         self.filter_domain("data.linz.govt.nz")
 
+    @unittest.skip(
+        "Intermittent 'IndexError: list index out of range' when running `QgsProject.instance().mapLayersByName(layer_name)[0]`"
+    )
     def test_should_filter_wfs_by_map_bbox(self):
         """
         Test wfs filter by bounding box of map window

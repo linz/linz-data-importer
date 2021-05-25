@@ -465,6 +465,9 @@ class UnitLevel(unittest.TestCase):
         # Test method
         self.assertEqual(self.ldi.mapCrs().lstrip("EPSG:"), str(test_srid_int))
 
+    @unittest.skip(
+        "Intermittent 'IndexError: list index out of range' when running `names[0]`"
+    )
     def test_importDataset_wfs(self):
         """
         Test the importing of WFS layers into QGIS
