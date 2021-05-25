@@ -24,14 +24,14 @@ import threading
 import urllib.request
 from typing import Optional
 
-from qgis.core import (
+from qgis.core import (  # pylint:disable=import-error
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import (
+from qgis.PyQt.QtCore import (  # pylint:disable=import-error
     QCoreApplication,
     QSettings,
     QSortFilterProxyModel,
@@ -39,8 +39,18 @@ from qgis.PyQt.QtCore import (
     QTranslator,
     qVersion,
 )
-from qgis.PyQt.QtGui import QIcon, QImage, QPixmap, QStandardItemModel
-from qgis.PyQt.QtWidgets import QAction, QHeaderView, QListWidgetItem, QToolButton
+from qgis.PyQt.QtGui import (  # pylint:disable=import-error
+    QIcon,
+    QImage,
+    QPixmap,
+    QStandardItemModel,
+)
+from qgis.PyQt.QtWidgets import (  # pylint:disable=import-error
+    QAction,
+    QHeaderView,
+    QListWidgetItem,
+    QToolButton,
+)
 
 # Import the code for the dialog
 from .gui.service_dialog import ServiceDialog

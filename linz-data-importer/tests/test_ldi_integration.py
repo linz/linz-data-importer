@@ -21,10 +21,14 @@ import shutil
 import unittest
 import xml.etree.ElementTree as ET
 
-from qgis.core import QgsApplication, QgsProject, QgsRectangle
-from qgis.PyQt.QtCore import QSettings, Qt
-from qgis.PyQt.QtTest import QTest
-from qgis.utils import iface, plugins
+from qgis.core import (  # pylint:disable=import-error
+    QgsApplication,
+    QgsProject,
+    QgsRectangle,
+)
+from qgis.PyQt.QtCore import QSettings, Qt  # pylint:disable=import-error
+from qgis.PyQt.QtTest import QTest  # pylint:disable=import-error
+from qgis.utils import iface, plugins  # pylint:disable=import-error
 
 WAIT = 1000
 MAP_REFRESH_WAIT = 4000

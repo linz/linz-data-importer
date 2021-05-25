@@ -22,7 +22,7 @@ import time
 
 from owslib.wfs import WebFeatureService
 from owslib.wmts import WebMapTileService
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication  # pylint:disable=import-error
 
 try:
     from lxml.etree import XMLSyntaxError
@@ -32,7 +32,7 @@ except ImportError:
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
 
 
 class ApiKey:

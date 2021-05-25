@@ -15,8 +15,12 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
-from qgis.PyQt.QtWidgets import QComboBox, QCompleter
+from qgis.PyQt.QtCore import (  # pylint:disable=import-error
+    QAbstractTableModel,
+    QSortFilterProxyModel,
+    Qt,
+)
+from qgis.PyQt.QtWidgets import QComboBox, QCompleter  # pylint:disable=import-error
 
 ## Below model not currently in-use
 # class TableView(QTableView):

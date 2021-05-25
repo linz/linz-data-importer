@@ -17,10 +17,10 @@
 
 import unittest
 
-from qgis.PyQt.Qt import QComboBox
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtTest import QTest
-from qgis.PyQt.QtWidgets import (
+from qgis.PyQt.Qt import QComboBox  # pylint:disable=import-error
+from qgis.PyQt.QtCore import Qt  # pylint:disable=import-error
+from qgis.PyQt.QtTest import QTest  # pylint:disable=import-error
+from qgis.PyQt.QtWidgets import (  # pylint:disable=import-error
     QLabel,
     QLineEdit,
     QListWidget,
@@ -28,7 +28,7 @@ from qgis.PyQt.QtWidgets import (
     QTableView,
     QTextEdit,
 )
-from qgis.utils import plugins
+from qgis.utils import plugins  # pylint:disable=import-error
 
 WAIT = 1000
 

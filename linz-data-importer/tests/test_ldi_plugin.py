@@ -21,11 +21,11 @@ import re
 import shutil
 import unittest
 
-from qgis.core import QgsApplication, QgsProject
-from qgis.PyQt.QtCore import QSettings
-from qgis.PyQt.QtGui import QImage
-from qgis.PyQt.QtTest import QTest
-from qgis.utils import plugins
+from qgis.core import QgsApplication, QgsProject  # pylint:disable=import-error
+from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
+from qgis.PyQt.QtGui import QImage  # pylint:disable=import-error
+from qgis.PyQt.QtTest import QTest  # pylint:disable=import-error
+from qgis.utils import plugins  # pylint:disable=import-error
 
 WAIT = 1000
 
