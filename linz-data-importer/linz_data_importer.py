@@ -448,7 +448,8 @@ class LinzDataImporter(object):
         if not self.services_loaded:
             if not self.api_key_instance.getApiKeys():
                 self.dlg.uLabelWarning.setText(
-                    'To access data, add your API key in "Settings". See "Help" for more information.'
+                    'To access data, add your API key in "Settings".'
+                    ' See "Help" for more information.'
                 )
                 self.dlg.uLabelWarning.show()
             else:

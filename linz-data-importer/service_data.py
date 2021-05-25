@@ -426,16 +426,16 @@ class ServiceData(Localstore):
 
         service_data = []
         cont = self.obj.contents
+        full_id_regex = re.compile(
+            r"([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)"
+        )
         for dataset_id, dataset_obj in cont.items():
             self.crs = []
             if self.domain == "basemaps.linz.govt.nz":
                 id = dataset_obj.id
                 type = "layer"
             else:
-                full_id = re.search(
-                    r"([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)",
-                    dataset_obj.id,
-                )
+                full_id = full_id_regex.search(dataset_obj.id)
                 type = full_id.group("type")
                 id = full_id.group("id")
             # Get and standarise espg codes
