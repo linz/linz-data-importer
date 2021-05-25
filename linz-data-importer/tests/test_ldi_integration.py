@@ -506,7 +506,8 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(len(data_types), 2)
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
-    def map_refreshed(self):
+    @staticmethod
+    def map_refreshed():
         """
         Slot for map canvas refreshed signal
         """

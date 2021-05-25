@@ -45,7 +45,8 @@ class ApiKey(object):
     def __init__(self):
         self.api_keys = self.getApiKeys()
 
-    def getApiKeys(self):
+    @staticmethod
+    def getApiKeys():
         """
         Return Domain / API keys stored in QSettings
 

@@ -158,7 +158,7 @@ class TableModel(QAbstractTableModel):
             return self.header[col]
         return None
 
-    def flags(self, index):
+    def flags(self, index):  # pylint:disable=no-self-use
         """
         Returns the item flags for the given index.
 

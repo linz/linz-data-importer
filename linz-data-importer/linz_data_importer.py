@@ -146,7 +146,7 @@ class LinzDataImporter(object):
         self.local_store = Localstore()
 
     # noinspection PyMethodMayBeStatic
-    def tr(self, message):
+    def tr(self, message):  # pylint:disable=no-self-use
         """
         Get the translation for a string using Qt translation API.
         We implement this ourselves since we do not inherit QObject.
