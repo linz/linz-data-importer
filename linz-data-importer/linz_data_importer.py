@@ -65,7 +65,7 @@ SER_TYPES_SKIP = {"basemaps.linz.govt.nz": ["wfs"]}
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
     def __init__(self, parent=None):
-        super(CustomSortFilterProxyModel, self).__init__(parent)
+        super().__init__(parent)
         self.data_type = ("WMTS", "WFS")
 
     def setServiceType(self, service_type):

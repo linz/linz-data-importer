@@ -185,7 +185,7 @@ class ExtendedCombobox(QComboBox):
         :type parent: PyQt5.QtWidgets.QWidget
         """
 
-        super(ExtendedCombobox, self).__init__(parent)
+        super().__init__(parent)
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setEditable(True)
@@ -208,7 +208,7 @@ class ExtendedCombobox(QComboBox):
         :type model: PyQt5.QtGui.QStandardItemModel
         """
 
-        super(ExtendedCombobox, self).setModel(model)
+        super().setModel(model)
         self.pFilterModel.setSourceModel(model)
         self.completer.setModel(self.pFilterModel)
 
@@ -220,7 +220,7 @@ class ExtendedCombobox(QComboBox):
 
         self.completer.setCompletionColumn(column)
         self.pFilterModel.setFilterKeyColumn(column)
-        super(ExtendedCombobox, self).setModelColumn(column)
+        super().setModelColumn(column)
 
     def view(self):
         """
