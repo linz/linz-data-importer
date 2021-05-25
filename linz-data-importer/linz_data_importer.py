@@ -751,10 +751,8 @@ class LinzDataImporter(object):
 
         self.iface.messageBar().pushMessage(
             "Info",
-            """The LINZ Data Importer Plugin has changed the projects CRS to {0} to 
-            provide a common CRS when importing datasets""".format(
-                self.wmts_epsg
-            ),
+            "The LINZ Data Importer Plugin has changed the projects CRS to {0} to "
+            "provide a common CRS when importing datasets".format(self.wmts_epsg),
             level=Qgis.Info,
             duration=10,
         )
