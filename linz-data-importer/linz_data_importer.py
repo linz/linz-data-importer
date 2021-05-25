@@ -145,6 +145,7 @@ class LinzDataImporter:
         self.api_key_instance = ApiKey()
         self.local_store = Localstore()
 
+        self.dlg = ServiceDialog()
         self.curr_list_wid_index: Optional[QListWidgetItem]
 
     # noinspection PyMethodMayBeStatic
@@ -247,7 +248,6 @@ class LinzDataImporter:
         )
 
         # Plugin Dialog
-        self.dlg = ServiceDialog()
         self.dlg.uListOptions.itemClicked.connect(self.show_selected_option)
         self.dlg.uListOptions.itemClicked.emit(self.dlg.uListOptions.item(0))
 

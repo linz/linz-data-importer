@@ -271,6 +271,7 @@ class ServiceData(Localstore):
         self.info = None  # owslib data obj formatted for table
         self.err = None  # any errors
         self.disabled = False
+        self.crs = []
 
     def is_enabled(self):
         """
