@@ -806,7 +806,7 @@ class LinzDataImporter(object):
 
             layer = QgsVectorLayer(uri, self.layer_title, self.service.upper())
 
-        elif "WMTS":
+        elif self.service == "WMTS":
             if self.domain == "basemaps.linz.govt.nz":
                 uri = (
                     "contextualWMSLegend=0"
