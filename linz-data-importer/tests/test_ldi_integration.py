@@ -168,12 +168,10 @@ class CorruptXml(unittest.TestCase):
         self.ldi.actions[0].trigger()
         QTest.qWait(1000)
         # ensure all services are are present in the table
-        data_types = set(
-            [
-                self.ldi.proxy_model.index(row, 2).data()
-                for row in range(self.ldi.proxy_model.rowCount())
-            ]
-        )
+        data_types = {
+            self.ldi.proxy_model.index(row, 2).data()
+            for row in range(self.ldi.proxy_model.rowCount())
+        }
         self.assertEqual(len(data_types), 2)
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
@@ -404,12 +402,10 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(self.ldi.dlg.uLabelWarning.text(), "")
 
         # Ensure the domain exists in the table
-        domains = set(
-            [
-                self.ldi.proxy_model.index(row, 0).data()
-                for row in range(self.ldi.proxy_model.rowCount())
-            ]
-        )
+        domains = {
+            self.ldi.proxy_model.index(row, 0).data()
+            for row in range(self.ldi.proxy_model.rowCount())
+        }
         self.assertGreater(len(domains), 0)
         self.assertIn(domain.lower(), list(domains))
 
@@ -424,12 +420,10 @@ class UserWorkFlows(unittest.TestCase):
         self.assertLess(self.ldi.proxy_model.rowCount(), all_rows)
 
         # Check that there is only one domain and it matches the filtered domain
-        domains = set(
-            [
-                self.ldi.proxy_model.index(row, 0).data()
-                for row in range(self.ldi.proxy_model.rowCount())
-            ]
-        )
+        domains = {
+            self.ldi.proxy_model.index(row, 0).data()
+            for row in range(self.ldi.proxy_model.rowCount())
+        }
         self.assertEqual(len(domains), 1)
         self.assertEqual(domain.lower(), list(domains)[0])
 
@@ -454,12 +448,10 @@ class UserWorkFlows(unittest.TestCase):
         self.assertEqual(self.ldi.dlg.uLabelWarning.text(), "")
 
         # Ensure all records are of the selected type
-        data_types = set(
-            [
-                self.ldi.proxy_model.index(row, 2).data()
-                for row in range(self.ldi.proxy_model.rowCount())
-            ]
-        )
+        data_types = {
+            self.ldi.proxy_model.index(row, 2).data()
+            for row in range(self.ldi.proxy_model.rowCount())
+        }
         self.assertEqual(len(data_types), 1)
         self.assertEqual(service.upper(), list(data_types)[0])
 
@@ -497,12 +489,10 @@ class UserWorkFlows(unittest.TestCase):
         # Test there is data
         self.assertNotEqual(self.ldi.table_model.rowCount(None), 0)
         # ensure all services are are present in the table
-        data_types = set(
-            [
-                self.ldi.proxy_model.index(row, 2).data()
-                for row in range(self.ldi.proxy_model.rowCount())
-            ]
-        )
+        data_types = {
+            self.ldi.proxy_model.index(row, 2).data()
+            for row in range(self.ldi.proxy_model.rowCount())
+        }
         self.assertEqual(len(data_types), 2)
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
