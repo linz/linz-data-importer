@@ -158,7 +158,7 @@ class LinzDataImporter(object):
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate("LinzDataImporter", message)
 
-    def add_action(
+    def add_action(  # pylint:disable=too-many-arguments
         self,
         icon_path,
         text,

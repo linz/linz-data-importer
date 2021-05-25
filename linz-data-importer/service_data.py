@@ -243,7 +243,7 @@ class ServiceData(Localstore):
     Get, Store and Process WxS Data
     """
 
-    def __init__(
+    def __init__(  # pylint:disable=too-many-arguments
         self, domain, service, service_version, api_key_instance, upd_cache=False
     ):
         """
