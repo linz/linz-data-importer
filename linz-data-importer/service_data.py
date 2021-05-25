@@ -414,7 +414,7 @@ class ServiceData(Localstore):
 
     def sortCrs(self):
         # wfs returns some no valid crs values
-        valid = re.compile("^EPSG\:\d+")
+        valid = re.compile(r"^EPSG:\d+")
         self.crs = [s for s in self.crs if valid.match(s)]
         # sort
         self.crs.sort(key=lambda x: int(x.split(":")[1]))

@@ -589,7 +589,7 @@ class LinzDataImporter(object):
         ensure only well formed crs are provided.
         """
 
-        valid = re.compile("^EPSG\:\d+")
+        valid = re.compile(r"^EPSG:\d+")
         crs_text = self.dlg.uCRSCombo.currentText()
         if valid.match(crs_text):
             self.selected_crs = str(self.dlg.uCRSCombo.currentText())
