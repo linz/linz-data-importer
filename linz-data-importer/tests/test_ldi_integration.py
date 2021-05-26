@@ -120,13 +120,10 @@ class CorruptXml(unittest.TestCase):
             shutil.copy(file, self.pl_settings_dir)
 
         # Copy in corrupt file for the test
-        try:
-            os.chdir(self.pl_settings_dir)
-            wmts_file = glob.glob("data.linz.govt.nz_wmts_*.xml")
-            wmts_file = os.path.join(self.pl_settings_dir, wmts_file[0])
-            os.remove(wmts_file)
-        except:
-            pass
+        os.chdir(self.pl_settings_dir)
+        wmts_files = glob.glob("data.linz.govt.nz_wmts_*.xml")
+        if wmts_files:
+            os.remove(os.path.join(self.pl_settings_dir, wmts_files[0]))
         corr_file_name = "data.linz.govt.nz_wmts_corrupt.xml"
         corr_file = os.path.join(self.test_data_dir, corr_file_name)  # src
         shutil.copy(corr_file, self.pl_settings_dir)
