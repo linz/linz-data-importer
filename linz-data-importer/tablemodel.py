@@ -95,7 +95,7 @@ class TableModel(QAbstractTableModel):
 
         try:
             return len(self.arraydata[0]) - 2  # hiding description
-        except:
+        except (IndexError, ValueError):
             return 0
 
     def data(self, index, role):
