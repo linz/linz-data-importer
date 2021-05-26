@@ -493,9 +493,9 @@ class UnitLevel(unittest.TestCase):
 
 
 def suite():
-    suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(UnitLevel, "test"))
-    return suite
+    test_suite = unittest.TestSuite()
+    test_suite.addTests(unittest.makeSuite(UnitLevel, "test"))
+    return test_suite
 
 
 def run_tests():

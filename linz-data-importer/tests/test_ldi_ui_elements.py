@@ -165,9 +165,9 @@ class UiTest(unittest.TestCase):
 
 
 def suite():
-    suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(UiTest, "test"))
-    return suite
+    test_suite = unittest.TestSuite()
+    test_suite.addTests(unittest.makeSuite(UiTest, "test"))
+    return test_suite
 
 
 def run_tests():
