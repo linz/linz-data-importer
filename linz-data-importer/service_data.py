@@ -145,10 +145,10 @@ class Localstore:
         if not domain:
             domain = self.domain
 
-        dir = self.pl_settings_dir
+        directory = self.pl_settings_dir
         for filename in os.listdir(self.pl_settings_dir):
             if re.search(domain, filename):
-                file = os.path.join(dir, filename)
+                file = os.path.join(directory, filename)
                 self.del_local_sevice_xml(file)
 
     def del_all_local_service_xml(self, services=None):
@@ -163,10 +163,10 @@ class Localstore:
 
         search_str = "|".join(["_{}.xml".format(x) for x in services])
 
-        dir = self.pl_settings_dir
+        directory = self.pl_settings_dir
         for filename in os.listdir(self.pl_settings_dir):
             if re.search(search_str, filename):
-                file = os.path.join(dir, filename)
+                file = os.path.join(directory, filename)
                 self.del_local_sevice_xml(file)
 
     def purge_cache(self):
@@ -435,10 +435,10 @@ class ServiceData(Localstore):
             self.crs = []
             if self.domain == "basemaps.linz.govt.nz":
                 object_id = dataset_obj.id
-                type = "layer"
+                object_type = "layer"
             else:
                 full_id = full_id_regex.search(dataset_obj.id)
-                type = full_id.group("type")
+                object_type = full_id.group("type")
                 object_id = full_id.group("id")
             # Get and standarise espg codes
             if self.service == "wmts":
@@ -452,7 +452,7 @@ class ServiceData(Localstore):
             service_data.append(
                 [
                     self.domain,
-                    type,
+                    object_type,
                     self.service.upper(),
                     object_id,
                     dataset_obj.title,
