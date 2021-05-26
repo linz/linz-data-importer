@@ -341,7 +341,7 @@ class UserWorkFlows(unittest.TestCase):
         QTest.qWait(WAIT)
 
         # Check we have a single row in the view, upon filtering
-        self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
+        self.assertEqual(self.ldi.proxy_model.rowCount(), 1)
 
         # Import the first row
         self.ldi.dlg.uTableView.selectRow(0)
@@ -466,7 +466,7 @@ class UserWorkFlows(unittest.TestCase):
             QTest.qWait(WAIT)
 
             # Check we have a single row in the view, upon filtering
-            self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
+            self.assertEqual(self.ldi.proxy_model.rowCount(), 1)
 
             # Import the first row
             self.ldi.dlg.uTableView.selectRow(0)
