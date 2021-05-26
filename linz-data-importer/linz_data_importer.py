@@ -24,6 +24,7 @@ import threading
 import time
 import urllib.request
 from builtins import object, range
+from typing import Optional
 
 from owslib import wfs, wmts
 from qgis.core import (
@@ -159,6 +160,8 @@ class LinzDataImporter(object):
         self.api_key_instance = ApiKey()
         self.local_store = Localstore()
 
+        self.curr_list_wid_index: Optional[QListWidgetItem]
+
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """
@@ -262,7 +265,6 @@ class LinzDataImporter(object):
         self.dlg = ServiceDialog()
         self.dlg.uListOptions.itemClicked.connect(self.showSelectedOption)
         self.dlg.uListOptions.itemClicked.emit(self.dlg.uListOptions.item(0))
-        self.curr_list_wid_index = 0
 
         model = QStandardItemModel()
         self.dlg.uCRSCombo.setModel(model)
@@ -400,9 +402,9 @@ class LinzDataImporter(object):
         self.loadSettings()
         self.dlg.uWarningSettings.hide()
         self.dlg.uLabelWarning.hide()
-        try:
+        if self.curr_list_wid_index is not None:
             self.dlg.uListOptions.setCurrentItem(self.curr_list_wid_index)
-        except:
+        else:
             self.dlg.uListOptions.setCurrentRow(0)
 
         self.dlg.uStackedWidget.setCurrentIndex(0)
