@@ -166,6 +166,13 @@ class LinzDataImporter:
         self.table_model: TableModel
         self.selection_model: QItemSelectionModel
 
+        self.qimage = QImage
+        self.domain: str
+        self.data_type: str
+        self.proxy_model: CustomSortFilterProxyModel
+        self.table_model: TableModel
+        self.selection_model: QItemSelectionModel
+
     # noinspection PyMethodMayBeStatic
     def translate(self, message):  # pylint:disable=no-self-use
         """
