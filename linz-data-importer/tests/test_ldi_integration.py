@@ -210,7 +210,7 @@ class CacheTest(unittest.TestCase):
         for file in self.test_files:
             try:
                 os.remove(file)
-            except:
+            except OSError:
                 pass
 
     def test_purge_cache(self):
