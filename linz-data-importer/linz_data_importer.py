@@ -24,6 +24,7 @@ import threading
 import urllib.request
 from typing import Optional
 
+from PyQt5.QtCore import QItemSelectionModel
 from qgis.core import (  # pylint:disable=import-error
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -157,6 +158,13 @@ class LinzDataImporter:
 
         self.dlg = ServiceDialog()
         self.curr_list_wid_index: Optional[QListWidgetItem]
+
+        self.qimage = QImage
+        self.domain: str
+        self.data_type: str
+        self.proxy_model: CustomSortFilterProxyModel
+        self.table_model: TableModel
+        self.selection_model: QItemSelectionModel
 
     # noinspection PyMethodMayBeStatic
     def translate(self, message):  # pylint:disable=no-self-use
