@@ -21,10 +21,14 @@ import shutil
 import unittest
 import xml.etree.ElementTree as ET
 
-from qgis.core import QgsApplication, QgsProject, QgsRectangle
-from qgis.PyQt.QtCore import QSettings, Qt
-from qgis.PyQt.QtTest import QTest
-from qgis.utils import iface, plugins
+from qgis.core import (  # pylint:disable=import-error
+    QgsApplication,
+    QgsProject,
+    QgsRectangle,
+)
+from qgis.PyQt.QtCore import QSettings, Qt  # pylint:disable=import-error
+from qgis.PyQt.QtTest import QTest  # pylint:disable=import-error
+from qgis.utils import iface, plugins  # pylint:disable=import-error
 
 WAIT = 1000
 MAP_REFRESH_WAIT = 4000
@@ -89,7 +93,7 @@ class CorruptXml(unittest.TestCase):
         # Domain to run test against (lds only service with all WxS)
         domain = "data.linz.govt.nz"
         self.api_key_instance = self.ldi.api_key_instance
-        self.api_key_instance.setApiKeys({domain: API_KEYS[domain]})
+        self.api_key_instance.set_api_keys({domain: API_KEYS[domain]})
 
         # Test data dir and plugin settigns dir
         self.test_dir = os.path.dirname(os.path.realpath(__file__))
@@ -116,13 +120,10 @@ class CorruptXml(unittest.TestCase):
             shutil.copy(file, self.pl_settings_dir)
 
         # Copy in corrupt file for the test
-        try:
-            os.chdir(self.pl_settings_dir)
-            wmts_file = glob.glob("data.linz.govt.nz_wmts_*.xml")
-            wmts_file = os.path.join(self.pl_settings_dir, wmts_file[0])
-            os.remove(wmts_file)
-        except:
-            pass
+        os.chdir(self.pl_settings_dir)
+        wmts_files = glob.glob("data.linz.govt.nz_wmts_*.xml")
+        if wmts_files:
+            os.remove(os.path.join(self.pl_settings_dir, wmts_files[0]))
         corr_file_name = "data.linz.govt.nz_wmts_corrupt.xml"
         corr_file = os.path.join(self.test_data_dir, corr_file_name)  # src
         shutil.copy(corr_file, self.pl_settings_dir)
@@ -176,7 +177,7 @@ class CorruptXml(unittest.TestCase):
         self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
 
 
-class cacheTest(unittest.TestCase):
+class CacheTest(unittest.TestCase):
     """
     Test method for clearing old files from cache
     """
@@ -195,9 +196,10 @@ class cacheTest(unittest.TestCase):
         self.new_file = "data.govt.test.nz_wfs_999999999999999.xml"
         self.test_files = [self.old_file1, self.old_file2, self.new_file]
 
+        os.chdir(self.pl_settings_dir)
         for file in self.test_files:
-            with open(file, "w") as f:
-                f.write("")
+            with open(file, "w") as file_pointer:
+                file_pointer.write("")
 
     def tearDown(self):
         """Runs after each test"""
@@ -205,19 +207,18 @@ class cacheTest(unittest.TestCase):
         for file in self.test_files:
             try:
                 os.remove(file)
-            except:
+            except OSError:
                 pass
 
-    def test_purgeCache(self):
+    def test_purge_cache(self):
         """
         Test the purge removes the old files leaving
         just the most current
         """
 
-        os.chdir(self.pl_settings_dir)
         pre_purge_test_files = glob.glob("data.govt.test.nz_wfs_[0-9]*.xml")
         self.assertEqual(sorted(pre_purge_test_files), sorted(self.test_files))
-        self.ldi.local_store.purgeCache()
+        self.ldi.local_store.purge_cache()
         post_purge_test_files = glob.glob("data.govt.test.nz_wfs_[0-9]*.xml")
         self.assertEqual(
             post_purge_test_files, ["data.govt.test.nz_wfs_999999999999999.xml"]
@@ -264,7 +265,7 @@ class UserWorkFlows(unittest.TestCase):
             key: API_KEYS[key]
             for key in API_KEYS.keys() & {"data.linz.govt.nz", "basemaps.linz.govt.nz"}
         }
-        self.api_key_instance.setApiKeys(keys)
+        self.api_key_instance.set_api_keys(keys)
 
         self.ldi.selected_crs = "ESPG:2193"
         self.ldi.selected_crs_int = 2193
@@ -340,7 +341,7 @@ class UserWorkFlows(unittest.TestCase):
         QTest.qWait(WAIT)
 
         # Check we have a single row in the view, upon filtering
-        self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
+        self.assertEqual(self.ldi.proxy_model.rowCount(), 1)
 
         # Import the first row
         self.ldi.dlg.uTableView.selectRow(0)
@@ -458,14 +459,14 @@ class UserWorkFlows(unittest.TestCase):
         nconfs = len(TEST_CONF[service])
         for i in range(nconfs):
 
-            layerName = TEST_CONF[service][i]
+            layer_name = TEST_CONF[service][i]
 
             # Filter
-            self.ldi.dlg.uTextFilter.setText(layerName)
+            self.ldi.dlg.uTextFilter.setText(layer_name)
             QTest.qWait(WAIT)
 
             # Check we have a single row in the view, upon filtering
-            self.assertEquals(self.ldi.proxy_model.rowCount(), 1)
+            self.assertEqual(self.ldi.proxy_model.rowCount(), 1)
 
             # Import the first row
             self.ldi.dlg.uTableView.selectRow(0)

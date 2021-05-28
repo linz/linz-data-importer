@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore
 
+# pylint:disable=invalid-name
 qt_resource_data = b"\
 \x00\x00\x06\x32\
 \x89\
@@ -819,16 +820,16 @@ qt_resource_struct = b"\
 "
 
 
-def qInitResources():
+def q_init_resources():
     QtCore.qRegisterResourceData(
         0x01, qt_resource_struct, qt_resource_name, qt_resource_data
     )
 
 
-def qCleanupResources():
+def q_cleanup_resources():
     QtCore.qUnregisterResourceData(
         0x01, qt_resource_struct, qt_resource_name, qt_resource_data
     )
 
 
-qInitResources()
+q_init_resources()

@@ -22,7 +22,7 @@ import time
 
 from owslib.wfs import WebFeatureService
 from owslib.wmts import WebMapTileService
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication  # pylint:disable=import-error
 
 try:
     from lxml.etree import XMLSyntaxError
@@ -32,7 +32,7 @@ except ImportError:
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
 
 
 class ApiKey:
@@ -41,12 +41,11 @@ class ApiKey:
     fetch service data
     """
 
-    # TODO// MAKE SINGLETON
     def __init__(self):
-        self.api_keys = self.getApiKeys()
+        self.api_keys = self.get_api_keys()
 
     @staticmethod
-    def getApiKeys():
+    def get_api_keys():
         """
         Return Domain / API keys stored in QSettings
 
@@ -59,7 +58,7 @@ class ApiKey:
             return {}
         return keys
 
-    def getApiKey(self, domain):
+    def get_api_key(self, domain):
         """
         Returns an API Key related to a domain
 
@@ -69,7 +68,7 @@ class ApiKey:
 
         return self.api_keys[domain]
 
-    def setApiKeys(self, keys):
+    def set_api_keys(self, keys):
         """
         Save API Keys as Qsettings Value
 
@@ -79,7 +78,7 @@ class ApiKey:
 
         # = {domain:api_key}
         QSettings().setValue("linz_data_importer/apikeys", keys)
-        self.api_keys = self.getApiKeys()
+        self.api_keys = self.get_api_keys()
 
 
 class Localstore:
@@ -105,7 +104,7 @@ class Localstore:
         self.pl_settings_dir = os.path.join(
             QgsApplication.qgisSettingsDirPath(), "linz-data-importer"
         )
-        self.ensureSettingsDir()
+        self.ensure_settings_dir()
         self.file = file
         if self.service:
             self.file = os.path.join(
@@ -115,7 +114,7 @@ class Localstore:
                 ),
             )
 
-    def ensureSettingsDir(self):
+    def ensure_settings_dir(self):
         """
         Create the plugins settings dir if not exists
         """
@@ -123,7 +122,7 @@ class Localstore:
         if not os.path.exists(self.pl_settings_dir):
             os.makedirs(self.pl_settings_dir)
 
-    def delLocalSeviceXML(self, file=None):
+    def del_local_sevice_xml(self, file=None):
         """
         Delete a single file
         """
@@ -135,7 +134,7 @@ class Localstore:
         except OSError:
             pass
 
-    def delDomainsXML(self, domain):
+    def del_domains_xml(self, domain):
         """
         Delete all cached files associated with a domain
 
@@ -146,13 +145,13 @@ class Localstore:
         if not domain:
             domain = self.domain
 
-        dir = self.pl_settings_dir
-        for f in os.listdir(self.pl_settings_dir):
-            if re.search(domain, f):
-                file = os.path.join(dir, f)
-                self.delLocalSeviceXML(file)
+        directory = self.pl_settings_dir
+        for filename in os.listdir(self.pl_settings_dir):
+            if re.search(domain, filename):
+                file = os.path.join(directory, filename)
+                self.del_local_sevice_xml(file)
 
-    def delAllLocalServiceXML(self, services=None):
+    def del_all_local_service_xml(self, services=None):
         """
         Find and delete all cached files
 
@@ -164,13 +163,13 @@ class Localstore:
 
         search_str = "|".join(["_{}.xml".format(x) for x in services])
 
-        dir = self.pl_settings_dir
-        for f in os.listdir(self.pl_settings_dir):
-            if re.search(search_str, f):
-                file = os.path.join(dir, f)
-                self.delLocalSeviceXML(file)
+        directory = self.pl_settings_dir
+        for filename in os.listdir(self.pl_settings_dir):
+            if re.search(search_str, filename):
+                file = os.path.join(directory, filename)
+                self.del_local_sevice_xml(file)
 
-    def purgeCache(self):
+    def purge_cache(self):
         """
         Delete all cached documents but the
         most current
@@ -180,9 +179,10 @@ class Localstore:
         cache_files = glob.glob("*_*_[0-9]*.xml")
 
         # Get cache metadata
-        for f in cache_files:
+        for filename in cache_files:
             file_data = re.search(
-                r"(?P<domain>.*)(_)(?P<service>wmts|wfs)(_)(?P<time>[0-9]+)\.xml", f
+                r"(?P<domain>.*)(_)(?P<service>wmts|wfs)(_)(?P<time>[0-9]+)\.xml",
+                filename,
             )
             domain = file_data.group("domain")
             service = file_data.group("service")
@@ -195,8 +195,8 @@ class Localstore:
 
         # get list of most current
         curr_files = []
-        for dom, v in file_metadata.items():
-            for ser, file_times in v.items():
+        for dom, service_properties in file_metadata.items():
+            for ser, file_times in service_properties.items():
                 curr_files.append(
                     "{0}_{1}_{2}.xml".format(dom, ser, sorted(file_times)[-1])
                 )
@@ -204,9 +204,9 @@ class Localstore:
         # del old files
         for file in cache_files:
             if file not in curr_files:
-                self.delLocalSeviceXML(file)
+                self.del_local_sevice_xml(file)
 
-    def serviceXmlIsLocal(self, file=None):
+    def service_xml_is_local(self, file=None):
         """
         Test if the cached capabilties xml doc exists
         and if so set the services file to match this
@@ -224,7 +224,7 @@ class Localstore:
                 return True
         return False
 
-    def readLocalServiceXml(self, file=None):
+    def read_local_service_xml(self, file=None):
         """
         Read the cached XML document
 
@@ -234,8 +234,8 @@ class Localstore:
 
         if not file:
             file = self.file
-        with open(file, "rb") as f:
-            self.xml = f.read()
+        with open(file, "rb") as file_pointer:
+            self.xml = file_pointer.read()
 
 
 class ServiceData(Localstore):
@@ -270,8 +270,9 @@ class ServiceData(Localstore):
         self.info = None  # owslib data obj formatted for table
         self.err = None  # any errors
         self.disabled = False
+        self.crs = []
 
-    def isEnabled(self):
+    def is_enabled(self):
         """
         Test if the service is enable.
         Some services (e.g wmts) are disabled for specific domains. These
@@ -287,7 +288,7 @@ class ServiceData(Localstore):
         self.disabled = True
         return False
 
-    def getServiceData(self):
+    def get_service_data(self):
         """
         Select method to obtain capabilities doc.
         Either via localstore or internet
@@ -295,17 +296,17 @@ class ServiceData(Localstore):
 
         # If cache get new data and overwrite local store
         if self.upd_cache:
-            self.getServiceXml()
+            self.get_service_xml()
             return
 
         # Plugin opened for first time
         # Read data from local store if exists
-        if self.serviceXmlIsLocal():
-            self.readLocalServiceXml()
+        if self.service_xml_is_local():
+            self.read_local_service_xml()
         else:
-            self.getServiceXml()
+            self.get_service_xml()
 
-    def getServiceDataTryAgain(self):
+    def get_service_data_try_again(self):
         """
         If the reading of the capability doc fails - Try again.
         This is for use cases where for some reason the user
@@ -314,37 +315,37 @@ class ServiceData(Localstore):
 
         # Clear error, Delete local file and get it a fresh
         self.err = None
-        self.delLocalSeviceXML()
-        self.getServiceData()
+        self.del_local_sevice_xml()
+        self.get_service_data()
         if self.err:
             return
-        self.getServiceObj()
+        self.get_service_obj()
         if self.err:
             return
 
-    def processServiceData(self):
+    def process_service_data(self):
         """
         Get, process and format the service data
         """
 
-        self.getServiceData()
+        self.get_service_data()
         if self.err:
             return
 
-        if not self.isEnabled():
+        if not self.is_enabled():
             return
 
         # service info obj
-        self.getServiceObj()
+        self.get_service_obj()
         if self.err == "{0}: XMLSyntaxError".format(self.domain):
-            self.getServiceDataTryAgain()
+            self.get_service_data_try_again()
         if self.err:
             return
 
         # Format the response data
-        self.formatForUI()
+        self.format_for_ui()
 
-    def getServiceObj(self):
+    def get_service_obj(self):
         try:
             if self.service == "wmts":
                 self.obj = WebMapTileService(
@@ -358,11 +359,11 @@ class ServiceData(Localstore):
                     xml=self.xml,
                     version=self.version,
                 )
-        except XMLSyntaxError as e:
+        except XMLSyntaxError:
             # most likely the locally stored xml is corrupt
             self.err = "{0}: XMLSyntaxError".format(self.domain)
 
-    def getServiceXml(self):
+    def get_service_xml(self):
         """
         Get capability documents from the internet
         """
@@ -373,7 +374,7 @@ class ServiceData(Localstore):
                     url = (
                         "https://{0}/v1/tiles/aerial/"
                         "WMTSCapabilities.xml?api={1}".format(
-                            self.domain, self.api_key_int.getApiKey(self.domain)
+                            self.domain, self.api_key_int.get_api_key(self.domain)
                         )
                     )
                 else:
@@ -381,7 +382,7 @@ class ServiceData(Localstore):
                         "https://{0}/services;"
                         "key={1}/{2}/{3}/WMTSCapabilities.xml".format(
                             self.domain,
-                            self.api_key_int.getApiKey(self.domain),
+                            self.api_key_int.get_api_key(self.domain),
                             self.service.lower(),
                             self.version,
                         )
@@ -393,7 +394,7 @@ class ServiceData(Localstore):
                     "key={1}/{2}?service={3}&version={4}"
                     "&request=GetCapabilities".format(
                         self.domain,
-                        self.api_key_int.getApiKey(self.domain),
+                        self.api_key_int.get_api_key(self.domain),
                         self.service.lower(),
                         self.service.upper(),
                         self.version,
@@ -403,24 +404,24 @@ class ServiceData(Localstore):
                 self.xml = xml.read()
 
             # write to cache
-            with open(self.file, "wb") as f:
-                f.write(self.xml)
+            with open(self.file, "wb") as file_pointer:
+                file_pointer.write(self.xml)
 
-        except URLError as e:
-            if hasattr(e, "reason"):
-                self.err = "Error: ({0}) {1}".format(self.domain, e.reason)
+        except URLError as error:
+            if hasattr(error, "reason"):
+                self.err = "Error: ({0}) {1}".format(self.domain, error.reason)
 
-            elif hasattr(e, "code"):
-                self.err = "Error: ({0}) {1}".format(self.domain, e.reason)
+            elif hasattr(error, "code"):
+                self.err = "Error: ({0}) {1}".format(self.domain, error.reason)
 
-    def sortCrs(self):
+    def sort_crs(self):
         # wfs returns some no valid crs values
         valid = re.compile(r"^EPSG:\d+")
         self.crs = [s for s in self.crs if valid.match(s)]
         # sort
         self.crs.sort(key=lambda x: int(x.split(":")[1]))
 
-    def formatForUI(self):
+    def format_for_ui(self):
         """
         Format the service data to display in the UI
         """
@@ -433,27 +434,27 @@ class ServiceData(Localstore):
         for dataset_id, dataset_obj in cont.items():
             self.crs = []
             if self.domain == "basemaps.linz.govt.nz":
-                id = dataset_obj.id
-                type = "layer"
+                object_id = dataset_obj.id
+                object_type = "layer"
             else:
                 full_id = full_id_regex.search(dataset_obj.id)
-                type = full_id.group("type")
-                id = full_id.group("id")
+                object_type = full_id.group("type")
+                object_id = full_id.group("id")
             # Get and standarise espg codes
             if self.service == "wmts":
                 self.crs = dataset_obj.tilematrixsets
-                self.sortCrs()
+                self.sort_crs()
             elif self.service == "wfs":
                 self.crs = dataset_obj.crsOptions
                 self.crs = ["EPSG:{0}".format(item.code) for item in self.crs]
-                self.sortCrs()
+                self.sort_crs()
 
             service_data.append(
                 [
                     self.domain,
-                    type,
+                    object_type,
                     self.service.upper(),
-                    id,
+                    object_id,
                     dataset_obj.title,
                     dataset_obj.abstract,
                     self.crs,

@@ -22,17 +22,17 @@ import os.path
 import re
 import threading
 import urllib.request
-from builtins import object, range
 from typing import Optional
 
-from qgis.core import (
+from PyQt5.QtCore import QItemSelectionModel
+from qgis.core import (  # pylint:disable=import-error
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import (
+from qgis.PyQt.QtCore import (  # pylint:disable=import-error
     QCoreApplication,
     QSettings,
     QSortFilterProxyModel,
@@ -40,11 +40,21 @@ from qgis.PyQt.QtCore import (
     QTranslator,
     qVersion,
 )
-from qgis.PyQt.QtGui import QIcon, QImage, QPixmap, QStandardItemModel
-from qgis.PyQt.QtWidgets import QAction, QHeaderView, QListWidgetItem, QToolButton
+from qgis.PyQt.QtGui import (  # pylint:disable=import-error
+    QIcon,
+    QImage,
+    QPixmap,
+    QStandardItemModel,
+)
+from qgis.PyQt.QtWidgets import (  # pylint:disable=import-error
+    QAction,
+    QHeaderView,
+    QListWidgetItem,
+    QToolButton,
+)
 
 # Import the code for the dialog
-from .gui.Service_dialog import ServiceDialog
+from .gui.service_dialog import ServiceDialog
 from .service_data import ApiKey, Localstore, ServiceData
 from .tablemodel import TableModel
 
@@ -69,11 +79,11 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         super().__init__(parent)
         self.data_type = ("WMTS", "WFS")
 
-    def setServiceType(self, service_type):
+    def set_service_type(self, service_type):
         self.data_type = service_type
         self.invalidateFilter()
 
-    def filterAcceptsRow(self, sourceRow, sourceParent):
+    def filterAcceptsRow(self, sourceRow, sourceParent):  # pylint:disable=invalid-name
         index2 = self.sourceModel().index(sourceRow, 2, sourceParent)  # SERVICE TYPE
         index3 = self.sourceModel().index(sourceRow, 4, sourceParent)  # LAYER NAME
         index4 = self.sourceModel().index(sourceRow, 0, sourceParent)  # DOMAIN
@@ -127,7 +137,7 @@ class LinzDataImporter:
         self.toolbar = self.iface.addToolBar(u"LINZ Data Importer")
         self.toolbar.setObjectName(u"LINZ Data Importer")
         self.tool_button = QToolButton()
-        self.menu = self.tr(u"&linz-data-importer")
+        self.menu = self.translate(u"&linz-data-importer")
 
         # Track data reading
         self.data_feeds = {}
@@ -135,7 +145,7 @@ class LinzDataImporter:
         self.domain = None  # curr domain
         self.row = None
         self.service = None
-        self.id = None
+        self.object_id = None
         self.layer_title = None
         self.selected_crs = None
         self.selected_crs_int = None
@@ -146,10 +156,18 @@ class LinzDataImporter:
         self.api_key_instance = ApiKey()
         self.local_store = Localstore()
 
+        self.dlg = ServiceDialog()
         self.curr_list_wid_index: Optional[QListWidgetItem]
 
+        self.qimage = QImage
+        self.domain: str
+        self.data_type: str
+        self.proxy_model: CustomSortFilterProxyModel
+        self.table_model: TableModel
+        self.selection_model: QItemSelectionModel
+
     # noinspection PyMethodMayBeStatic
-    def tr(self, message):  # pylint:disable=no-self-use
+    def translate(self, message):  # pylint:disable=no-self-use
         """
         Get the translation for a string using Qt translation API.
         We implement this ourselves since we do not inherit QObject.
@@ -234,7 +252,7 @@ class LinzDataImporter:
         self.actions.append(action)
         return action
 
-    def initGui(self):
+    def initGui(self):  # pylint:disable=invalid-name
         """
         Create the menu entries and toolbar icons inside the QGIS GUI.
         """
@@ -242,19 +260,18 @@ class LinzDataImporter:
         icon_path = ":/plugins/linz-data-importer/icons/icon.png"
         self.add_action(
             icon_path,
-            text=self.tr(u"Load Data"),
+            text=self.translate(u"Load Data"),
             callback=self.run,
             parent=self.iface.mainWindow(),
         )
 
         # Plugin Dialog
-        self.dlg = ServiceDialog()
-        self.dlg.uListOptions.itemClicked.connect(self.showSelectedOption)
+        self.dlg.uListOptions.itemClicked.connect(self.show_selected_option)
         self.dlg.uListOptions.itemClicked.emit(self.dlg.uListOptions.item(0))
 
         model = QStandardItemModel()
         self.dlg.uCRSCombo.setModel(model)
-        self.dlg.uCRSCombo.currentIndexChanged.connect(self.layerCrsSelected)
+        self.dlg.uCRSCombo.currentIndexChanged.connect(self.layer_crs_selected)
 
         self.dlg.uLabelWarning.setStyleSheet("color:red")
         self.dlg.uWarningSettings.setStyleSheet("color:red")
@@ -285,7 +302,7 @@ class LinzDataImporter:
         self.dlg.uListOptions.addItem(item)
 
         # set table model
-        self.setTableModelView()
+        self.set_table_model_view()
 
         # set help html
         self.dlg.hHelpHtml.setOpenExternalLinks(True)
@@ -302,26 +319,26 @@ class LinzDataImporter:
         self.dlg.uComboBoxDomain.addItems(SER)
 
         # settings signals
-        self.dlg.uBtnAddDomain.clicked.connect(self.addNewDomain)
-        for n in range(1, 11):
-            getattr(self.dlg, "uBtnSaveDomain{0}".format(n)).clicked.connect(
-                self.saveDomain
+        self.dlg.uBtnAddDomain.clicked.connect(self.add_new_domain)
+        for entry in range(1, 11):
+            getattr(self.dlg, "uBtnSaveDomain{0}".format(entry)).clicked.connect(
+                self.save_domain
             )
-            getattr(self.dlg, "uBtnRemoveDomain{0}".format(n)).clicked.connect(
-                self.saveDomain
+            getattr(self.dlg, "uBtnRemoveDomain{0}".format(entry)).clicked.connect(
+                self.save_domain
             )
-        self.loadSettings()
+        self.load_settings()
 
-    def clearSettings(self):
+    def clear_settings(self):
         """
         Removes text from settings QLineEdits
         """
 
-        for n in range(1, 11):
-            getattr(self.dlg, "uTextDomain{0}".format(n)).setText("")
-            getattr(self.dlg, "uTextAPIKey{0}".format(n)).setText("")
+        for entry in range(1, 11):
+            getattr(self.dlg, "uTextDomain{0}".format(entry)).setText("")
+            getattr(self.dlg, "uTextAPIKey{0}".format(entry)).setText("")
 
-    def loadSettings(self):
+    def load_settings(self):
         """
         1. Populate settings QLineEdits with domain /
         API keys as stored via service_data.ApiKey().
@@ -330,8 +347,8 @@ class LinzDataImporter:
         """
 
         self.domains = []
-        self.clearSettings()
-        api_keys = self.api_key_instance.getApiKeys()
+        self.clear_settings()
+        api_keys = self.api_key_instance.get_api_keys()
         if api_keys:
             for domain, api_key in list(api_keys.items()):
                 self.domains.append(domain)
@@ -343,13 +360,13 @@ class LinzDataImporter:
                 )
 
         # Hide un-populated domain rows
-        for n in range(len(self.domains) + 1, 11):
-            getattr(self.dlg, "uTextDomain{0}".format(n)).hide()
-            getattr(self.dlg, "uTextAPIKey{0}".format(n)).hide()
-            getattr(self.dlg, "uBtnRemoveDomain{0}".format(n)).hide()
-            getattr(self.dlg, "uBtnSaveDomain{0}".format(n)).hide()
+        for entry in range(len(self.domains) + 1, 11):
+            getattr(self.dlg, "uTextDomain{0}".format(entry)).hide()
+            getattr(self.dlg, "uTextAPIKey{0}".format(entry)).hide()
+            getattr(self.dlg, "uBtnRemoveDomain{0}".format(entry)).hide()
+            getattr(self.dlg, "uBtnSaveDomain{0}".format(entry)).hide()
 
-    def saveDomain(self):
+    def save_domain(self):
         """
         Save all domain / API combinations as entered by the user.
         If the calling button was a remove button do not save
@@ -365,14 +382,14 @@ class LinzDataImporter:
             save_domain = sending_btn[-1]
 
         keys = {}
-        for n in range(1, len(self.domains) + 2):
-            if int(del_domain) == n:
+        for entry in range(1, len(self.domains) + 2):
+            if int(del_domain) == entry:
                 continue
-            domain = getattr(self.dlg, "uTextDomain{0}".format(n)).text()
-            key = getattr(self.dlg, "uTextAPIKey{0}".format(n)).text().strip()
+            domain = getattr(self.dlg, "uTextDomain{0}".format(entry)).text()
+            key = getattr(self.dlg, "uTextAPIKey{0}".format(entry)).text().strip()
             if domain and key:
                 keys[domain] = key
-        self.api_key_instance.setApiKeys(keys)
+        self.api_key_instance.set_api_keys(keys)
 
         # remove store capability docs for the removed or add domain/key
         # if they already exits .i.e these will be reloaded
@@ -382,10 +399,10 @@ class LinzDataImporter:
             ui_elem_num = del_domain
 
         domain = getattr(self.dlg, "uTextDomain{0}".format(ui_elem_num)).text()
-        self.local_store.delDomainsXML(domain)
+        self.local_store.del_domains_xml(domain)
 
         # load / Reload service data
-        self.loadSettings()
+        self.load_settings()
         self.dlg.uWarningSettings.hide()
         self.dlg.uLabelWarning.hide()
         if self.curr_list_wid_index is not None:
@@ -395,9 +412,9 @@ class LinzDataImporter:
 
         self.dlg.uStackedWidget.setCurrentIndex(0)
         self.services_loaded = False  # key change, load data again
-        self.loadUi()
+        self.load_ui()
 
-    def addNewDomain(self):
+    def add_new_domain(self):
         """
         Connected to the dialogs uBtnAddDomain button.
         When the button is clicked add a new row
@@ -437,7 +454,9 @@ class LinzDataImporter:
         """
 
         for action in self.actions:
-            self.iface.removePluginWebMenu(self.tr(u"&linz-data-importer"), action)
+            self.iface.removePluginWebMenu(
+                self.translate(u"&linz-data-importer"), action
+            )
             self.iface.removeToolBarIcon(action)
         del self.toolbar
 
@@ -448,42 +467,42 @@ class LinzDataImporter:
         """
 
         if not self.services_loaded:
-            if not self.api_key_instance.getApiKeys():
+            if not self.api_key_instance.get_api_keys():
                 self.dlg.uLabelWarning.setText(
                     'To access data, add your API key in "Settings".'
                     ' See "Help" for more information.'
                 )
                 self.dlg.uLabelWarning.show()
             else:
-                self.loadUi()
+                self.load_ui()
                 if not self.cache_updated and self.update_cache:
-                    self.updateServiceDataCache()
+                    self.update_service_data_cache()
         self.dlg.show()
 
-    def purgeCache(self):
+    def purge_cache(self):
         """
         Delete any cache files that are not the most current
         """
 
-        self.local_store.purgeCache()
+        self.local_store.purge_cache()
 
-    def updateServiceDataCache(self):
+    def update_service_data_cache(self):
         """
         Update the local cache by deleting the locally stored capability
         documents and then re-fetching from the associated web resource
         """
 
         self.services_loaded = False
-        t = threading.Thread(target=self.loadAllServices, args=(True,))
-        t.start()
+        thread = threading.Thread(target=self.load_all_services, args=(True,))
+        thread.start()
         self.cache_updated = True
 
-    def loadUi(self):
+    def load_ui(self):
         """
         Wrapper for loadAllServices() to handle any errors
         """
 
-        load_data_err = self.loadAllServices()
+        load_data_err = self.load_all_services()
         if load_data_err:
             self.dlg.uLabelWarning.setText(load_data_err)
             self.dlg.uLabelWarning.show()
@@ -491,7 +510,7 @@ class LinzDataImporter:
         else:
             self.dlg.uLabelWarning.hide()
 
-    def setSectionSize(self):
+    def set_section_size(self):
         """
         Set tableview col width based on contents
         """
@@ -509,14 +528,14 @@ class LinzDataImporter:
             3, QHeaderView.ResizeToContents
         )
 
-    def loadAllServices(self, update_cache=False):
+    def load_all_services(self, update_cache=False):
         """
         Iterate over all domains and service types (WMTS, WFS).
         Request, process, store and format capability documents
         """
 
         all_data = []
-        for domain in self.api_key_instance.getApiKeys():
+        for domain in self.api_key_instance.get_api_keys():
             for service in SER_TYPES:
                 if domain in SER_TYPES_SKIP:
                     if service in SER_TYPES_SKIP[domain]:
@@ -538,21 +557,21 @@ class LinzDataImporter:
                 self.data_feeds[
                     data_feed
                 ] = service_data_instance  # keep record of ser data insts
-                service_data_instance.processServiceData()
+                service_data_instance.process_service_data()
                 if service_data_instance.disabled:
                     continue
                 if service_data_instance.err:
                     return service_data_instance.err
                 all_data.extend(service_data_instance.info)
         self.table_model.setData(all_data)
-        self.setSectionSize()
+        self.set_section_size()
         self.services_loaded = True
 
         if update_cache:
-            self.purgeCache()
+            self.purge_cache()
         return None
 
-    def showSelectedOption(self, item):
+    def show_selected_option(self, item):
         """
         Connected to left pane QListWidget TOC. When items in the QListWidget
         are clicked, display the associated Tab. If 'WMTS',
@@ -568,15 +587,15 @@ class LinzDataImporter:
                 self.curr_list_wid_index = self.dlg.uListOptions.findItems(
                     item.text(), Qt.MatchExactly
                 )[0]
-                self.proxy_model.setServiceType(("WMTS", "WFS"))
+                self.proxy_model.set_service_type(("WMTS", "WFS"))
             elif item.text() == "WFS":
-                self.proxy_model.setServiceType((item.text()))
+                self.proxy_model.set_service_type((item.text()))
                 self.curr_list_wid_index = self.dlg.uListOptions.findItems(
                     item.text(), Qt.MatchExactly
                 )[0]
                 self.dlg.uStackedWidget.setCurrentIndex(0)
             elif item.text() == "WMTS":
-                self.proxy_model.setServiceType((item.text()))
+                self.proxy_model.set_service_type((item.text()))
                 self.curr_list_wid_index = self.dlg.uListOptions.findItems(
                     item.text(), Qt.MatchExactly
                 )[0]
@@ -586,7 +605,7 @@ class LinzDataImporter:
             elif item.text() == "Help":
                 self.dlg.uStackedWidget.setCurrentIndex(2)
 
-    def layerCrsSelected(self):
+    def layer_crs_selected(self):
         """
         Track the user selected crs. Check validity to
         ensure only well formed crs are provided.
@@ -599,7 +618,7 @@ class LinzDataImporter:
             if self.selected_crs:
                 self.selected_crs_int = int(self.selected_crs.strip("EPSG:"))
 
-    def getPreview(self, res, res_timeout):
+    def get_preview(self, res, res_timeout):
         """
         Fetch the preview image from the internet
 
@@ -613,7 +632,7 @@ class LinzDataImporter:
         url = (
             "http://koordinates-tiles-d.global.ssl.fastly.net"
             "/services/tiles/v4/thumbnail/layer={0},style=auto/{1}.png".format(
-                self.id, res
+                self.object_id, res
             )
         )
         try:
@@ -629,7 +648,7 @@ class LinzDataImporter:
             )
         return True
 
-    def updPreview(self):
+    def upd_preview(self):
         """
         On the tableviews rowChanged fetch the datasets preview image
         """
@@ -639,15 +658,15 @@ class LinzDataImporter:
             self.dlg.uLabelImgPreview.setText("No preview available")
             return
 
-        if self.getPreview("300x200", 0.5):
+        if self.get_preview("300x200", 0.5):
             return
-        if self.getPreview("150x100", 5):
+        if self.get_preview("150x100", 5):
             return
 
         self.dlg.uLabelImgPreview.clear()
         self.dlg.uLabelImgPreview.setText("No preview available")
 
-    def currSelection(self):
+    def curr_selection(self):
         """
         On the tableviews currentRowChanged store the details of the current
         record Also, update the abstract as shown in the UI
@@ -656,20 +675,20 @@ class LinzDataImporter:
         self.domain = self.row[0]
         abstract = self.row[5]
         self.data_type = self.row[1]
-        self.id = self.row[3]
+        self.object_id = self.row[3]
         self.service = self.row[2]
         self.layer_title = self.row[4]
-        self.crs_options = self.row[6]
+        crs_options = self.row[6]
         self.dlg.uCRSCombo.clear()
         if self.data_type != "table":
-            self.dlg.uCRSCombo.addItems(self.crs_options)
-            curr_crs = self.mapCrs()
-            if curr_crs in self.crs_options:
+            self.dlg.uCRSCombo.addItems(crs_options)
+            curr_crs = self.map_crs()
+            if curr_crs in crs_options:
                 idx = self.dlg.uCRSCombo.findText(curr_crs)
                 self.dlg.uCRSCombo.setCurrentIndex(idx)
         self.dlg.uTextDescription.setText(abstract)
 
-    def userSelection(self, selected):
+    def user_selection(self, selected):
         """
         wrapper for methods required when the tableviews currentRowChanged
 
@@ -677,13 +696,13 @@ class LinzDataImporter:
         :type res: QModelIndex
         """
 
-        sourceIndex = self.proxy_model.mapToSource(selected)
-        self.row = self.table_model.selectedRow(sourceIndex.row())
+        source_index = self.proxy_model.mapToSource(selected)
+        self.row = self.table_model.selectedRow(source_index.row())
 
-        self.currSelection()
-        self.updPreview()
+        self.curr_selection()
+        self.upd_preview()
 
-    def filterTable(self):
+    def filter_table(self):
         """
         Filter the table data when uTextFilter.textChanged
         """
@@ -693,7 +712,7 @@ class LinzDataImporter:
         self.proxy_model.setFilterKeyColumn(2)
         self.proxy_model.setFilterFixedString(filter_text)
 
-    def setTableModelView(self):
+    def set_table_model_view(self):
         """
         Connect the tableView to the proxy model to the table model
         """
@@ -709,16 +728,16 @@ class LinzDataImporter:
         self.dlg.uTableView.horizontalHeader().setStretchLastSection(True)
 
         # Trigger updating of data abstract on user selection
-        self.selectionModel = self.dlg.uTableView.selectionModel()
-        self.selectionModel.currentRowChanged.connect(self.userSelection)
+        self.selection_model = self.dlg.uTableView.selectionModel()
+        self.selection_model.currentRowChanged.connect(self.user_selection)
 
         # Table filtering trigger
-        self.dlg.uTextFilter.textChanged.connect(self.filterTable)
+        self.dlg.uTextFilter.textChanged.connect(self.filter_table)
 
         # Import Button Clicked
-        self.dlg.uBtnImport.clicked.connect(self.importDataset)
+        self.dlg.uBtnImport.clicked.connect(self.import_dataset)
 
-    def mapCrs(self):
+    def map_crs(self):
         """
         Return the current mapCanvas CRS
 
@@ -729,7 +748,7 @@ class LinzDataImporter:
         crs = self.canvas.mapSettings().destinationCrs().authid()
         return crs
 
-    def setProjectSRID(self):
+    def set_project_srid(self):
         """
         Set the projects projection. This is only done when a layer
         is imported and no others have been already.
@@ -747,7 +766,7 @@ class LinzDataImporter:
             duration=6,
         )
 
-    def infoCRS(self):
+    def info_crs(self):
         """
         Open a QgsMessageBar informing the projects crs has changed
         """
@@ -760,18 +779,18 @@ class LinzDataImporter:
             duration=10,
         )
 
-    def zoomTo(self):
+    def zoom_to(self):
         """zoom to newly imported"""
         # Will seek user feedback. QGIS will
         # Pan to first layer loaded
 
-    def importDataset(self):
+    def import_dataset(self):
         """
         Import the selected dataset to QGIS
         """
 
         if not self.layers_loaded and not self.data_type == "table":
-            self.setProjectSRID()
+            self.set_project_srid()
 
         if self.service == "WFS":
             uri = (
@@ -783,11 +802,11 @@ class LinzDataImporter:
                 "version='{3}'"
             ).format(
                 self.domain,
-                self.api_key_instance.getApiKey(self.domain),
+                self.api_key_instance.get_api_key(self.domain),
                 self.service.lower(),
                 self.service_versions[self.service.lower()],
                 self.data_type,
-                self.id,
+                self.object_id,
             )
 
             layer = QgsVectorLayer(uri, self.layer_title, self.service.upper())
@@ -807,8 +826,8 @@ class LinzDataImporter:
                     self.domain,
                     self.selected_crs,
                     self.data_type,
-                    self.id,
-                    self.api_key_instance.getApiKey(self.domain),
+                    self.object_id,
+                    self.api_key_instance.get_api_key(self.domain),
                 )
             else:
                 uri = (
@@ -823,8 +842,8 @@ class LinzDataImporter:
                     self.domain,
                     self.selected_crs,
                     self.data_type,
-                    self.id,
-                    self.api_key_instance.getApiKey(self.domain),
+                    self.object_id,
+                    self.api_key_instance.get_api_key(self.domain),
                     self.service.lower(),
                     self.service_versions[self.service.lower()],
                 )

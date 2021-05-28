@@ -15,10 +15,12 @@
  ***************************************************************************/
 """
 
-from builtins import str
-
-from qgis.PyQt.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
-from qgis.PyQt.QtWidgets import QComboBox, QCompleter
+from qgis.PyQt.QtCore import (  # pylint:disable=import-error
+    QAbstractTableModel,
+    QSortFilterProxyModel,
+    Qt,
+)
+from qgis.PyQt.QtWidgets import QComboBox, QCompleter  # pylint:disable=import-error
 
 ## Below model not currently in-use
 # class TableView(QTableView):
@@ -93,7 +95,7 @@ class TableModel(QAbstractTableModel):
 
         try:
             return len(self.arraydata[0]) - 2  # hiding description
-        except:
+        except (IndexError, ValueError):
             return 0
 
     def data(self, index, role):
@@ -114,7 +116,7 @@ class TableModel(QAbstractTableModel):
             return None
         return str(self.arraydata[index.row()][index.column()])
 
-    def setData(self, data):
+    def setData(self, data):  # pylint:disable=invalid-name
         """
         Sets the role data for the item at index to value
 
@@ -127,7 +129,7 @@ class TableModel(QAbstractTableModel):
         self.arraydata = data
         self.layoutChanged.emit()
 
-    def selectedRow(self, row):
+    def selectedRow(self, row):  # pylint:disable=invalid-name
         """
         Return data for row selected by user
 
@@ -139,7 +141,7 @@ class TableModel(QAbstractTableModel):
 
         return self.arraydata[row]
 
-    def headerData(self, col, orientation, role):
+    def headerData(self, col, orientation, role):  # pylint:disable=invalid-name
         """ "
         Returns the data for the given role and section in the header
         with the specified orientation.
@@ -193,14 +195,14 @@ class ExtendedCombobox(QComboBox):
 
         # always show all completions
         self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
-        self.pFilterModel = QSortFilterProxyModel(self)
-        self.pFilterModel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        self.p_filter_model = QSortFilterProxyModel(self)
+        self.p_filter_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.completer.setPopup(self.view())
         self.setCompleter(self.completer)
-        self.lineEdit().textEdited.connect(self.pFilterModel.setFilterFixedString)
+        self.lineEdit().textEdited.connect(self.p_filter_model.setFilterFixedString)
         self.completer.activated.connect(self.setTextIfCompleterIsClicked)
 
-    def setModel(self, model):
+    def setModel(self, model):  # pylint:disable=invalid-name
         """
         Set the model to use the Filter model
 
@@ -209,17 +211,17 @@ class ExtendedCombobox(QComboBox):
         """
 
         super().setModel(model)
-        self.pFilterModel.setSourceModel(model)
-        self.completer.setModel(self.pFilterModel)
+        self.p_filter_model.setSourceModel(model)
+        self.completer.setModel(self.p_filter_model)
 
-    def setModelColumn(self, column):
+    def setModelColumn(self, column):  # pylint:disable=invalid-name
         """
         :param model: The model to be used by the combobox
         :type model: PyQt5.QtGui.QStandardItemModel
         """
 
         self.completer.setCompletionColumn(column)
-        self.pFilterModel.setFilterKeyColumn(column)
+        self.p_filter_model.setFilterKeyColumn(column)
         super().setModelColumn(column)
 
     def view(self):
@@ -242,7 +244,7 @@ class ExtendedCombobox(QComboBox):
 
         return self.currentIndex()
 
-    def setTextIfCompleterIsClicked(self, text):
+    def setTextIfCompleterIsClicked(self, text):  # pylint:disable=invalid-name
         """
         :param text: The current text of the qlineedit
         :type text: str
