@@ -19,20 +19,18 @@ import glob
 import os.path
 import re
 import time
+from urllib.error import URLError
+from urllib.request import urlopen
 
 from owslib.wfs import WebFeatureService
 from owslib.wmts import WebMapTileService
 from qgis.core import QgsApplication  # pylint:disable=import-error
+from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
 
 try:
     from lxml.etree import XMLSyntaxError
 except ImportError:
     from xml.etree.ElementTree import ParseError as XMLSyntaxError
-
-from urllib.error import URLError
-from urllib.request import urlopen
-
-from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
 
 
 class ApiKey:
