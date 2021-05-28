@@ -136,13 +136,11 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.actions = []
         self.toolbar = self.iface.addToolBar(u"LINZ Data Importer")
         self.toolbar.setObjectName(u"LINZ Data Importer")
-        self.tool_button = QToolButton()
         self.menu = self.translate(u"&linz-data-importer")
 
         # Track data reading
         self.data_feeds = {}
         self.domains = []
-        self.domain = None  # curr domain
         self.row = None
         self.service = None
         self.object_id = None
@@ -167,7 +165,6 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.selection_model: QItemSelectionModel
 
         self.qimage = QImage
-        self.domain: str
         self.data_type: str
         self.proxy_model: CustomSortFilterProxyModel
         self.table_model: TableModel
