@@ -50,7 +50,6 @@ from qgis.PyQt.QtWidgets import (  # pylint:disable=import-error
     QAction,
     QHeaderView,
     QListWidgetItem,
-    QToolButton,
 )
 
 # Import the code for the dialog
