@@ -825,14 +825,13 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
                     "&crs={1}"  # EPSG:2193
                     "&dpiMode=7&featureCount=10"
                     "&format=image/png"
-                    "&layers={3}"
+                    "&layers={2}"
                     "&styles=default"
                     "&tileMatrixSet={1}"  # EPSG:2193
-                    "&url=https://{0}/v1/tiles/aerial/WMTSCapabilities.xml?api={4}"
+                    "&url=https://{0}/v1/tiles/aerial/WMTSCapabilities.xml?api={3}"
                 ).format(
                     self.domain,
                     self.selected_crs,
-                    self.data_type,
                     self.object_id,
                     self.api_key_instance.get_api_key(self.domain),
                 )
