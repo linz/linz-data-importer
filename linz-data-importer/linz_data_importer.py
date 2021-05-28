@@ -770,19 +770,6 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
             duration=6,
         )
 
-    def info_crs(self):
-        """
-        Open a QgsMessageBar informing the projects crs has changed
-        """
-
-        self.iface.messageBar().pushMessage(
-            "Info",
-            "The LINZ Data Importer Plugin has changed the projects CRS to {0} to "
-            "provide a common CRS when importing datasets".format(self.wmts_epsg),
-            level=Qgis.Info,
-            duration=10,
-        )
-
     def zoom_to(self):
         """zoom to newly imported"""
         # Will seek user feedback. QGIS will
