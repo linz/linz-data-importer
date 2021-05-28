@@ -33,6 +33,8 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from .linz_data_importer import LinzDataImporter
+    from .linz_data_importer import (  # pylint:disable=import-outside-toplevel
+        LinzDataImporter,
+    )
 
     return LinzDataImporter(iface)
