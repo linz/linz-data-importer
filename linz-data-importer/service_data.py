@@ -429,7 +429,7 @@ class ServiceData(Localstore):  # pylint: disable=too-many-instance-attributes
         full_id_regex = re.compile(
             r"([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)"
         )
-        for dataset_id, dataset_obj in cont.items():
+        for _dataset_id, dataset_obj in cont.items():
             self.crs = []
             if self.domain == "basemaps.linz.govt.nz":
                 object_id = dataset_obj.id
