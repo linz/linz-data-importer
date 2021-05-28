@@ -127,11 +127,11 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         )
 
         if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
+            translator = QTranslator()
+            translator.load(locale_path)
 
             if qVersion() > "4.3.3":
-                QCoreApplication.installTranslator(self.translator)
+                QCoreApplication.installTranslator(translator)
 
         self.actions = []
         self.toolbar = self.iface.addToolBar(u"LINZ Data Importer")
