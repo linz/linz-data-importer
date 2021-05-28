@@ -236,7 +236,7 @@ class Localstore:
             self.xml = file_pointer.read()
 
 
-class ServiceData(Localstore):
+class ServiceData(Localstore):  # pylint: disable=too-many-instance-attributes
     """
     Get, Store and Process WxS Data
     """

@@ -98,7 +98,7 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         )
 
 
-class LinzDataImporter:
+class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """
     QGIS Plugin Implementation.
     """
