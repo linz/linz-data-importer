@@ -15,7 +15,6 @@
  ***************************************************************************/
 """
 
-import time
 import unittest
 
 from qgis.PyQt.Qt import QComboBox

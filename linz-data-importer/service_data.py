@@ -20,16 +20,13 @@ import os.path
 import re
 import time
 
-from owslib.util import ServiceException
 from owslib.wfs import WebFeatureService
 from owslib.wmts import WebMapTileService
 from qgis.core import QgsApplication
 
 try:
-    from lxml import etree
     from lxml.etree import XMLSyntaxError
 except ImportError:
-    from xml import etree
     from xml.etree.ElementTree import ParseError as XMLSyntaxError
 
 from urllib.error import URLError
@@ -38,7 +35,7 @@ from urllib.request import urlopen
 from qgis.PyQt.QtCore import QSettings
 
 
-class ApiKey(object):
+class ApiKey:
     """
     Store API Keys for each domain. Required to
     fetch service data
@@ -48,7 +45,8 @@ class ApiKey(object):
     def __init__(self):
         self.api_keys = self.getApiKeys()
 
-    def getApiKeys(self):
+    @staticmethod
+    def getApiKeys():
         """
         Return Domain / API keys stored in QSettings
 
@@ -84,7 +82,7 @@ class ApiKey(object):
         self.api_keys = self.getApiKeys()
 
 
-class Localstore(object):
+class Localstore:
     """
     Caching of capability documents
     """
@@ -154,13 +152,15 @@ class Localstore(object):
                 file = os.path.join(dir, f)
                 self.delLocalSeviceXML(file)
 
-    def delAllLocalServiceXML(self, services=["wfs", "wmts"]):
+    def delAllLocalServiceXML(self, services=None):
         """
         Find and delete all cached files
 
         :param domain: list services
         :type domain: list
         """
+        if services is None:
+            services = ["wfs", "wmts"]
 
         search_str = "|".join(["_{}.xml".format(x) for x in services])
 
@@ -243,7 +243,7 @@ class ServiceData(Localstore):
     Get, Store and Process WxS Data
     """
 
-    def __init__(
+    def __init__(  # pylint:disable=too-many-arguments
         self, domain, service, service_version, api_key_instance, upd_cache=False
     ):
         """
@@ -370,14 +370,14 @@ class ServiceData(Localstore):
         try:
             if self.service == "wmts":
                 if self.domain == "basemaps.linz.govt.nz":
-                    xml = urlopen(
+                    url = (
                         "https://{0}/v1/tiles/aerial/"
                         "WMTSCapabilities.xml?api={1}".format(
                             self.domain, self.api_key_int.getApiKey(self.domain)
                         )
                     )
                 else:
-                    xml = urlopen(
+                    url = (
                         "https://{0}/services;"
                         "key={1}/{2}/{3}/WMTSCapabilities.xml".format(
                             self.domain,
@@ -388,7 +388,7 @@ class ServiceData(Localstore):
                     )
 
             elif self.service == "wfs" and self.domain != "basemaps.linz.govt.nz":
-                xml = urlopen(
+                url = (
                     "https://{0}/services;"
                     "key={1}/{2}?service={3}&version={4}"
                     "&request=GetCapabilities".format(
@@ -399,7 +399,8 @@ class ServiceData(Localstore):
                         self.version,
                     )
                 )
-            self.xml = xml.read()
+            with urlopen(url) as xml:
+                self.xml = xml.read()
 
             # write to cache
             with open(self.file, "wb") as f:
@@ -414,7 +415,7 @@ class ServiceData(Localstore):
 
     def sortCrs(self):
         # wfs returns some no valid crs values
-        valid = re.compile("^EPSG\:\d+")
+        valid = re.compile(r"^EPSG:\d+")
         self.crs = [s for s in self.crs if valid.match(s)]
         # sort
         self.crs.sort(key=lambda x: int(x.split(":")[1]))
@@ -426,16 +427,16 @@ class ServiceData(Localstore):
 
         service_data = []
         cont = self.obj.contents
+        full_id_regex = re.compile(
+            r"([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)"
+        )
         for dataset_id, dataset_obj in cont.items():
             self.crs = []
             if self.domain == "basemaps.linz.govt.nz":
                 id = dataset_obj.id
                 type = "layer"
             else:
-                full_id = re.search(
-                    r"([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)",
-                    dataset_obj.id,
-                )
+                full_id = full_id_regex.search(dataset_obj.id)
                 type = full_id.group("type")
                 id = full_id.group("id")
             # Get and standarise espg codes

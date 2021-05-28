@@ -18,7 +18,7 @@
 
 import os
 
-from PyQt5 import QtGui, QtWidgets, uic
+from PyQt5 import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), "Service_dialog_base.ui")
@@ -28,7 +28,7 @@ FORM_CLASS, _ = uic.loadUiType(
 class ServiceDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
-        super(ServiceDialog, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)
 
         # Change look of list widget

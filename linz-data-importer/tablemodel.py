@@ -15,12 +15,10 @@
  ***************************************************************************/
 """
 
-import sys
 from builtins import str
 
 from qgis.PyQt.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
-from qgis.PyQt.QtGui import QStandardItem
-from qgis.PyQt.QtWidgets import QApplication, QComboBox, QCompleter
+from qgis.PyQt.QtWidgets import QComboBox, QCompleter
 
 ## Below model not currently in-use
 # class TableView(QTableView):
@@ -55,7 +53,7 @@ class TableModel(QAbstractTableModel):
     models that represent table data data as a two-dimensional array of items
     """
 
-    def __init__(self, data=[[]], headers=[], parent=None):
+    def __init__(self, data, headers, parent=None):
         """
         Initialise  TableModel
 
@@ -71,7 +69,7 @@ class TableModel(QAbstractTableModel):
         self.arraydata = data
         self.header = headers
 
-    def rowCount(self, parent):
+    def rowCount(self, parent):  # pylint:disable=invalid-name,unused-argument
         """
         Returns the number of rows under the given parent
 
@@ -83,7 +81,7 @@ class TableModel(QAbstractTableModel):
 
         return len(self.arraydata)
 
-    def columnCount(self, parent):
+    def columnCount(self, parent):  # pylint:disable=invalid-name,unused-argument
         """
         Returns the number of columns for the children of the given parent
 
@@ -112,7 +110,7 @@ class TableModel(QAbstractTableModel):
 
         if not index.isValid():
             return None
-        elif role != Qt.DisplayRole:
+        if role != Qt.DisplayRole:
             return None
         return str(self.arraydata[index.row()][index.column()])
 
@@ -160,7 +158,7 @@ class TableModel(QAbstractTableModel):
             return self.header[col]
         return None
 
-    def flags(self, index):
+    def flags(self, index):  # pylint:disable=no-self-use,unused-argument
         """
         Returns the item flags for the given index.
 
@@ -187,7 +185,7 @@ class ExtendedCombobox(QComboBox):
         :type parent: PyQt5.QtWidgets.QWidget
         """
 
-        super(ExtendedCombobox, self).__init__(parent)
+        super().__init__(parent)
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setEditable(True)
@@ -210,7 +208,7 @@ class ExtendedCombobox(QComboBox):
         :type model: PyQt5.QtGui.QStandardItemModel
         """
 
-        super(ExtendedCombobox, self).setModel(model)
+        super().setModel(model)
         self.pFilterModel.setSourceModel(model)
         self.completer.setModel(self.pFilterModel)
 
@@ -222,7 +220,7 @@ class ExtendedCombobox(QComboBox):
 
         self.completer.setCompletionColumn(column)
         self.pFilterModel.setFilterKeyColumn(column)
-        super(ExtendedCombobox, self).setModelColumn(column)
+        super().setModelColumn(column)
 
     def view(self):
         """

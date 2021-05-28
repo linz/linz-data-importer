@@ -21,11 +21,9 @@
 import os.path
 import re
 import threading
-import time
 import urllib.request
 from builtins import object, range
 
-from owslib import wfs, wmts
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -33,28 +31,16 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QRegExp,
     QSettings,
-    QSize,
     QSortFilterProxyModel,
     Qt,
     QTranslator,
     qVersion,
 )
-from qgis.PyQt.QtGui import QIcon, QImage, QPixmap, QStandardItem, QStandardItemModel
-from qgis.PyQt.QtWidgets import (
-    QAction,
-    QHeaderView,
-    QListWidgetItem,
-    QMenu,
-    QToolButton,
-)
-
-# Initialize Qt resources from file resources.py
-from . import resources
+from qgis.PyQt.QtGui import QIcon, QImage, QPixmap, QStandardItemModel
+from qgis.PyQt.QtWidgets import QAction, QHeaderView, QListWidgetItem, QToolButton
 
 # Import the code for the dialog
 from .gui.Service_dialog import ServiceDialog
@@ -79,7 +65,7 @@ SER_TYPES_SKIP = {"basemaps.linz.govt.nz": ["wfs"]}
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
     def __init__(self, parent=None):
-        super(CustomSortFilterProxyModel, self).__init__(parent)
+        super().__init__(parent)
         self.data_type = ("WMTS", "WFS")
 
     def setServiceType(self, service_type):
@@ -101,7 +87,7 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         )
 
 
-class LinzDataImporter(object):
+class LinzDataImporter:
     """
     QGIS Plugin Implementation.
     """
@@ -160,7 +146,7 @@ class LinzDataImporter(object):
         self.local_store = Localstore()
 
     # noinspection PyMethodMayBeStatic
-    def tr(self, message):
+    def tr(self, message):  # pylint:disable=no-self-use
         """
         Get the translation for a string using Qt translation API.
         We implement this ourselves since we do not inherit QObject.
@@ -172,7 +158,7 @@ class LinzDataImporter(object):
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate("LinzDataImporter", message)
 
-    def add_action(
+    def add_action(  # pylint:disable=too-many-arguments
         self,
         icon_path,
         text,
@@ -462,7 +448,8 @@ class LinzDataImporter(object):
         if not self.services_loaded:
             if not self.api_key_instance.getApiKeys():
                 self.dlg.uLabelWarning.setText(
-                    'To access data, add your API key in "Settings". See "Help" for more information.'
+                    'To access data, add your API key in "Settings".'
+                    ' See "Help" for more information.'
                 )
                 self.dlg.uLabelWarning.show()
             else:
@@ -603,7 +590,7 @@ class LinzDataImporter(object):
         ensure only well formed crs are provided.
         """
 
-        valid = re.compile("^EPSG\:\d+")
+        valid = re.compile(r"^EPSG:\d+")
         crs_text = self.dlg.uCRSCombo.currentText()
         if valid.match(crs_text):
             self.selected_crs = str(self.dlg.uCRSCombo.currentText())
@@ -652,11 +639,11 @@ class LinzDataImporter(object):
 
         if self.getPreview("300x200", 0.5):
             return
-        elif self.getPreview("150x100", 5):
+        if self.getPreview("150x100", 5):
             return
-        else:
-            self.dlg.uLabelImgPreview.clear()
-            self.dlg.uLabelImgPreview.setText("No preview available")
+
+        self.dlg.uLabelImgPreview.clear()
+        self.dlg.uLabelImgPreview.setText("No preview available")
 
     def currSelection(self):
         """
@@ -765,10 +752,8 @@ class LinzDataImporter(object):
 
         self.iface.messageBar().pushMessage(
             "Info",
-            """The LINZ Data Importer Plugin has changed the projects CRS to {0} to 
-            provide a common CRS when importing datasets""".format(
-                self.wmts_epsg
-            ),
+            "The LINZ Data Importer Plugin has changed the projects CRS to {0} to "
+            "provide a common CRS when importing datasets".format(self.wmts_epsg),
             level=Qgis.Info,
             duration=10,
         )
@@ -777,7 +762,6 @@ class LinzDataImporter(object):
         """zoom to newly imported"""
         # Will seek user feedback. QGIS will
         # Pan to first layer loaded
-        pass
 
     def importDataset(self):
         """

@@ -16,14 +16,13 @@
 """
 
 import glob
-import io
 import os
 import re
 import shutil
 import unittest
 
 from qgis.core import QgsApplication, QgsProject
-from qgis.PyQt.QtCore import QBuffer, QSettings, Qt
+from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtTest import QTest
 from qgis.utils import plugins
@@ -181,6 +180,7 @@ class UnitLevel(unittest.TestCase):
         # is the apikey QSettings update.
 
         # confirm pre test state is as expected
+        # pylint:disable=unreachable
         self.assertEqual(
             {self.domain1: API_KEYS[self.domain1]}, self.api_key_instance.getApiKeys()
         )
@@ -334,21 +334,15 @@ class UnitLevel(unittest.TestCase):
         """
         # Run unload check icon has been removed
 
-        pass
-
     def test_run(self):
         """
         Test via int tests
         """
 
-        pass
-
     def test_run_warning(self):
         """
         Test via int tests
         """
-
-        pass
 
     def test_updateServiceDataCache(self):
         """
@@ -384,25 +378,21 @@ class UnitLevel(unittest.TestCase):
         """
         Test via int tests
         """
-        pass
 
     def test_loadAllServices(self):
         """
         Test via int tests
         """
-        pass
 
     def test_dataToTable(self):
         """
         Test via int tests
         """
-        pass
 
     def test_showSelectedOption(self):
         """
         Test via int tests
         """
-        pass
 
     def test_getPreview(self):
         """
@@ -429,25 +419,21 @@ class UnitLevel(unittest.TestCase):
         """
         Test via int tests
         """
-        pass
 
     def test_updPreview(self):
         """
         Test via int tests
         """
-        pass
 
     def test_filterTable(self):
         """
         Test via int tests
         """
-        pass
 
     def test_mapCrs(self):
         """
         Test via int tests
         """
-        pass
 
     def test_setProjectSRID(self):
         """
