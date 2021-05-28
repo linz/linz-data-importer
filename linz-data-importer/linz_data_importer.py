@@ -23,6 +23,7 @@ import re
 import threading
 import urllib.request
 from typing import Optional
+from urllib.error import URLError
 
 from PyQt5.QtCore import QItemSelectionModel
 from qgis.core import (  # pylint:disable=import-error
@@ -640,7 +641,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         )
         try:
             img_data = urllib.request.urlopen(url, timeout=res_timeout).read()
-        except:
+        except URLError:
             return False
         self.qimage.loadFromData(img_data)
         if res == "300x200":
