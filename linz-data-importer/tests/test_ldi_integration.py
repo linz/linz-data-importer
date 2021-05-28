@@ -318,7 +318,8 @@ class UserWorkFlows(unittest.TestCase):
         self.filter_domain("data.linz.govt.nz")
 
     @unittest.skip(
-        "Intermittent 'IndexError: list index out of range' when running `QgsProject.instance().mapLayersByName(layer_name)[0]`"
+        "Intermittent 'IndexError: list index out of range' when running"
+        " `QgsProject.instance().mapLayersByName(layer_name)[0]`"
     )
     def test_should_filter_wfs_by_map_bbox(self):
         """

@@ -19,20 +19,18 @@ import glob
 import os.path
 import re
 import time
+from urllib.error import URLError
+from urllib.request import urlopen
 
 from owslib.wfs import WebFeatureService
 from owslib.wmts import WebMapTileService
 from qgis.core import QgsApplication  # pylint:disable=import-error
+from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
 
 try:
     from lxml.etree import XMLSyntaxError
 except ImportError:
     from xml.etree.ElementTree import ParseError as XMLSyntaxError
-
-from urllib.error import URLError
-from urllib.request import urlopen
-
-from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
 
 
 class ApiKey:
@@ -238,7 +236,7 @@ class Localstore:
             self.xml = file_pointer.read()
 
 
-class ServiceData(Localstore):
+class ServiceData(Localstore):  # pylint: disable=too-many-instance-attributes
     """
     Get, Store and Process WxS Data
     """
@@ -431,7 +429,7 @@ class ServiceData(Localstore):
         full_id_regex = re.compile(
             r"([aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\.[aA-zZ]+\\:)?(?P<type>[aA-zZ]+)-(?P<id>[0-9]+)"
         )
-        for dataset_id, dataset_obj in cont.items():
+        for _dataset_id, dataset_obj in cont.items():
             self.crs = []
             if self.domain == "basemaps.linz.govt.nz":
                 object_id = dataset_obj.id

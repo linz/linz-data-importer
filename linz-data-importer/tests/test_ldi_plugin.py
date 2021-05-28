@@ -328,22 +328,6 @@ class UnitLevel(unittest.TestCase):
             "Warning: You can only store up to . " "10 domain entries",
         )
 
-    def test_unload(self):
-        """
-        Not Currently Tested
-        """
-        # Run unload check icon has been removed
-
-    def test_run(self):
-        """
-        Test via int tests
-        """
-
-    def test_run_warning(self):
-        """
-        Test via int tests
-        """
-
     def test_update_service_data_cache(self):
         """
         Test the updating of cache
@@ -374,26 +358,6 @@ class UnitLevel(unittest.TestCase):
             cached_file_stats[file] = os.stat(file_path).st_mtime
         self.assertNotEqual(cached_file_stats, insitu_file_stats)
 
-    def test_load_ui(self):
-        """
-        Test via int tests
-        """
-
-    def test_load_all_services(self):
-        """
-        Test via int tests
-        """
-
-    def test_data_to_table(self):
-        """
-        Test via int tests
-        """
-
-    def test_show_selected_option(self):
-        """
-        Test via int tests
-        """
-
     def test_get_preview(self):
         """
         Test the getting of a preview image
@@ -414,26 +378,6 @@ class UnitLevel(unittest.TestCase):
         # Is the downloaded image the same as the stored?
         self.assertEqual(test_img_match, preview_img)
         self.assertNotEqual(test_img_mismatch, preview_img)
-
-    def test_upd_description(self):
-        """
-        Test via int tests
-        """
-
-    def test_upd_preview(self):
-        """
-        Test via int tests
-        """
-
-    def test_filter_table(self):
-        """
-        Test via int tests
-        """
-
-    def test_map_crs(self):
-        """
-        Test via int tests
-        """
 
     def test_set_project_srid(self):
         """

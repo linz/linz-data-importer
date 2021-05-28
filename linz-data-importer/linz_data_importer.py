@@ -23,6 +23,7 @@ import re
 import threading
 import urllib.request
 from typing import Optional
+from urllib.error import URLError
 
 from PyQt5.QtCore import QItemSelectionModel
 from qgis.core import (  # pylint:disable=import-error
@@ -50,7 +51,6 @@ from qgis.PyQt.QtWidgets import (  # pylint:disable=import-error
     QAction,
     QHeaderView,
     QListWidgetItem,
-    QToolButton,
 )
 
 # Import the code for the dialog
@@ -98,7 +98,7 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         )
 
 
-class LinzDataImporter:
+class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """
     QGIS Plugin Implementation.
     """
@@ -127,22 +127,20 @@ class LinzDataImporter:
         )
 
         if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
+            translator = QTranslator()
+            translator.load(locale_path)
 
             if qVersion() > "4.3.3":
-                QCoreApplication.installTranslator(self.translator)
+                QCoreApplication.installTranslator(translator)
 
         self.actions = []
         self.toolbar = self.iface.addToolBar(u"LINZ Data Importer")
         self.toolbar.setObjectName(u"LINZ Data Importer")
-        self.tool_button = QToolButton()
         self.menu = self.translate(u"&linz-data-importer")
 
         # Track data reading
         self.data_feeds = {}
         self.domains = []
-        self.domain = None  # curr domain
         self.row = None
         self.service = None
         self.object_id = None
@@ -161,6 +159,12 @@ class LinzDataImporter:
 
         self.qimage = QImage
         self.domain: str
+        self.data_type: str
+        self.proxy_model: CustomSortFilterProxyModel
+        self.table_model: TableModel
+        self.selection_model: QItemSelectionModel
+
+        self.qimage = QImage
         self.data_type: str
         self.proxy_model: CustomSortFilterProxyModel
         self.table_model: TableModel
@@ -637,7 +641,7 @@ class LinzDataImporter:
         )
         try:
             img_data = urllib.request.urlopen(url, timeout=res_timeout).read()
-        except:
+        except URLError:
             return False
         self.qimage.loadFromData(img_data)
         if res == "300x200":
@@ -766,19 +770,6 @@ class LinzDataImporter:
             duration=6,
         )
 
-    def info_crs(self):
-        """
-        Open a QgsMessageBar informing the projects crs has changed
-        """
-
-        self.iface.messageBar().pushMessage(
-            "Info",
-            "The LINZ Data Importer Plugin has changed the projects CRS to {0} to "
-            "provide a common CRS when importing datasets".format(self.wmts_epsg),
-            level=Qgis.Info,
-            duration=10,
-        )
-
     def zoom_to(self):
         """zoom to newly imported"""
         # Will seek user feedback. QGIS will
@@ -818,14 +809,13 @@ class LinzDataImporter:
                     "&crs={1}"  # EPSG:2193
                     "&dpiMode=7&featureCount=10"
                     "&format=image/png"
-                    "&layers={3}"
+                    "&layers={2}"
                     "&styles=default"
                     "&tileMatrixSet={1}"  # EPSG:2193
-                    "&url=https://{0}/v1/tiles/aerial/WMTSCapabilities.xml?api={4}"
+                    "&url=https://{0}/v1/tiles/aerial/WMTSCapabilities.xml?api={3}"
                 ).format(
                     self.domain,
                     self.selected_crs,
-                    self.data_type,
                     self.object_id,
                     self.api_key_instance.get_api_key(self.domain),
                 )
