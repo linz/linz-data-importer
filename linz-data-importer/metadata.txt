@@ -6,10 +6,11 @@ qgisMinimumVersion=3.0.0
 qgisMaximumVersion=3.99.0
 description=Import LDS OGC Datasets into QGIS
 version=2.2.0
-author=Land Information New Zealand
+author=Toitū Te Whenua Land Information New Zealand
 email=linzdataservice@linz.govt.nz
 
-about=Import LINZ (and others) OGC Datasets into QGIS
+about=Get the LINZ Data Importer plugin to explore and connect to data from Toitū Te Whenua Land Information New Zealand into QGIS. Import any WFS or WMTS supported data from the LINZ Data Service, LINZ Basemaps or other participating agency open data portals direct into your QGIS project.
+
 
 tracker=https://github.com/linz/linz-data-importer/issues
 repository=https://github.com/linz/linz-data-importer
