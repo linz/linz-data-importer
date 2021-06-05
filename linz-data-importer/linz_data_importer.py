@@ -305,6 +305,11 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         item.setIcon(QIcon(image_path))
         self.dlg.uListOptions.addItem(item)
 
+        item = QListWidgetItem("About")
+        image_path = os.path.join(os.path.dirname(__file__), "icons", "about.png")
+        item.setIcon(QIcon(image_path))
+        self.dlg.uListOptions.addItem(item)
+
         # set table model
         self.set_table_model_view()
 
@@ -316,6 +321,15 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
             help_html = file.read()
             help_html.format(self.plugin_dir)
         self.dlg.hHelpHtml.setHtml(help_html.format(icon_path))
+
+        # set about html
+        self.dlg.hAboutHtml.setOpenExternalLinks(True)
+        about_file = os.path.join(self.plugin_dir, "about.html")
+        icon_path = os.path.join(self.plugin_dir, "icons")
+        with open(about_file, "r", encoding="utf-8") as file:
+            about_html = file.read()
+            about_html.format(self.plugin_dir)
+        self.dlg.hAboutHtml.setHtml(about_html.format(icon_path))
 
         # populate settings
         # default data services to combo
@@ -473,8 +487,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         if not self.services_loaded:
             if not self.api_key_instance.get_api_keys():
                 self.dlg.uLabelWarning.setText(
-                    'To access data, add your API key in "Settings".'
-                    ' See "Help" for more information.'
+                    'Access the “Settings” tab to configure a service domain and API key.'
                 )
                 self.dlg.uLabelWarning.show()
             else:
@@ -608,6 +621,8 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
                 self.dlg.uStackedWidget.setCurrentIndex(1)
             elif item.text() == "Help":
                 self.dlg.uStackedWidget.setCurrentIndex(2)
+            elif item.text() == "About":
+                self.dlg.uStackedWidget.setCurrentIndex(3)
 
     def layer_crs_selected(self):
         """
