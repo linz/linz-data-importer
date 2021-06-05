@@ -1,4 +1,4 @@
-# LDS Data Importer [![Build Status](https://api.travis-ci.com/linz/linz-data-importer.svg?token=4YGqrWWw1nJqpi344cuy&branch=master_qgis3)](https://travis-ci.com/linz/linz-data-importer) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+# LDS Data Importer [![Build Status](https://api.travis-ci.com/linz/linz-data-importer.svg?token=4YGqrWWw1nJqpi344cuy&branch=main)](https://travis-ci.com/linz/linz-data-importer) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 The intent of this QGIS Plugin is to allow the easy discovery and import of
 [LINZ Data Service](data.linz.govt.nz) and [LINZ Basemaps](basemaps.linz.govt.nz) data into QGIS.
@@ -44,7 +44,7 @@ When at https://basemaps.linz.govt.nz/:
 \* Note; these keys are rotated every 90 days and will need to be update accordingly
 
 
-![Example of Domains configured via the settings menu](https://github.com/linz/linz-data-importer/blob/master_qgis3/images/settings_example.png)
+![Example of Domains configured via the settings menu](./images/settings_example.png)
 
 
 
@@ -96,9 +96,9 @@ pre-commit install --hook-type=pre-commit --overwrite
 ```
 
 ### Tests
-[Tests](https://github.com/linz/linz-data-importer/tree/master_qgis3/linz-data-importer/tests)
+[Tests](./linz-data-importer/tests)
 are executed via [GitHub Actions](https://github.com/linz/linz-data-importer/actions)
-for branches listed in the [`ci.yml`](https://github.com/linz/linz-data-importer/blob/master_qgis3/.github/workflows/ci.yml)
+for branches listed in the [`ci.yml`](./.github/workflows/ci.yml)
 file. These tests are against an instance of QGIS within a Docker container as made possible by the
 [official Docker container](https://hub.docker.com/r/qgis/qgis).
 
