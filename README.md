@@ -3,7 +3,7 @@
 The intent of this QGIS Plugin is to allow the easy discovery and import of
 [LINZ Data Service](data.linz.govt.nz) and [LINZ Basemaps](basemaps.linz.govt.nz) data into QGIS.
 
-![](https://github.com/linz/linz-data-importer/blob/master_qgis3/images/import_example.gif)
+![](./images/import_example.gif)
 
 ## Supported Services
 As well as the LINZ Data Service, the plugin can be configured to allow the discovery and importing of data
