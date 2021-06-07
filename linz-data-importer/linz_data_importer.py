@@ -256,7 +256,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.actions.append(action)
         return action
 
-    def initGui(self):  # pylint:disable=invalid-name
+    def initGui(self):  # pylint:disable=invalid-name, too-many-statements
         """
         Create the menu entries and toolbar icons inside the QGIS GUI.
         """
@@ -487,7 +487,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         if not self.services_loaded:
             if not self.api_key_instance.get_api_keys():
                 self.dlg.uLabelWarning.setText(
-                    'Access the “Settings” tab to configure a service domain and API key.'
+                    "Access the “Settings” tab to configure a service domain and API key."
                 )
                 self.dlg.uLabelWarning.show()
             else:
