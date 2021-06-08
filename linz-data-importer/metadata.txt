@@ -5,7 +5,7 @@ name=LINZ Data Importer
 qgisMinimumVersion=3.0.0
 qgisMaximumVersion=3.99.0
 description=Import LDS OGC Datasets into QGIS
-version=2.2.0
+version=2.2.1
 author=Toitū Te Whenua Land Information New Zealand
 email=linzdataservice@linz.govt.nz
 
@@ -19,8 +19,8 @@ repository=https://github.com/linz/linz-data-importer
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog= v2.2.0-beta:
-    - Improved filter to search all columns
+changelog= v2.2.1-UAT:
+    - Usability and help documentation improvements
     * More Details in repo
 
 # Tags are comma separated with spaces allowed
