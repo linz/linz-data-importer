@@ -791,7 +791,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>See "Help" for information on how to get an API key</string>
+                  <string>Access the "Help" tab to get an API key</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -809,6 +809,13 @@
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QTextBrowser" name="hHelpHtml"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="swAbout">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QTextBrowser" name="hAboutHtml"/>
           </item>
          </layout>
         </widget>
@@ -878,6 +885,7 @@
   <tabstop>uBtnRemoveDomain9</tabstop>
   <tabstop>uBtnRemoveDomain10</tabstop>
   <tabstop>hHelpHtml</tabstop>
+  <tabstop>hAboutHtml</tabstop>
  </tabstops>
  <resources/>
  <connections/>

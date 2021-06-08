@@ -1,76 +1,39 @@
-<h1 id="lds-data-importer">LDS Data Importer</h1>
-<p>The intent of this QGIS Plugin is to allow the easy discovery and import of
-    LINZ Data Service (data.govt.linz.nz) data into QGIS.</p>
-<h2 id="supported-services">Supported Services</h2>
-<p>As well as the LINZ Data Service, the plugin can be configured to allow the discovery and importing of data
-    from other New Zealand agencies that make use of the same technology platform to publish their data.</p>
-<p>This plugin supports the below open data portals:</p>
-<ul>
-    <li><a href="https://data.linz.govt.nz">https://data.linz.govt.nz</a> (Toitū Te Whenua - Land Information New Zealand)</li>
-    <li><a href="https://data.mfe.govt.nz">https://data.mfe.govt.nz</a> (Manatū Mō Te Taiao - Ministry for the
-        Environment)</li>
-    <li><a href="https://datafinder.stats.govt.nz">https://datafinder.stats.govt.nz</a> (Tatauranga Aotearoa -
-        Statistics New Zealand)</li>
-    <li><a href="https://lris.scinfo.org.nz">https://lris.scinfo.org.nz</a> (Manaaki Whenua - Landcare Research)</li>
-    <li><a href="https://geodata.nzdf.mil.nz">https://geodata.nzdf.mil.nz</a> (Te Ope Kātua o Aotearoa - New Zealand
-        Defence Force)</li>
-    <li><a href="https://basemaps.linz.govt.nz">https://basemaps.linz.govt.nz</a> (LINZ Basemaps)</li>
-</ul>
-<h2 id="selecting-a-service-protocol">Selecting a Service / Protocol</h2>
-<p>The LINZ Data Service Plugin supports data served over WFS and WMTS protocols.
-    Please see the resources available on the <a
-        href="http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/which-web-service-should-i-use">LINZ
-        website</a>
-<h2 id="api-keys">API Keys</h2>
-<p>Prior to using the plugin, an API Key for each domain that data is to be loaded from must be must be configured via
-    the &quot;Settings&quot; menu.
-    Configuring each domain and API key will trigger the plugin to request all of the domain&#39;s dataset information,
-    allowing a user to view
-    and import the domain&#39;s data in QGIS.</p>
-<h3 id="obtaining-data-portal-api-keys">Obtaining Data Portal API Keys</h3>
-<p>An API key for each of the supported services can be allocated from each of the service&#39;s websites
-    (see <a href="https://github.com/linz/linz-data-importer/#supported-services">Supported Services</a>
-    for a link to each services website were the API Keys can be got).</p>
-<p>For detailed instructions on getting an API key, please see the <a
-        href="https://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key">LINZ Data
-        Services user resources</a>.
-</p>
-<h3 id="obtaining-linz-basemap-api-keys">Obtaining LINZ Basemap API Keys</h3>
-<p>To configure LINZ basemaps please visit <a href="https://basemaps.linz.govt.nz">https://basemaps.linz.govt.nz</a> to
-    obtain an API Key.</p>
-<p>When at <a href="https://basemaps.linz.govt.nz">https://basemaps.linz.govt.nz</a>:</p>
-<ul>
-    <li>Open the menu on the right</li>
-    <li>Extract the API key from the url in this menu</li>
-</ul>
-<p>* Note; these keys are rotated every 90 days and will need to be update accordingly</p>
-<h2 id="coordinate-reference-system-crs-">Coordinate Reference System (CRS)</h2>
-<p>The available CRS options for each layer are shown next to the import button (in
-    terms of EPSG code). If the data source is stored in multiple CRSs the user
-    can select which CRS the dataset is to be requested in from the server.</p>
-<p>* Note; if the QGIS project&#39;s CRS and the imported dataset&#39;s CRS do not
-    match, QGIS will reproject the imported data to the project&#39;s CRS.
-    <strong>Beware:</strong> reprojecting data can degrade spatial accuracies and relationships.</p>
-<p>When importing the first dataset via the plugin for a QGIS session, the plugin
-    will change the QGIS project&#39;s CRS to match the imported data. If On The Fly (OTF)
-    projection is not enabled, the plugin will enable OTF to allow any
-    further datasets to be reprojected to the project&#39;s / QGIS session&#39;s CRS.
-    When these changes occur the user will be informed via the QGIS message bar.</p>
-<h2 id="requests-responses-patience-and-caching">Requests, Responses, Patience and Caching</h2>
-<p>When saving a Domain and API key for the first time via the Setting menu, the plugin
-    will request the capabilities documents for each service / protocol type (WMTS, WFS).
-    The Data Portal&#39;s server can be slow to respond with these documents causing the
-    plugin to appear inactive. The good news is this is the only interaction with the
-    plugin where substantial patience may be required. Once the initial documents
-    are fetched, they will be cached and updated in the background each time
-    the plugin is started.</p>
-<h2 id="filtering">Filtering</h2>
-<p>The left hand panel allows users to filter by service / protocol types (either, All, WFS, WMTS).
-    All column headers can be toggled to allow ascending or descending ordering of their data.
-    Text can be entered in the &quot;Filter Data Sets&quot; search bar to filter the datasets by keyword.</p>
-<h2 id="source-code-and-feedback">Source Code and Feedback</h2>
-<p>Please see the <a href="https://github.com/linz/linz-data-importer/">LINZ-Data-Importer</a> repository
-    on GitHub.</p>
-<h3 id="thanks">Thanks</h3>
-<p>Thanks to all those at LINZ who have provided input and feedback.
-    And thanks to Pete King for the icons.</p>
+<h2 id="get-an-api-key">Get an API key</h2>
+
+<p>The first step in using the LINZ Data Importer is to get an API key. An API key is required from each service you wish to access data from via the plugin.</p>
+
+<h3 id="linz-data-service-and-other-agency-data-portal-api-key">From the LINZ Data Service and other data portals</h3>
+
+<p>See our <a href ="https://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/creating-an-api-key">Creating an API key guide</a> to create an API key for the LINZ Data Service. The same general process can also be used to generate an API key from the agency data portals listed on the About page.</p>
+<p>You must login and create an API key for each individual data source you wish to access data from.</p>
+
+<h3 id="linz-basemaps-api-key">From LINZ Basemaps</h3>
+
+<p>Visit <a href="https://basemaps.linz.govt.nz">LINZ Basemaps</a> to grab an API Key. Simply, open the menu on the right, then copy the pre-populated API key from the full WMTS URL.</p>
+<p>Note: these keys are rotated every 90 days and will need to be updated accordingly. Contact <a href="mailto:basemaps@linz.govt.nz">basemaps@linz.govt.nz</a> if you wish to retrieve an unlimited developer API key.</p>
+
+<h2 id="connecting-to-a-data-source">Connecting to a data source</h2>
+<ol>
+    <li>Go to the Setting tab, click the drop down under the “API Keys” heading and select the domain of the data service which you are interested in (e.g. data.linz.govt.nz).</li>
+    <li>Click the “+” symbol. This will confirm the selected domain and provide a text box to insert the relevant API key.</li>
+    <li>Copy and paste the relevant API key from the service you want to connect to, and click Save.</li>
+    <li>This will trigger the plugin to request the domain’s dataset information, allowing you to view and import the data in QGIS via WMTS and WFS web services.</li>
+    <li>Select the layer of interest and click “Add”. The corresponding dataset will be added to the map display.</li>
+    <li>Another service can then be added by changing the domain and repeating steps 2-5.</li>
+</ol>
+
+<h2 id="technical-information">Technical information</h2>
+
+<h3 id="coordinate-reference-system">Coordinate Reference System (CRS)</h3>
+
+<p>The available CRS options for each layer are shown in a drop down next to the “Add Layer” button (in terms of EPSG code). Select the CRS of the dataset to be requested from the server.</p>
+<p>If the QGIS project initially has a CRS which does not match the imported dataset’s CRS, QGIS will reproject the imported dataset to match the project CRS. <strong style="color: #ff0000">Important</strong>: reprojecting the CRS of a dataset can degrade spatial accuracies and relationships.</p>
+<p>If the first dataset of a QGIS session is imported via the plugin, the plugin will change the QGIS project’s CRS to match the imported data. As the plugin enables on-the-fly projections, any further datasets which don’t match the first dataset’s CRS will be reprojected. When these changes occur, the user will be notified via the QGIS message bar.</p>
+
+<h3 id="requests-responses-patience-and-caching">Requests, Responses, Patience and Caching</h3>
+
+<p>The first time a Domain and API key are saved via the Settings menu, the plugin will request capability documents for the domain’s web services (WMTS/WMS). This causes a delay as the Data Portal’s server retrieves these documents, resulting in the plugin appearing inactive. After the documents are fetched, they are cached and updated, removing any further delays each time the plugin is started.</p>
+
+<h3 id="filtering">Filtering</h3>
+
+<p>The left-hand panel allows users to filter by service types (All, WFS, WMTS). Users can toggle column headers to order data by ascending or descending. Datasets can be filtered using keywords by text being entered into the “Filter Data Sets” search bar.</p>

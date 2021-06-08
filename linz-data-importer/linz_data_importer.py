@@ -261,9 +261,10 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         Create the menu entries and toolbar icons inside the QGIS GUI.
         """
 
-        icon_path = ":/plugins/linz-data-importer/icons/icon.png"
+        icon_path = os.path.join(self.plugin_dir, "icons")
+
         self.add_action(
-            icon_path,
+            os.path.join(icon_path, "icon.png"),
             text=self.translate(u"Load Data"),
             callback=self.run,
             parent=self.iface.mainWindow(),
@@ -280,30 +281,12 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.dlg.uLabelWarning.setStyleSheet("color:red")
         self.dlg.uWarningSettings.setStyleSheet("color:red")
 
-        item = QListWidgetItem("ALL")
-        image_path = os.path.join(os.path.dirname(__file__), "icons", "all.png")
-        item.setIcon(QIcon(image_path))
-        self.dlg.uListOptions.addItem(item)
-
-        item = QListWidgetItem("WFS")
-        image_path = os.path.join(os.path.dirname(__file__), "icons", "wfs.png")
-        item.setIcon(QIcon(image_path))
-        self.dlg.uListOptions.addItem(item)
-
-        item = QListWidgetItem("WMTS")
-        image_path = os.path.join(os.path.dirname(__file__), "icons", "wmts.png")
-        item.setIcon(QIcon(image_path))
-        self.dlg.uListOptions.addItem(item)
-
-        item = QListWidgetItem("Settings")
-        image_path = os.path.join(os.path.dirname(__file__), "icons", "settings.png")
-        item.setIcon(QIcon(image_path))
-        self.dlg.uListOptions.addItem(item)
-
-        item = QListWidgetItem("Help")
-        image_path = os.path.join(os.path.dirname(__file__), "icons", "help.png")
-        item.setIcon(QIcon(image_path))
-        self.dlg.uListOptions.addItem(item)
+        self.add_item(title="ALL", icon=os.path.join(icon_path, "all.png"))
+        self.add_item(title="WFS", icon=os.path.join(icon_path, "wfs.png"))
+        self.add_item(title="WMTS", icon=os.path.join(icon_path, "wmts.png"))
+        self.add_item(title="Settings", icon=os.path.join(icon_path, "settings.png"))
+        self.add_item(title="Help", icon=os.path.join(icon_path, "help.png"))
+        self.add_item(title="About", icon=os.path.join(icon_path, "about.png"))
 
         # set table model
         self.set_table_model_view()
@@ -311,11 +294,18 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         # set help html
         self.dlg.hHelpHtml.setOpenExternalLinks(True)
         help_file = os.path.join(self.plugin_dir, "help.html")
-        icon_path = os.path.join(self.plugin_dir, "icons")
         with open(help_file, "r", encoding="utf-8") as file:
             help_html = file.read()
             help_html.format(self.plugin_dir)
         self.dlg.hHelpHtml.setHtml(help_html.format(icon_path))
+
+        # set about html
+        self.dlg.hAboutHtml.setOpenExternalLinks(True)
+        about_file = os.path.join(self.plugin_dir, "about.html")
+        with open(about_file, "r", encoding="utf-8") as file:
+            about_html = file.read()
+            about_html.format(self.plugin_dir)
+        self.dlg.hAboutHtml.setHtml(about_html.format(icon_path))
 
         # populate settings
         # default data services to combo
@@ -332,6 +322,15 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
                 self.save_domain
             )
         self.load_settings()
+
+    def add_item(self, title, icon):
+        """
+        Add item to the dialog's list of options
+        """
+
+        item = QListWidgetItem(title)
+        item.setIcon(QIcon(icon))
+        self.dlg.uListOptions.addItem(item)
 
     def clear_settings(self):
         """
@@ -473,8 +472,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         if not self.services_loaded:
             if not self.api_key_instance.get_api_keys():
                 self.dlg.uLabelWarning.setText(
-                    'To access data, add your API key in "Settings".'
-                    ' See "Help" for more information.'
+                    "Access the “Settings” tab to configure a service domain and API key."
                 )
                 self.dlg.uLabelWarning.show()
             else:
@@ -608,6 +606,8 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
                 self.dlg.uStackedWidget.setCurrentIndex(1)
             elif item.text() == "Help":
                 self.dlg.uStackedWidget.setCurrentIndex(2)
+            elif item.text() == "About":
+                self.dlg.uStackedWidget.setCurrentIndex(3)
 
     def layer_crs_selected(self):
         """
