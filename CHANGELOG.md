@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.2.1  (2021-06-16)
+### Features
+* Improved help documentation
+* Quality controls added - pylint, black, isort
+* Updated license
+* Added local docker testing
+
+# 2.2.0  (unreleased)
+### Features
+* Improved layer searching
+* Filter WFS results by bbox of map canvas
+
 # 2.1.0  (2020-10-30)
 ### Features
 * WMS removed (WMS is no-longer supported)
