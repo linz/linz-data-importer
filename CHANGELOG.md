@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-# 2.2.1  (2021-06-16)
+# 2.2.2  (2021-06-16)
+### Bugs
+* Correct version in metatata.txt 
+
+# 2.2.1  (unreleased)
 ### Features
 * Improved help documentation
 * Quality controls added - pylint, black, isort
