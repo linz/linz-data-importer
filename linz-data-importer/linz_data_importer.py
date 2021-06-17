@@ -148,6 +148,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.layer_title = None
         self.selected_crs = None
         self.selected_crs_int = None
+        self.curr_list_wid_index = None
         self.layers_loaded = False
         self.service_versions = {"wfs": "2.0.0", "wmts": "1.0.0"}
 
@@ -156,7 +157,6 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.local_store = Localstore()
 
         self.dlg = ServiceDialog()
-        self.curr_list_wid_index: Optional[QListWidgetItem]
 
         self.qimage = QImage
         self.domain: str
