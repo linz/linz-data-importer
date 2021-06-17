@@ -23,7 +23,6 @@ import re
 import threading
 import urllib.request
 from socket import timeout
-from typing import Optional
 from urllib.error import URLError
 
 from PyQt5.QtCore import QItemSelectionModel
