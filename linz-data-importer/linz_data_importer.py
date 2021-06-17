@@ -22,6 +22,7 @@ import os.path
 import re
 import threading
 import urllib.request
+from socket import timeout
 from typing import Optional
 from urllib.error import URLError
 
@@ -642,6 +643,8 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         try:
             img_data = urllib.request.urlopen(url, timeout=res_timeout).read()
         except URLError:
+            return False
+        except timeout:
             return False
         self.qimage.loadFromData(img_data)
         if res == "300x200":
