@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.2.3  (2021-06-17)
+### Bugs
+* Fixed preview image request timeout
+* Fixed attribute doesn't exist error
+* Fixed 'add' and 'cancel' icons not displaying
+
 # 2.2.2  (2021-06-16)
 ### Bugs
 * Correct version in metatata.txt 
