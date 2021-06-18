@@ -264,7 +264,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/add.png</normaloff>:/plugins/linz-data-importer/icons/add.png</iconset>
+                          <normaloff>../icons/add.png</normaloff>../icons/add.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -527,7 +527,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -616,7 +616,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -639,7 +639,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -656,7 +656,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -673,7 +673,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -690,7 +690,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -707,7 +707,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -724,7 +724,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -741,7 +741,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -758,7 +758,7 @@
                         </property>
                         <property name="icon">
                          <iconset>
-                          <normaloff>:/plugins/linz-data-importer/icons/remove.png</normaloff>:/plugins/linz-data-importer/icons/remove.png</iconset>
+                          <normaloff>../icons/remove.png</normaloff>../icons/remove.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -791,7 +791,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>Access the "Help" tab to get an API key</string>
+                  <string>Access the &quot;Help&quot; tab to get an API key</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>

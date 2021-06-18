@@ -22,7 +22,7 @@ import os.path
 import re
 import threading
 import urllib.request
-from typing import Optional
+from socket import timeout
 from urllib.error import URLError
 
 from PyQt5.QtCore import QItemSelectionModel
@@ -147,6 +147,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.layer_title = None
         self.selected_crs = None
         self.selected_crs_int = None
+        self.curr_list_wid_index = None
         self.layers_loaded = False
         self.service_versions = {"wfs": "2.0.0", "wmts": "1.0.0"}
 
@@ -155,7 +156,6 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         self.local_store = Localstore()
 
         self.dlg = ServiceDialog()
-        self.curr_list_wid_index: Optional[QListWidgetItem]
 
         self.qimage = QImage
         self.domain: str
@@ -642,6 +642,8 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
         try:
             img_data = urllib.request.urlopen(url, timeout=res_timeout).read()
         except URLError:
+            return False
+        except timeout:
             return False
         self.qimage.loadFromData(img_data)
         if res == "300x200":
