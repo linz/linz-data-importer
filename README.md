@@ -51,8 +51,6 @@ When at https://basemaps.linz.govt.nz/:
 ![Example of Domains configured via the settings menu](./images/settings_example.png)
 
 
-
-
 ## Coordinate Reference System (CRS)
 The available CRS options for each layer are shown next to the import button (in
 terms of EPSG code). If the data source is stored in multiple CRSs the user
@@ -112,6 +110,19 @@ You can run the tests using the test.bash script: `./test.bash QGIS_VERSION LDI_
 - [LDI_MFE_KEY](https://data.mfe.govt.nz/my/api/)
 - [LDI_NZDF_KEY](https://koordinates.com/my/api/)
 - [LDI_BASEMAPS_KEY](https://basemaps.linz.govt.nz/)
+
+### Deploy
+
+#### Development release
+Create a tag with the format `x.x.x-UAT` to deploy to LINZ's development QGIS Plugin repository
+
+#### UAT release
+Create a tag with the format `x.x.x-beta` to deploy to LINZ's production QGIS Plugin repository
+
+#### Public release
+1. Login to the [QGIS plugin repository](https://plugins.qgis.org)
+2. Create [a new version](https://plugins.qgis.org/plugins/linz-data-importer/)
+3. Upload `https://github.com/linz/linz-data-importer/releases/download/<release>/linz-data-importer.zip` to the new version
 
 ### Thanks
 Thanks to all those at LINZ who have provided input and feedback.
