@@ -35,8 +35,8 @@ jobs:
         with:
           fetch-depth: 0
 
-    - name: Run test script
-      run: ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
+      - name: Run test script
+        run: ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
 
   lint:
     name: Lint
