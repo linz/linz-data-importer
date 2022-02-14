@@ -29,7 +29,10 @@ jobs:
       LDI_NZDF_KEY: ${{ secrets.LDI_NZDF_KEY }}
       LDI_BASEMAPS_KEY: ${{ secrets.LDI_BASEMAPS_KEY }}
     steps:
-    - uses: actions/checkout@v2.4.0
+      - name: Check out repository
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
     - name: Run test script
       run: |
         ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
