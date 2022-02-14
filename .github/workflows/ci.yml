@@ -1,4 +1,4 @@
-name: ci
+name: Test
 
 on:
   push:
@@ -13,7 +13,7 @@ on:
 
 jobs:
   test:
-    name: test
+    name: Test ${{ matrix.qgis }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -28,43 +28,51 @@ jobs:
       LDI_MFE_KEY: ${{ secrets.LDI_MFE_KEY }}
       LDI_NZDF_KEY: ${{ secrets.LDI_NZDF_KEY }}
       LDI_BASEMAPS_KEY: ${{ secrets.LDI_BASEMAPS_KEY }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
-      - name: Run test script
-        run: |
-          ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
+
+    - name: Run test script
+      run: ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
 
   lint:
+    name: Lint
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2.4.0
+      - name: Check out repository
+        uses: actions/checkout@v2.4.0
+
       - uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.8
+
       - name: Install Python dependencies
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install --requirement=requirements-dev.txt
+
       - name: Run pre-commit hooks
         run: pre-commit run --all-files
 
   deploy:
-    name: deploy
+    name: Deploy
     if: startswith(github.ref, 'refs/tags/v')
     needs: [test]
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout Code
+      - name: Check out repository
         uses: actions/checkout@v2.4.0
         with:
           ref: ${{ github.ref }}
+
       - name: Build project # This would actually build your project, using zip for an example artifact
         run: |
           echo ${{ github.repository }}
           zip -r linz-data-importer.zip linz-data-importer
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.0
@@ -77,6 +85,7 @@ jobs:
             ${{ github.ref }}]
           draft: true
           prerelease: true
+
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1.0.1
@@ -87,10 +96,12 @@ jobs:
           asset_path: ./linz-data-importer.zip
           asset_name: linz-data-importer.zip
           asset_content_type: application/zip
+
       - name: Upload To LINZ DEV QGIS Plugin Repository in AWS
         if: endswith(github.ref, 'UAT')
         run: |
           curl -X POST -H 'Content-Type: application/octet-stream' -H "authorization: bearer ${{ secrets.DEV_PLUGIN_REPO_AUTH }}" --data-binary @linz-data-importer.zip https://plugins.qgis.linz.govt.nz/v1/plugin/linz-data-importer?stage=dev
+
       - name: Upload To LINZ PRD QGIS Plugin Repository in AWS
         if: false ==  endswith(github.ref, 'UAT')
         run: |
