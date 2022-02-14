@@ -23,7 +23,6 @@ import unittest
 
 from qgis.core import QgsApplication, QgsProject  # pylint:disable=import-error
 from qgis.PyQt.QtCore import QSettings  # pylint:disable=import-error
-from qgis.PyQt.QtGui import QImage  # pylint:disable=import-error
 from qgis.PyQt.QtTest import QTest  # pylint:disable=import-error
 from qgis.utils import plugins  # pylint:disable=import-error
 
@@ -357,27 +356,6 @@ class UnitLevel(unittest.TestCase):
             file_path = os.path.join(self.pl_settings_dir, file)
             cached_file_stats[file] = os.stat(file_path).st_mtime
         self.assertNotEqual(cached_file_stats, insitu_file_stats)
-
-    def test_get_preview(self):
-        """
-        Test the getting of a preview image
-        """
-
-        match_layer_id = 50769
-        mismatch_layer_id = 53158
-        self.ldi.object_id = match_layer_id
-        self.ldi.get_preview("300x200", 10)
-        test_image1 = os.path.join(self.test_data_dir, str(match_layer_id) + ".png")
-        test_image2 = os.path.join(self.test_data_dir, str(mismatch_layer_id) + ".png")
-
-        preview_img = self.ldi.qimage
-
-        test_img_match = QImage(test_image1)  # should match
-        test_img_mismatch = QImage(test_image2)  # shouldn't match
-
-        # Is the downloaded image the same as the stored?
-        self.assertEqual(test_img_match, preview_img)
-        self.assertNotEqual(test_img_mismatch, preview_img)
 
     def test_set_project_srid(self):
         """
