@@ -29,7 +29,10 @@ jobs:
       LDI_NZDF_KEY: ${{ secrets.LDI_NZDF_KEY }}
       LDI_BASEMAPS_KEY: ${{ secrets.LDI_BASEMAPS_KEY }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out repository
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
       - name: Run test script
         run: |
           ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
@@ -37,7 +40,7 @@ jobs:
   lint:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.4.0
       - uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.8
@@ -55,7 +58,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2-beta
+        uses: actions/checkout@v2.4.0
         with:
           ref: ${{ github.ref }}
       - name: Build project # This would actually build your project, using zip for an example artifact
