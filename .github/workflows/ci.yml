@@ -5,11 +5,11 @@ on:
     branches:
       - main
     tags-ignore:
-      - 'debian/*'
-      - '*-start'
+      - "debian/*"
+      - "*-start"
   pull_request:
     branches:
-      - '*'
+      - "*"
 
 jobs:
   test:
@@ -29,11 +29,10 @@ jobs:
       LDI_NZDF_KEY: ${{ secrets.LDI_NZDF_KEY }}
       LDI_BASEMAPS_KEY: ${{ secrets.LDI_BASEMAPS_KEY }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Run test script
-      run: |
-        ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
-
+      - uses: actions/checkout@v2
+      - name: Run test script
+        run: |
+          ./test.bash "${{ matrix.qgis }}" "$LDI_LINZ_KEY" "$LDI_MFE_KEY" "$LDI_NZDF_KEY" "$LDI_BASEMAPS_KEY"
 
   lint:
     runs-on: ubuntu-20.04
@@ -48,7 +47,6 @@ jobs:
           python3 -m pip install --requirement=requirements-dev.txt
       - name: Run pre-commit hooks
         run: pre-commit run --all-files
-
 
   deploy:
     name: deploy
