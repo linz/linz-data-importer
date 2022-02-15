@@ -20,6 +20,7 @@ jobs:
       matrix:
         qgis:
           - latest
+          - release_3_20
           - release-3_16
           - release-3_10
           - release-3_4
