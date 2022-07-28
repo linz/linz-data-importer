@@ -442,7 +442,7 @@ class ServiceData(Localstore):  # pylint: disable=too-many-instance-attributes
             if self.service == "wmts":
                 tms = self.obj.tilematrixsets
                 ogc_crs = [tms[t].crs for t in tms]
-                self.crs = ["EPSG:{0}".format(item.split(':')[-1]) for item in ogc_crs]
+                self.crs = ["EPSG:{0}".format(item.split(":")[-1]) for item in ogc_crs]
                 self.sort_crs()
             elif self.service == "wfs":
                 self.crs = dataset_obj.crsOptions
