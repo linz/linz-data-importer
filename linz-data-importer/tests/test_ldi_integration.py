@@ -46,7 +46,7 @@ API_KEYS = {
 TEST_CONF = {
     "wmts": [
         "Chart NZ 632 Banks Peninsula",
-        "aerial Whanganui urban 2017-18 0.075m",
+        "Whanganui 0.075m Urban Aerial Photos (2017)",
     ],
     "wfs": [
         "NZ Railway Centrelines (Topo, 1:250k)",
