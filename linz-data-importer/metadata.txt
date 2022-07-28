@@ -19,9 +19,8 @@ repository=https://github.com/linz/linz-data-importer
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog= v2.2.3-beta:
-    - Fixed bugs causing UI to freeze
-    - Fixing bug causing button icons to not display
+changelog= v2.3.0:
+    - Fixing bug causing LINZ Basemaps WMTS not to load
     * More Details in repo
 
 # Tags are comma separated with spaces allowed
