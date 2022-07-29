@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.3.1 (2021-07-29)
+
+### Bugs
+
+- Fixed failing CI tests
+
 # 2.3.0 (2021-07-29)
 
 ### Bugs
