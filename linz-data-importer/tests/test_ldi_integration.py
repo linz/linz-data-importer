@@ -46,11 +46,9 @@ API_KEYS = {
 TEST_CONF = {
     "wmts": [
         "Chart NZ 632 Banks Peninsula",
-        "aerial Whanganui urban 2017-18 0.075m",
+        "Whanganui 0.075m Urban Aerial Photos (2017)",
     ],
-    "wfs": [
-        "NZ Railway Centrelines (Topo, 1:250k)",
-    ],
+    "wfs": ["NZ Railway Centrelines (Topo, 1:250k)"],
 }
 
 
@@ -464,10 +462,11 @@ class UserWorkFlows(unittest.TestCase):
 
             # Filter
             self.ldi.dlg.uTextFilter.setText(layer_name)
-            QTest.qWait(WAIT)
+            QTest.qWait(MAP_REFRESH_WAIT)
 
-            # Check we have a single row in the view, upon filtering
-            self.assertEqual(self.ldi.proxy_model.rowCount(), 1)
+            # Check we have 1-5 results, upon filtering
+            self.assertGreaterEqual(self.ldi.proxy_model.rowCount(), 1)
+            self.assertLessEqual(self.ldi.proxy_model.rowCount(), 5)
 
             # Import the first row
             self.ldi.dlg.uTableView.selectRow(0)
