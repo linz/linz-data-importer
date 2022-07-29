@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QSettings, Qt  # pylint:disable=import-error
 from qgis.PyQt.QtTest import QTest  # pylint:disable=import-error
 from qgis.utils import iface, plugins  # pylint:disable=import-error
 
-WAIT = 1000
+WAIT = 2000
 MAP_REFRESH_WAIT = 4000
 
 # Using 4 env vars as issue with travis
