@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QSettings, Qt  # pylint:disable=import-error
 from qgis.PyQt.QtTest import QTest  # pylint:disable=import-error
 from qgis.utils import iface, plugins  # pylint:disable=import-error
 
-WAIT = 2000
+WAIT = 1000
 MAP_REFRESH_WAIT = 4000
 
 # Using 4 env vars as issue with travis
@@ -463,7 +463,7 @@ class UserWorkFlows(unittest.TestCase):
 
             # Filter
             self.ldi.dlg.uTextFilter.setText(layer_name)
-            QTest.qWait(WAIT)
+            QTest.qWait(MAP_REFRESH_WAIT)
 
             # Check we have a single row in the view, upon filtering
             self.assertEqual(self.ldi.proxy_model.rowCount(), 1)
