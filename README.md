@@ -122,6 +122,8 @@ You can run the tests using the test.bash script: `./test.bash QGIS_VERSION LDI_
 - [LDI_NZDF_KEY](https://koordinates.com/my/api/)
 - [LDI_BASEMAPS_KEY](https://basemaps.linz.govt.nz/)
 
+Note: some of UI tests can fail if it takes longer than expected for the user interface to respond or refresh. This can sometimes be resolved by rerunning the failed tests. 
+
 ### Deploy
 
 #### Development release
