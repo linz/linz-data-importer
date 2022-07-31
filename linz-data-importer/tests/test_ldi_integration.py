@@ -172,7 +172,7 @@ class CorruptXml(unittest.TestCase):
             for row in range(self.ldi.proxy_model.rowCount())
         }
         self.assertEqual(len(data_types), 2)
-        self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
+        self.assertEqual(sorted(["WFS", "WMTS"]), sorted(list(data_types)))
 
 
 class CacheTest(unittest.TestCase):
@@ -495,7 +495,7 @@ class UserWorkFlows(unittest.TestCase):
             for row in range(self.ldi.proxy_model.rowCount())
         }
         self.assertEqual(len(data_types), 2)
-        self.assertEqual(sorted([u"WFS", u"WMTS"]), sorted(list(data_types)))
+        self.assertEqual(sorted(["WFS", "WMTS"]), sorted(list(data_types)))
 
     @staticmethod
     def map_refreshed():
