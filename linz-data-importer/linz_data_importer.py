@@ -134,9 +134,9 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
                 QCoreApplication.installTranslator(translator)
 
         self.actions = []
-        self.toolbar = self.iface.addToolBar(u"LINZ Data Importer")
-        self.toolbar.setObjectName(u"LINZ Data Importer")
-        self.menu = self.translate(u"&linz-data-importer")
+        self.toolbar = self.iface.addToolBar("LINZ Data Importer")
+        self.toolbar.setObjectName("LINZ Data Importer")
+        self.menu = self.translate("&linz-data-importer")
 
         # Track data reading
         self.data_feeds = {}
@@ -265,7 +265,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
 
         self.add_action(
             os.path.join(icon_path, "icon.png"),
-            text=self.translate(u"Load Data"),
+            text=self.translate("Load Data"),
             callback=self.run,
             parent=self.iface.mainWindow(),
         )
@@ -458,7 +458,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
 
         for action in self.actions:
             self.iface.removePluginWebMenu(
-                self.translate(u"&linz-data-importer"), action
+                self.translate("&linz-data-importer"), action
             )
             self.iface.removeToolBarIcon(action)
         del self.toolbar
