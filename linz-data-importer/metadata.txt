@@ -2,7 +2,7 @@
 
 [general]
 name=LINZ Data Importer
-qgisMinimumVersion=3.14.0
+qgisMinimumVersion=3.16.0
 qgisMaximumVersion=3.99.0
 description=Import LDS OGC Datasets into QGIS
 version=2.3.1
