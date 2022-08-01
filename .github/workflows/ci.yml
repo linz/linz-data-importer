@@ -25,7 +25,7 @@ jobs:
           - release-3_20
           - release-3_18
           - release-3_16
-          - release-3_14
+          - release-3_14_focal
     env:
       LDI_LINZ_KEY: ${{ secrets.LDI_LINZ_KEY }}
       LDI_MFE_KEY: ${{ secrets.LDI_MFE_KEY }}
