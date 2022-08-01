@@ -821,7 +821,7 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
                     "contextualWMSLegend=0"
                     "&crs={1}"  # e.g. EPSG:2193
                     "&dpiMode=7&featureCount=10"
-                    "&format=image/png"
+                    "&format=image/webp"
                     "&layers={2}"
                     "&styles=default"
                     "&tileMatrixSet={4}"  # e.g. NZTM2000Quad
