@@ -806,20 +806,32 @@ class LinzDataImporter:  # pylint: disable=too-many-instance-attributes,too-many
 
         elif self.service == "WMTS":
             if self.domain == "basemaps.linz.govt.nz":
+                if self.selected_crs == "EPSG:2193":
+                    tms = "NZTM2000Quad"
+                elif self.selected_crs == "EPSG:3857":
+                    tms = "WebMercatorQuad"
+                else:
+                    self.iface.messageBar().pushMessage(
+                        "Error",
+                        """The LINZ Basemaps WMTS has returned an unexpected coordinate system.""",
+                        level=Qgis.Critical,
+                    )
+                    return
                 uri = (
                     "contextualWMSLegend=0"
-                    "&crs={1}"  # EPSG:2193
+                    "&crs={1}"  # e.g. EPSG:2193
                     "&dpiMode=7&featureCount=10"
                     "&format=image/webp"
                     "&layers={2}"
                     "&styles=default"
-                    "&tileMatrixSet={1}"  # EPSG:2193
+                    "&tileMatrixSet={4}"  # e.g. NZTM2000Quad
                     "&url=https://{0}/v1/tiles/aerial/WMTSCapabilities.xml?api={3}"
                 ).format(
                     self.domain,
                     self.selected_crs,
                     self.object_id,
                     self.api_key_instance.get_api_key(self.domain),
+                    tms,
                 )
             else:
                 uri = (
