@@ -21,7 +21,7 @@ repository=https://github.com/linz/linz-data-importer
 # Uncomment the following line and add your changelog:
 changelog= v2.3.1:
     - Fixed bug causing LINZ Basemaps WMTS not to load
-    - Fixed failing CI tests
+    - Use webp format for LINZ Basemaps WMTS
     * More Details in repo
 
 # Tags are comma separated with spaces allowed
