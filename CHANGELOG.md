@@ -2,11 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-# 2.3.1 (2021-07-29)
+# 2.3.1 (2021-08-01)
 
 ### Bugs
 
-- Fixed failing CI tests
+- Fixed bug causing LINZ Basemaps WMTS not to load
+- Use webp format for LINZ Basemaps WMTS
+- Fixed CI test timeouts
+- Set min supported QGIS version to 3.16
 
 # 2.3.0 (2021-07-29)
 
