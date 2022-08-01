@@ -36,8 +36,8 @@ source_suffix = ".rst"  # pylint:disable=invalid-name
 master_doc = "index"  # pylint:disable=invalid-name
 
 # General information about the project.
-project = u"QgisLdsPlugin"  # pylint:disable=invalid-name
-copyright = u"2013, Land Information New Zealand"  # pylint:disable=redefined-builtin,invalid-name
+project = "QgisLdsPlugin"  # pylint:disable=invalid-name
+copyright = "2013, Land Information New Zealand"  # pylint:disable=redefined-builtin,invalid-name
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -177,8 +177,8 @@ latex_documents = [
     (
         "index",
         "QgisLdsPlugin.tex",
-        u"QgisLdsPlugin Documentation",
-        u"Land Information New Zealand",
+        "QgisLdsPlugin Documentation",
+        "Land Information New Zealand",
         "manual",
     ),
 ]
@@ -215,8 +215,8 @@ man_pages = [
     (
         "index",
         "TemplateClass",
-        u"QgisLdsPlugin Documentation",
-        [u"Land Information New Zealand"],
+        "QgisLdsPlugin Documentation",
+        ["Land Information New Zealand"],
         1,
     )
 ]
