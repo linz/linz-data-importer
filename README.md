@@ -1,4 +1,4 @@
-# LDS Data Importer
+# LINZ Data Importer
 
 [![CI](https://github.com/linz/linz-data-importer/actions/workflows/ci.yml/badge.svg)](https://github.com/linz/linz-data-importer/actions/workflows/ci.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
