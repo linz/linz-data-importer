@@ -14,7 +14,7 @@ lazy-object-proxy==1.6.0
 mccabe==0.6.1
 mypy-extensions==0.4.3
 nodeenv==1.6.0
-OWSLib==0.24.1
+OWSLib==0.29.2
 pathspec==0.8.1
 pre-commit==2.12.1
 pylint==2.8.2
