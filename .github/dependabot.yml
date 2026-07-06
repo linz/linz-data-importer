@@ -6,7 +6,11 @@ updates:
       interval: daily
     commit-message:
       prefix: build(deps)
+    cooldown:
+      default-days: 15
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: daily
+    cooldown:
+      default-days: 15
